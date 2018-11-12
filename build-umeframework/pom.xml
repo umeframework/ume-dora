@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+    <distributionManagement>
+        <repository>
+			<id>local-umestore</id>
+			<url>file:../../umestore</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+    </distributionManagement>
+
+    <groupId>org.umeframework.build</groupId>
+	<artifactId>build-umeframework</artifactId>
+	<version>2.0.0.RELEASE</version>
+	<packaging>pom</packaging>
+
+	<modules>
+        <module>../dora-base</module>
+        <module>../dora-core</module>
+        <module>../dora-orm</module>
+        <module>../dora-kvs</module>
+        <module>../dora-web</module>
+        <module>../dora-config</module>
+        <module>../dora-tool</module>
+        
+        <module>../umeframework</module>
+        <module>../umeframework-boot</module>
+        <module>../umeframework-tool</module>
+        
+	</modules>
+	
+
+</project>
