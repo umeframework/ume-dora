@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<distributionManagement>
+		<repository>
+			<id>local-umestore</id>
+			<url>file:../umestore</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+	</distributionManagement>
+
+    <properties>
+        <version.dora>2.0.0.RELEASE</version.dora>
+        <version.java>1.8</version.java>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <docker.image.prefix>springcloud</docker.image.prefix>
+    </properties>
+    
+	<artifactId>umeframework-tool</artifactId>
+	<packaging>pom</packaging>
+	<parent>
+		<groupId>org.umeframework</groupId>
+		<artifactId>umeframework</artifactId>
+		<version>2.0.0.RELEASE</version>
+        <relativePath>../umeframework</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.umeframework.dora</groupId>
+			<artifactId>dora-tool</artifactId>
+			<version>${version.dora}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.umeframework.dora</groupId>
+			<artifactId>dora-core</artifactId>
+			<version>${version.dora}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
+    <!-- 
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>assembly</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	 -->
+</project>

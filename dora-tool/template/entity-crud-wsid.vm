@@ -1,0 +1,23 @@
+#set($comment = "# Service mapping define for entity restful Crud management")
+#set($sharp = "#")
+${comment}
+
+#foreach(${dto} in ${dtos})
+${sharp} ${dto.tableCrudServiceInterface}
+
+${dto.classOriId}FindList,POST|GET=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#findList
+${dto.classOriId}FindListLike,POST|GET=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#findListLike
+${dto.classOriId}Count,POST|GET=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#count
+#if(${dto.primaryKeyFieldList.size()} > 0)
+${dto.classOriId}Find,POST|GET=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#find
+${dto.classOriId}Create,POST=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#create
+${dto.classOriId}CreateList,POST=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#createList
+${dto.classOriId}CreateOrUpdate,POST=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#createOrUpdate
+${dto.classOriId}CreateOrUpdateList,POST=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#createOrUpdateList
+${dto.classOriId}Update,POST|PUT=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#update
+${dto.classOriId}UpdateList,POST|PUT=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#updateList
+${dto.classOriId}Delete,POST|DELETE=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#delete
+${dto.classOriId}DeleteList,POST|DELETE=${dto.tableCrudServicePackage}.${dto.tableCrudServiceClass}#deleteList
+#end
+#end
+

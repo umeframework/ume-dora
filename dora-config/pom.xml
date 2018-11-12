@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>dora-config</artifactId>
+	<parent>
+		<groupId>org.umeframework.dora</groupId>
+		<artifactId>dora-base</artifactId>
+		<version>2.0.0.RELEASE</version>
+        <relativePath>../dora-base</relativePath>
+	</parent>
+
+	<dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${version.servlet-api}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+		<dependency>
+			<groupId>org.umeframework.dora</groupId>
+			<artifactId>dora-core</artifactId>
+			<version>${version.dora}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.umeframework.dora</groupId>
+			<artifactId>dora-orm</artifactId>
+			<version>${version.dora}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.umeframework.dora</groupId>
+			<artifactId>dora-kvs</artifactId>
+			<version>${version.dora}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.umeframework.dora</groupId>
+			<artifactId>dora-web</artifactId>
+			<version>${version.dora}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
+</project>

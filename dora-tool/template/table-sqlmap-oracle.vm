@@ -1,0 +1,333 @@
+#set($var_OPERATION_HISTORY_DATETIME="OPERATION_HISTORY_DATETIME")
+#set($var_OPERATION_HISTORY_CATEGORY="OPERATION_HISTORY_CATEGORY")
+#set($var_OPERATION_HISTORY_AUTHER="OPERATION_HISTORY_AUTHER")
+#set($var_CREATE_AUTHOR="CREATE_AUTHOR")
+#set($var_CREATE_DATETIME="CREATE_DATETIME")
+#set($var_UPDATE_AUTHOR="UPDATE_AUTHOR")
+#set($var_UPDATE_DATETIME="UPDATE_DATETIME")
+#set($var_createAuthor="createAuthor")
+#set($var_createDatetime="createDatetime")
+#set($var_updateAuthor="updateAuthor")
+#set($var_updateDatetime="updateDatetime")
+#set($var_currentTimestamp="CURRENT_TIMESTAMP")
+#set($var_tablePreFix="")
+#set($var_sharp="#")
+#set($var_leftBraces="{")
+#set($var_rightBraces="}")
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TBL">
+  <!-- ${dto.tblName} [${dto.tblId}] -->
+
+#if(${dto.primaryKeyFieldList.size()} > 0)
+  <!-- Insert -->
+  <insert id="${dto.tblAlias}_INSERT" parameterType="$dto.classPackage.${dto.classId}">
+    INSERT INTO ${var_tablePreFix}${dto.tblId}${dto.tblDivision} (
+#foreach(${field}in${dto.fieldList})
+     #if(${velocityCount} != 1),#end${field.colId}
+#end
+      ,${var_CREATE_AUTHOR}
+      ,${var_CREATE_DATETIME}
+      ,${var_UPDATE_AUTHOR}
+      ,${var_UPDATE_DATETIME}
+    ) VALUES (
+#foreach(${field}in${dto.fieldList})
+#if(${field.colDataType} == 'AUTO-INCREMENT')
+      #if(${velocityCount} != 1),#end#{${field.fieldId}}SEQ_${dto.tblId}_${field.colId}.Nextval
+#else
+      #if(${velocityCount} != 1),#end#{${field.fieldId}}
+#end
+#end
+      ,#{${var_createAuthor}}
+      ,${var_currentTimestamp}
+      ,#{${var_updateAuthor}}
+      ,${var_currentTimestamp}
+    )
+  </insert>
+
+  <!-- Update -->
+  <update id="${dto.tblAlias}_UPDATE" parameterType="$dto.classPackage.${dto.classId}">
+    UPDATE ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+    <set>
+#if(${dto.generateDefaultTableField} == 1)
+      ${var_UPDATE_DATETIME} = ${var_currentTimestamp},
+#end
+#foreach(${field}in${dto.nonPrimaryKeyFieldList})
+#if(${field.colDataType} != 'AUTO-INCREMENT')
+      <if test="${field.fieldId}!=null">${field.colId} = #{${field.fieldId}},</if>
+#end
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="createAuthor!=null">${var_CREATE_AUTHOR} = #{${var_createAuthor}},</if>
+      <if test="createDatetime!=null">${var_CREATE_DATETIME} = #{${var_createDatetime}},</if>
+      <if test="updateAuthor!=null">${var_UPDATE_AUTHOR} = #{${var_updateAuthor}},</if>
+#end
+    </set>
+    WHERE 
+#foreach(${pkField}in${dto.primaryKeyFieldList}) 
+      #if($velocityCount > 1) AND#end ${pkField.colId} = #{${pkField.fieldId}}
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="updateDatetime!=null"> AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
+#end
+  </update>
+  
+  <!-- Update Any -->
+  <update id="${dto.tblAlias}_UPDATE_ANY" parameterType="$dto.classPackage.${dto.classId}">
+    UPDATE ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+    <set>
+#if(${dto.generateDefaultTableField} == 1)
+      ${var_UPDATE_DATETIME} = ${var_currentTimestamp},
+#end
+#foreach(${field}in${dto.nonPrimaryKeyFieldList})
+#if(${field.colDataType} != 'AUTO-INCREMENT')
+      <if test="${field.fieldId}!=null">${field.colId} = #{${field.fieldId}},</if>
+#end
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="createAuthor!=null">${var_CREATE_AUTHOR} = #{${var_createAuthor}},</if>
+      <if test="createDatetime!=null">${var_CREATE_DATETIME} = #{${var_createDatetime}},</if>
+      <if test="updateAuthor!=null">${var_UPDATE_AUTHOR} = #{${var_updateAuthor}},</if>
+#end
+    </set>
+    WHERE 1 = 1 
+#foreach(${field}in${dto.fieldList})
+      <if test="${field.fieldId} != null">AND ${field.colId} = #{${field.fieldId}}</if>
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="createAuthor != null">AND ${var_CREATE_AUTHOR} = #{${var_createAuthor}}</if>
+      <if test="updateAuthor != null">AND ${var_UPDATE_AUTHOR} = #{${var_updateAuthor}}</if>
+      <if test="createDatetime != null">AND ${var_CREATE_DATETIME} = #{${var_createDatetime}}</if>
+      <if test="updateDatetime != null">AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
+#end
+  </update>
+
+  <!-- Update Fully -->
+  <update id="${dto.tblAlias}_UPDATE_FULLY" parameterType="$dto.classPackage.${dto.classId}">
+    UPDATE ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+    SET
+#foreach(${field}in${dto.nonPrimaryKeyFieldList})
+#if(${field.colDataType} != 'AUTO-INCREMENT')
+      #if(${velocityCount} != 1),#end${field.colId} = #{${field.fieldId}}
+#end
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      ,${var_CREATE_AUTHOR} = #{${var_createAuthor}}
+      ,${var_CREATE_DATETIME} = #{${var_createDatetime}}
+      ,${var_UPDATE_AUTHOR} = #{${var_updateAuthor}}
+      ,${var_UPDATE_DATETIME} = ${var_currentTimestamp} 
+#end
+    WHERE 
+#foreach(${pkField}in${dto.primaryKeyFieldList})
+      #if($velocityCount > 1) AND#end ${pkField.colId} = #{${pkField.fieldId}}
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="updateDatetime!=null"> AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
+#end
+  </update>
+  
+  <!-- Delete -->
+  <delete id="${dto.tblAlias}_DELETE" parameterType="$dto.classPackage.${dto.classId}">
+    DELETE FROM ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+#if(${dto.primaryKeyFieldList.size()} > 0)
+    WHERE
+#foreach(${pkField}in${dto.primaryKeyFieldList})
+      #if($velocityCount > 1) AND#end ${pkField.colId} = #{${pkField.fieldId}} 
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="updateDatetime!=null"> AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
+#end
+#end
+  </delete>
+
+  <!-- Delete Any -->
+  <delete id="${dto.tblAlias}_DELETE_ANY" parameterType="$dto.classPackage.${dto.classId}">
+    DELETE FROM ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+    WHERE 1 = 1 
+#foreach(${field}in${dto.fieldList})
+      <if test="${field.fieldId} != null">AND ${field.colId} = #{${field.fieldId}}</if>
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="createAuthor != null">AND ${var_CREATE_AUTHOR} = #{${var_createAuthor}}</if>
+      <if test="updateAuthor != null">AND ${var_UPDATE_AUTHOR} = #{${var_updateAuthor}}</if>
+      <if test="createDatetime != null">AND ${var_CREATE_DATETIME} = #{${var_createDatetime}}</if>
+      <if test="updateDatetime != null">AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
+#end
+  </delete>
+
+  <!-- Find -->
+  <select id="${dto.tblAlias}_FIND" resultType="$dto.classPackage.${dto.classId}">
+    SELECT
+#foreach(${field}in${dto.fieldList})
+      #if($velocityCount > 1),#end${field.colId} AS "${field.fieldId}"
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      ,${var_CREATE_AUTHOR} AS "${var_createAuthor}"
+      ,${var_CREATE_DATETIME} AS "${var_createDatetime}"
+      ,${var_UPDATE_AUTHOR} AS "${var_updateAuthor}"
+      ,${var_UPDATE_DATETIME} AS "${var_updateDatetime}"
+#end
+    FROM ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+#if(${dto.primaryKeyFieldList.size()} > 0)
+    WHERE
+#foreach(${pkField}in${dto.primaryKeyFieldList})
+      #if($velocityCount > 1) AND#end ${pkField.colId} = #{${pkField.fieldId}}
+#end
+#end
+  </select>
+
+  <!-- Find For Update -->
+  <select id="${dto.tblAlias}_FIND_FOR_UPDATE" resultType="$dto.classPackage.${dto.classId}">
+    SELECT
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end${field.colId} AS "${field.fieldId}"
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      ,${var_CREATE_AUTHOR} AS "${var_createAuthor}"
+      ,${var_CREATE_DATETIME} AS "${var_createDatetime}"
+      ,${var_UPDATE_AUTHOR} AS "${var_updateAuthor}"
+      ,${var_UPDATE_DATETIME} AS "${var_updateDatetime}"
+#end
+    FROM ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+#if(${dto.primaryKeyFieldList.size()} > 0)
+    WHERE
+#foreach(${pkField}in${dto.primaryKeyFieldList})
+      #if($velocityCount > 1) AND#end ${pkField.colId} = #{${pkField.fieldId}} 
+#end
+    FOR UPDATE
+#end
+  </select>
+#end
+
+  <!-- Find List -->
+  <select id="${dto.tblAlias}_FIND_LIST" resultType="$dto.classPackage.${dto.classId}">
+    SELECT
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end${field.colId} AS "${field.fieldId}"
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      ,${var_CREATE_AUTHOR} AS "${var_createAuthor}"
+      ,${var_CREATE_DATETIME} AS "${var_createDatetime}"
+      ,${var_UPDATE_AUTHOR} AS "${var_updateAuthor}"
+      ,${var_UPDATE_DATETIME} AS "${var_updateDatetime}"
+#end
+    FROM
+    <choose>
+      <when test="theFetchSize != null">(SELECT T.*, ROWNUM RN FROM (SELECT * FROM ${var_tablePreFix}${dto.tblId}${dto.tblDivision}) T WHERE ROWNUM &lt;= (${theFetchStart} + ${theFetchSize})) </when>
+      <otherwise>${var_tablePreFix}${dto.tblId}${dto.tblDivision}</otherwise>
+    </choose>
+    WHERE 1 = 1 
+#foreach(${field}in${dto.fieldList})
+      <if test="${field.fieldId} != null">AND ${field.colId} = #{${field.fieldId}}</if>
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="createAuthor != null">AND ${var_CREATE_AUTHOR} = #{${var_createAuthor}}</if>
+      <if test="updateAuthor != null">AND ${var_UPDATE_AUTHOR} = #{${var_updateAuthor}}</if>
+      <if test="createDatetime != null">AND ${var_CREATE_DATETIME} = #{${var_createDatetime}}</if>
+      <if test="updateDatetime != null">AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
+#end
+      <if test="theOrderByCondition != null"> ORDER BY ${theOrderByCondition}</if>
+      <if test="theGroupByCondition != null"> GROUP BY ${theGroupByCondition}</if>
+      <if test="theFetchSize != null">LIMIT ${theFetchStart}, ${theFetchSize}</if>
+  </select>
+
+  <!-- Find List Like -->
+  <select id="${dto.tblAlias}_FIND_LIST_LIKE" resultType="$dto.classPackage.${dto.classId}">
+    SELECT
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end${field.colId} AS "${field.fieldId}"
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      ,${var_CREATE_AUTHOR} AS "${var_createAuthor}"
+      ,${var_CREATE_DATETIME} AS "${var_createDatetime}"
+      ,${var_UPDATE_AUTHOR} AS "${var_updateAuthor}"
+      ,${var_UPDATE_DATETIME} AS "${var_updateDatetime}"
+#end
+    FROM
+    <choose>
+      <when test="theFetchSize != null">(SELECT T.*, ROWNUM RN FROM (SELECT * FROM ${var_tablePreFix}${dto.tblId}${dto.tblDivision}) T WHERE ROWNUM &lt;= (${theFetchStart} + ${theFetchSize})) </when>
+      <otherwise>${var_tablePreFix}${dto.tblId}${dto.tblDivision}</otherwise>
+    </choose>
+    WHERE 1 = 1 
+#foreach(${field}in${dto.fieldList})
+      <if test="${field.fieldId} != null">AND ${field.colId} LIKE CONCAT('%', #{${field.fieldId}}, '%')</if>
+#end
+#if(${dto.generateDefaultTableField} == 1)
+      <if test="createAuthor != null">AND ${var_CREATE_AUTHOR} LIKE CONCAT('%', #{${var_createAuthor}}, '%')</if>
+      <if test="updateAuthor != null">AND ${var_UPDATE_AUTHOR} LIKE CONCAT('%', #{${var_updateAuthor}}, '%')</if>
+      <if test="createDatetime != null">AND ${var_CREATE_DATETIME} LIKE CONCAT('%', #{${var_createDatetime}}, '%')</if>
+      <if test="updateDatetime != null">AND ${var_UPDATE_DATETIME} LIKE CONCAT('%', #{${var_updateDatetime}}, '%')</if>
+#end
+      <if test="theOrderByCondition != null"> ORDER BY ${theOrderByCondition}</if>
+      <if test="theGroupByCondition != null"> GROUP BY ${theGroupByCondition}</if>
+      <if test="theFetchSize != null">LIMIT ${theFetchStart}, ${theFetchSize}</if>
+  </select>
+
+  <!-- Count -->
+  <select id="${dto.tblAlias}_COUNT" resultType="java.lang.Integer">
+    SELECT count(*)
+    FROM ${var_tablePreFix}${dto.tblId}${dto.tblDivision}
+    WHERE 1 = 1 
+#foreach(${field}in${dto.fieldList})
+      <if test="${field.fieldId} != null">AND ${field.colId} = #{${field.fieldId}}</if>
+#end
+  </select>
+
+
+#if(${dto.tblHistory} != '')
+  <insert id="${dto.tblAlias}_${dto.tblHistory}_INSERT_C" parameterType="$dto.classPackage.${dto.classId}">
+    INSERT INTO ${var_tablePreFix}${dto.tblId}_${dto.tblHistory}${dto.tblDivision} (
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end${field.colId}
+#end
+      ,${var_CREATE_AUTHOR}
+      ,${var_CREATE_DATETIME}
+      ,${var_OPERATION_HISTORY_CATEGORY}
+    ) VALUES (
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end#{${field.fieldId}}
+#end
+      ,#{${var_createAuthor}}
+      ,${var_currentTimestamp}
+      ,'C'
+    )
+  </insert>
+  <insert id="${dto.tblAlias}_${dto.tblHistory}_INSERT_U" parameterType="$dto.classPackage.${dto.classId}">
+    INSERT INTO ${var_tablePreFix}${dto.tblId}_${dto.tblHistory}${dto.tblDivision} (
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end${field.colId}
+#end
+      ,${var_CREATE_AUTHOR}
+      ,${var_CREATE_DATETIME}
+      ,${var_OPERATION_HISTORY_CATEGORY}
+    ) VALUES (
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end#{${field.fieldId}}
+#end
+      ,#{${var_createAuthor}}
+      ,${var_currentTimestamp}
+      ,'C'
+    )
+  </insert>
+  <insert id="${dto.tblAlias}_${dto.tblHistory}_INSERT_D" parameterType="$dto.classPackage.${dto.classId}">
+    INSERT INTO ${var_tablePreFix}${dto.tblId}_${dto.tblHistory}${dto.tblDivision} (
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end${field.colId}
+#end
+      ,${var_CREATE_AUTHOR}
+      ,${var_CREATE_DATETIME}
+      ,${var_OPERATION_HISTORY_CATEGORY}
+    ) VALUES (
+#foreach(${field}in${dto.fieldList})
+      #if(${velocityCount} != 1),#end#{${field.fieldId}}
+#end
+      ,#{${var_createAuthor}}
+      ,${var_currentTimestamp}
+      ,'C'
+    )
+  </insert>
+#end
+
+</mapper>
+

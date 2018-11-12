@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE digester-rules PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" "digester-rules.dtd">
+
+<digester-rules>
+	<pattern value="msgs">
+		<object-create-rule classname="org.umeframework.dora.message.impl.XmlMessageBeans" />
+		<set-properties-rule />
+
+		<pattern value="msg">
+			<object-create-rule classname="org.umeframework.dora.message.impl.XmlMessageBean" />
+			<set-next-rule methodname="addBean" />
+			<set-properties-rule />
+			<call-method-rule methodname="setText" paramcount="1" />
+			<call-param-rule paramnumber="0"/>
+			<bean-property-setter-rule pattern="id" propertyname="id" />
+		</pattern>
+
+	</pattern>
+
+</digester-rules>
