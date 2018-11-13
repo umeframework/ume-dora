@@ -5,11 +5,12 @@ package org.umeframework.dora.web.interceptor;
 
 import java.sql.Timestamp;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -35,12 +36,14 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
 	/**
 	 * Service mapping instance
 	 */
-	@Resource(name = BeanConfigConst.DEFAULT_SERVICE_MAPPING)
+    @Autowired(required=false)
+    @Qualifier(BeanConfigConst.DEFAULT_SERVICE_MAPPING)
 	private ServiceMapping serviceMapping;
 	/**
 	 * User cache instance
 	 */
-	@Resource(name = BeanConfigConst.DEFAULT_USER_CACHE_SERVICE)
+    @Autowired(required=false)
+    @Qualifier(BeanConfigConst.DEFAULT_USER_CACHE_SERVICE)
 	private UserCacheService userCacheService;
 	/**
 	 * User access control resource checker
@@ -115,7 +118,7 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
 		super.getLogger().debug("SysId:" + sysId);
 		super.getLogger().debug("ServiceId:" + serviceId);
 		
-		if (!isCommonRequestMapping) {
+		if (!isCommonRequestMapping || serviceMapping == null) {
 			// Skip in case of No Common request mapping define such as "/capi/{system}/{resource}"
 			return true;
 		}
@@ -181,7 +184,7 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
 			String serviceId = SessionContext.open().getServiceId();
 			String token = SessionContext.open().getToken();
 			HttpSession session = SessionContext.open().getHttpSession();
-			if (serviceId != null) {
+			if (serviceId != null && serviceMapping != null) {
 				ServiceWrapper serviceRef = serviceMapping.getService(serviceId);
 				// Response common items into HTTP header
 				if (!serviceRef.isAuthenticate()) {

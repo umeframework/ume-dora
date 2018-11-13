@@ -70,6 +70,10 @@ public class ServiceMappingImpl extends BaseComponent implements ServiceMapping 
      * @throws SystemException
      */
     public void init() throws SystemException {
+        if (serviceMappingConfigProperties == null || serviceMappingConfigProperties.keySet() == null) {
+            getLogger().warn("No found service mapping file define.");
+            return;
+        }
         try {
             // Initialize all service instance define in
             // serviceMappingProperties

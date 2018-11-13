@@ -22,7 +22,6 @@ import org.umeframework.dora.property.impl.ConfigPropertiesImpl;
  * @author Yue Ma
  */
 @Configuration
-// @PropertySource(value = { "classpath:application.properties", "classpath:config.properties" }, ignoreResourceNotFound = true)
 public class DefaultSystemPropertyConfiguration implements Serializable {
 	/**
 	 * serialVersionUID.<br>

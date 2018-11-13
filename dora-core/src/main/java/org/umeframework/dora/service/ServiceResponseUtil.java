@@ -23,6 +23,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
  * @author Yue MA
  *
  */
+@SuppressWarnings("restriction")
 @Deprecated
 public abstract class ServiceResponseUtil {
 	// /**

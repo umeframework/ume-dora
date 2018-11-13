@@ -29,6 +29,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
  * 
  * @author Yue MA
  */
+@SuppressWarnings("restriction")
 public class JsonParserImpl extends JsonSupport implements AjaxParser<String> {
     /*
      * (non-Javadoc)

@@ -63,6 +63,12 @@ public class ConfigPropertiesImpl implements ConfigProperties {
 	 * @see org.umeframework.dora.config.ConfigProperties#load()
 	 */
 	synchronized public void load() throws IOException {
+        if (configLocation == null) {
+            System.err.println("Warning:No found configuration resource.");
+            return;
+        }
+	    
+	    
 		InputStream inStream = null;
 		configLocation = configLocation.trim();
 		configLocation = configLocation.toLowerCase().endsWith(".properties") ? configLocation : configLocation + ".properties";
@@ -141,7 +147,7 @@ public class ConfigPropertiesImpl implements ConfigProperties {
 	 */
 	@Override
 	public String get(String key) {
-		return store.getProperty(key);
+		return store != null ? store.getProperty(key) : null;
 	}
 
 	/*
@@ -151,7 +157,7 @@ public class ConfigPropertiesImpl implements ConfigProperties {
 	 */
 	@Override
 	public Set<String> keySet() {
-		return store.stringPropertyNames();
+		return store != null ? store.stringPropertyNames() : null;
 	}
 
 	/*
@@ -161,7 +167,7 @@ public class ConfigPropertiesImpl implements ConfigProperties {
 	 */
 	@Override
 	public boolean containsKey(String key) {
-		return store.containsKey(key);
+		return store != null ? store.containsKey(key) : false;
 	}
 
 	/**

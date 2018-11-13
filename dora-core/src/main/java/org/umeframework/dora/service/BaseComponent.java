@@ -5,8 +5,8 @@ package org.umeframework.dora.service;
 
 import java.sql.Timestamp;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.umeframework.dora.bean.BeanConfigConst;
 import org.umeframework.dora.context.SessionContext;
 import org.umeframework.dora.exception.ApplicationException;
@@ -22,13 +22,15 @@ public abstract class BaseComponent {
 	/**
 	 * logger
 	 */
-	@Resource(name = BeanConfigConst.DEFAULT_LOGGER)
+	@Autowired(required=false)
+	@Qualifier(BeanConfigConst.DEFAULT_LOGGER)
 	private Logger logger;
 
 	/**
 	 * message properties
 	 */
-	@Resource(name = BeanConfigConst.DEFAULT_MESSAGE_PROPERTIES)
+    @Autowired(required=false)
+    @Qualifier(BeanConfigConst.DEFAULT_MESSAGE_PROPERTIES)
 	private MessageProperties messageProperties;
 
 	/**
