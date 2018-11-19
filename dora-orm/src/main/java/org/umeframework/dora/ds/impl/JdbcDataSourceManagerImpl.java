@@ -1,7 +1,7 @@
 /*
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
-package org.umeframework.dora.connection.impl;
+package org.umeframework.dora.ds.impl;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -16,7 +16,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.umeframework.dora.connection.JdbcDataSourceManager;
+import org.umeframework.dora.ds.JdbcDataSourceManager;
 import org.umeframework.dora.exception.DataAccessException;
 import org.umeframework.dora.util.StringUtil;
 

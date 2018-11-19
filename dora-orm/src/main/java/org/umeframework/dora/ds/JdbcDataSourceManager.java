@@ -1,7 +1,7 @@
 /*
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
-package org.umeframework.dora.connection;
+package org.umeframework.dora.ds;
 
 import java.util.Properties;
 
