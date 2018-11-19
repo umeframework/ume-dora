@@ -1,4 +1,4 @@
-package org.umeframework.dora.ds;
+package org.umeframework.dora.dsm;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package org.umeframework.dora.ds;
+package org.umeframework.dora.dsm;
 
 /**
  * JDBC数据源配置信息对象。<br>

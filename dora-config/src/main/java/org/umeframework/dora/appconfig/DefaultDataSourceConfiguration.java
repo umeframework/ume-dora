@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.ds.JdbcDataSourceManager;
+import org.umeframework.dora.jdbc.JdbcDataSourceManager;
 
 /**
  * Data source configuration.<br>
