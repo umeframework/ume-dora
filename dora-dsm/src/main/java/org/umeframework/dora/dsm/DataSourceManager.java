@@ -1,13 +1,11 @@
 package org.umeframework.dora.dsm;
 
-import org.springframework.core.env.PropertyResolver;
-
 /**
  * 动态数据源管理接口类。<br>
  * 
  * @author MA YUE
  */
-public interface DataSourceManager {
+public interface DataSourceManager<T> {
     
     /**
      * 根据分区编号获取数据源信息。<br>
@@ -26,7 +24,7 @@ public interface DataSourceManager {
      * @return
      * @throws Exception
      */
-    DataSourceBean createDataSourceBean(String key, PropertyResolver cfgInfo) throws Exception;
+    DataSourceBean createDataSourceBean(String key, T cfgInfo) throws Exception;
     
     
     /**

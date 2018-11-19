@@ -10,7 +10,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.cache.Cache;
-import org.springframework.core.env.PropertyResolver;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -21,7 +20,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  * 
  * @author MA YUE
  */
-public abstract class AbstractDataSourceManager implements DataSourceManager {
+public abstract class AbstractDataSourceManager<T> implements DataSourceManager<T> {
     /**
      * dataAccessBeanMap local cache instance<br>
      */
@@ -38,7 +37,7 @@ public abstract class AbstractDataSourceManager implements DataSourceManager {
      * @return
      * @throws SQLException
      */
-    abstract protected DataSource createDataSource(PropertyResolver cfgInfo) throws SQLException;
+    abstract protected DataSource createDataSource(T cfgInfo) throws SQLException;
 
     /**
      * getMybatisConfigLocation
@@ -76,7 +75,7 @@ public abstract class AbstractDataSourceManager implements DataSourceManager {
      * 
      * @see org.umeframework.dora.ds.DataSourceManager#createDataSourceBean(java.lang.String, org.springframework.core.env.PropertyResolver)
      */
-    public DataSourceBean createDataSourceBean(String key, PropertyResolver cfgInfo) throws Exception {
+    public DataSourceBean createDataSourceBean(String key, T cfgInfo) throws Exception {
         DataSource dataSource = createDataSource(cfgInfo);
         SqlSession sqlSession = createSqlSession(dataSource);
         DataSourceTransactionManager transactionManager = createTransactionManager(dataSource);
