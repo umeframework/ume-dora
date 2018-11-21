@@ -5,7 +5,7 @@ package org.umeframework.dora.dsm;
  * 
  * @author MA YUE
  */
-public interface DataSourceManager<T> {
+public interface DataSourceManager<DAO, CFG> {
     
     /**
      * 根据分区编号获取数据源信息。<br>
@@ -14,7 +14,7 @@ public interface DataSourceManager<T> {
      * @return
      * @throws Exception
      */
-    DataSourceBean getDataSourceBean(String key);
+    DataSourceBean<DAO> getDataSourceBean(String key);
     
     /**
      * 根据配置信息创建数据源。<br>
@@ -24,9 +24,8 @@ public interface DataSourceManager<T> {
      * @return
      * @throws Exception
      */
-    DataSourceBean createDataSourceBean(String key, T cfgInfo) throws Exception;
-    
-    
+    DataSourceBean<DAO> createDataSourceBean(String key, CFG cfgInfo) throws Exception;
+
     /**
      * refreshDataSourceBean<br>
      * 

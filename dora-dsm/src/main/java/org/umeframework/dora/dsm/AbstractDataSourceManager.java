@@ -5,14 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.cache.Cache;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 /**
@@ -20,11 +13,11 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  * 
  * @author MA YUE
  */
-public abstract class AbstractDataSourceManager<T> implements DataSourceManager<T> {
+public abstract class AbstractDataSourceManager<DAO, CFG> implements DataSourceManager<DAO, CFG> {
     /**
      * dataAccessBeanMap local cache instance<br>
      */
-    private static ConcurrentHashMap<String, DataSourceBean> localCachedMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, DataSourceBean<?>> localCachedMap = new ConcurrentHashMap<>();
     /**
      * dataSourceBean remote cache instance<br>
      */
@@ -33,38 +26,34 @@ public abstract class AbstractDataSourceManager<T> implements DataSourceManager<
     /**
      * createDataSource
      * 
-     * @param cfgInfo
+     * @param configInfo
      * @return
      * @throws SQLException
      */
-    abstract protected DataSource createDataSource(T cfgInfo) throws SQLException;
+    abstract public DataSource createDataSource(CFG configInfo) throws SQLException;
 
     /**
-     * getMybatisConfigLocation
+     * createDao
      * 
+     * @param dataSource
      * @return
+     * @throws Exception
      */
-    abstract protected String getMybatisConfigLocation();
-
-    /**
-     * getMybatisMapperLocations
-     * 
-     * @return
-     */
-    abstract protected String getMybatisMapperLocations();
+    abstract public DAO createDao(DataSource dataSource) throws Exception;
 
     /*
      * (non-Javadoc)
      * 
      * @see org.umeframework.dora.ds.DynamicDataSourceManager#getDataAccessor(java.lang.String)
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public DataSourceBean getDataSourceBean(String key) {
-        DataSourceBean cachedObj = localCachedMap.get(key);
+    public DataSourceBean<DAO> getDataSourceBean(String key) {
+        DataSourceBean<DAO> cachedObj = (DataSourceBean<DAO>) (localCachedMap.get(key));
         if (cachedObj == null) {
             Cache cache = this.getDataSourceBeanCache();
             if (cache != null) {
-                cachedObj = (DataSourceBean) cache.get(key);
+                cachedObj = (DataSourceBean<DAO>) cache.get(key);
             }
         }
         return cachedObj;
@@ -75,14 +64,15 @@ public abstract class AbstractDataSourceManager<T> implements DataSourceManager<
      * 
      * @see org.umeframework.dora.ds.DataSourceManager#createDataSourceBean(java.lang.String, org.springframework.core.env.PropertyResolver)
      */
-    public DataSourceBean createDataSourceBean(String key, T cfgInfo) throws Exception {
+    @Override
+    public DataSourceBean<DAO> createDataSourceBean(String key, CFG cfgInfo) throws Exception {
         DataSource dataSource = createDataSource(cfgInfo);
-        SqlSession sqlSession = createSqlSession(dataSource);
+        DAO sqlSession = createDao(dataSource);
         DataSourceTransactionManager transactionManager = createTransactionManager(dataSource);
 
-        DataSourceBean bean = new DataSourceBean();
+        DataSourceBean<DAO> bean = new DataSourceBean<DAO>();
         bean.setDataSource(dataSource);
-        bean.setSqlSession(sqlSession);
+        bean.setDao(sqlSession);
         bean.setTransactionManager(transactionManager);
 
         localCachedMap.put(key, bean);
@@ -98,10 +88,12 @@ public abstract class AbstractDataSourceManager<T> implements DataSourceManager<
      * 
      * @see org.umeframework.dora.ds.DataSourceManager#refreshDataSourceBean(java.lang.String)
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public synchronized void refreshDataSourceBean(String key) {
         Cache cache = this.getDataSourceBeanCache();
         if (cache != null) {
-            DataSourceBean cachedObj = (DataSourceBean) cache.get(key);
+            DataSourceBean<DAO> cachedObj = (DataSourceBean<DAO>) cache.get(key);
             if (cachedObj != null) {
                 localCachedMap.put(key, cachedObj);
             } else {
@@ -116,38 +108,11 @@ public abstract class AbstractDataSourceManager<T> implements DataSourceManager<
      * @param dataSource
      * @return
      */
-    protected DataSourceTransactionManager createTransactionManager(DataSource dataSource) {
+    public DataSourceTransactionManager createTransactionManager(DataSource dataSource) {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource);
         return transactionManager;
     }
-
-    /**
-     * createSqlSessionTemplate
-     * 
-     * @param dataSource
-     * @return
-     * @throws Exception
-     */
-    protected SqlSession createSqlSession(DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        String configLocationPath = getMybatisConfigLocation();
-        org.springframework.core.io.Resource configLocation = new DefaultResourceLoader().getResource(configLocationPath);
-        sqlSessionFactoryBean.setConfigLocation(configLocation);
-        ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
-        String mapperLocationsPath = getMybatisMapperLocations();
-        org.springframework.core.io.Resource[] mappers = resourceResolver.getResources(mapperLocationsPath);
-        if (mappers == null || mappers.length < 1) {
-            // 如果找不到的话(比如说作为JAR嵌入到某个程序中), 那么寻找所有JAR包中的MAPPER文件
-            mapperLocationsPath = mapperLocationsPath.replaceAll("classpath:", "classpath*:");
-            mappers = resourceResolver.getResources(mapperLocationsPath);
-        }
-        sqlSessionFactoryBean.setMapperLocations(mappers);
-        sqlSessionFactoryBean.setDataSource(dataSource);
-        SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
-        SqlSessionTemplate sqlSession = new SqlSessionTemplate(sqlSessionFactory);
-        return sqlSession;
-    };
 
     /**
      * @return the dataSourceBeanCache

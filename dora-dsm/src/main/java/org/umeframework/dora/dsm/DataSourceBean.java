@@ -2,7 +2,6 @@ package org.umeframework.dora.dsm;
 
 import javax.sql.DataSource;
 
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 /**
@@ -10,7 +9,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  * 
  * @author MA YUE
  */
-public class DataSourceBean implements java.io.Serializable {
+public class DataSourceBean<DAO> implements java.io.Serializable {
     /**
      * serialVersionUID
      */
@@ -20,9 +19,9 @@ public class DataSourceBean implements java.io.Serializable {
      */
     private DataSource dataSource;
     /**
-     * Mybatis SqlSession实例<br>
+     * Mybatis DAO实例<br>
      */
-    private SqlSession sqlSession;
+    private DAO dao;
     /**
      * 事务管理器实例<br>
      */
@@ -53,15 +52,15 @@ public class DataSourceBean implements java.io.Serializable {
         this.transactionManager = transactionManager;
     }
     /**
-     * @return the sqlSession
+     * @return the dao
      */
-    public SqlSession getSqlSession() {
-        return sqlSession;
+    public DAO getDao() {
+        return dao;
     }
     /**
-     * @param sqlSession the sqlSession to set
+     * @param dao the dao to set
      */
-    public void setSqlSession(SqlSession sqlSession) {
-        this.sqlSession = sqlSession;
+    public void setDao(DAO dao) {
+        this.dao = dao;
     }
 }
