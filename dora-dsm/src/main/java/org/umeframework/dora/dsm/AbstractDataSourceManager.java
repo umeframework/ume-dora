@@ -13,7 +13,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
  * 
  * @author MA YUE
  */
-public abstract class AbstractDataSourceManager<DAO, CFG> implements DataSourceManager<DAO, CFG> {
+public abstract class AbstractDataSourceManager<DAO,CFG> implements DataSourceManager<DAO,CFG> {
     /**
      * dataAccessBeanMap local cache instance<br>
      */

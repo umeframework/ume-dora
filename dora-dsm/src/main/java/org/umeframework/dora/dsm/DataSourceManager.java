@@ -5,7 +5,7 @@ package org.umeframework.dora.dsm;
  * 
  * @author MA YUE
  */
-public interface DataSourceManager<DAO, CFG> {
+public interface DataSourceManager<DAO,CFG> {
     
     /**
      * 根据分区编号获取数据源信息。<br>

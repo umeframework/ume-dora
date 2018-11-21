@@ -15,7 +15,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
  * 
  * @author MA YUE
  */
-public abstract class AbstractMybatisDataSourceManager<CFG> extends AbstractDataSourceManager<SqlSession, CFG> {
+public abstract class AbstractMybatisDataSourceManager<CFG> extends AbstractDataSourceManager<SqlSession,CFG> {
     /**
      * getMybatisConfigLocation
      * 
@@ -29,7 +29,7 @@ public abstract class AbstractMybatisDataSourceManager<CFG> extends AbstractData
      * @return
      */
     abstract public String getMybatisMapperLocations();
-
+    
     /**
      * createDao
      * 
