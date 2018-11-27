@@ -2,7 +2,7 @@ package org.umeframework.dora.dsm;
 
 import javax.sql.DataSource;
 
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * 数据访问属性配置对象。<br>
@@ -25,7 +25,7 @@ public class DataSourceBean<DAO> implements java.io.Serializable {
     /**
      * 事务管理器实例<br>
      */
-    private DataSourceTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
     
     /**
      * @return the dataSource
@@ -42,13 +42,13 @@ public class DataSourceBean<DAO> implements java.io.Serializable {
     /**
      * @return the transactionManager
      */
-    public DataSourceTransactionManager getTransactionManager() {
+    public PlatformTransactionManager getTransactionManager() {
         return transactionManager;
     }
     /**
      * @param transactionManager the transactionManager to set
      */
-    public void setTransactionManager(DataSourceTransactionManager transactionManager) {
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
     /**

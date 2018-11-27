@@ -7,13 +7,14 @@ import javax.sql.DataSource;
 
 import org.springframework.cache.Cache;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * AbstractDataSourceManager
  * 
  * @author MA YUE
  */
-public abstract class AbstractDataSourceManager<DAO,CFG> implements DataSourceManager<DAO,CFG> {
+public abstract class AbstractDataSourceManager<DAO, CFG> implements DataSourceManager<DAO, CFG> {
     /**
      * dataAccessBeanMap local cache instance<br>
      */
@@ -62,13 +63,23 @@ public abstract class AbstractDataSourceManager<DAO,CFG> implements DataSourceMa
     /*
      * (non-Javadoc)
      * 
-     * @see org.umeframework.dora.ds.DataSourceManager#createDataSourceBean(java.lang.String, org.springframework.core.env.PropertyResolver)
+     * @see org.umeframework.dora.dsm.DataSourceManager#createDataSourceBean(java.lang.String, java.lang.Object)
      */
     @Override
     public DataSourceBean<DAO> createDataSourceBean(String key, CFG cfgInfo) throws Exception {
+        return createDataSourceBean(key, cfgInfo, false);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.umeframework.dora.ds.DataSourceManager#createDataSourceBean(java.lang.String, org.springframework.core.env.PropertyResolver)
+     */
+    @Override
+    public DataSourceBean<DAO> createDataSourceBean(String key, CFG cfgInfo, boolean cachedOnlyNotExist) throws Exception {
         DataSource dataSource = createDataSource(cfgInfo);
         DAO sqlSession = createDao(dataSource);
-        DataSourceTransactionManager transactionManager = createTransactionManager(dataSource);
+        PlatformTransactionManager transactionManager = createTransactionManager(dataSource);
 
         DataSourceBean<DAO> bean = new DataSourceBean<DAO>();
         bean.setDataSource(dataSource);
@@ -78,7 +89,9 @@ public abstract class AbstractDataSourceManager<DAO,CFG> implements DataSourceMa
         localCachedMap.put(key, bean);
         Cache cache = this.getDataSourceBeanCache();
         if (cache != null) {
-            cache.put(key, bean);
+            if (cachedOnlyNotExist && cache.get(key) == null) {
+                cache.put(key, bean);
+            }
         }
         return bean;
     }
@@ -108,7 +121,7 @@ public abstract class AbstractDataSourceManager<DAO,CFG> implements DataSourceMa
      * @param dataSource
      * @return
      */
-    public DataSourceTransactionManager createTransactionManager(DataSource dataSource) {
+    public PlatformTransactionManager createTransactionManager(DataSource dataSource) {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource);
         return transactionManager;

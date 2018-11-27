@@ -21,11 +21,22 @@ public interface DataSourceManager<DAO,CFG> {
      * 
      * @param key
      * @param cfgInfo
+     * @param createCacheIfNotExist
+     * @return
+     * @throws Exception
+     */
+    DataSourceBean<DAO> createDataSourceBean(String key, CFG cfgInfo, boolean createCacheIfNotExist) throws Exception;
+
+    /**
+     * 根据配置信息创建数据源。<br>
+     * 
+     * @param key
+     * @param cfgInfo
      * @return
      * @throws Exception
      */
     DataSourceBean<DAO> createDataSourceBean(String key, CFG cfgInfo) throws Exception;
-
+    
     /**
      * refreshDataSourceBean<br>
      * 
