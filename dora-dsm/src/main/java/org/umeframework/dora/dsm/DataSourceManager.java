@@ -17,6 +17,14 @@ public interface DataSourceManager<DAO,CFG> {
     DataSourceBean<DAO> getDataSourceBean(String key);
     
     /**
+     * 根据分区编号移除数据源信息。<br>
+     * 
+     * @param key
+     */
+    void removeDataSourceBean(String key);
+
+    
+    /**
      * 根据配置信息创建数据源。<br>
      * 
      * @param key

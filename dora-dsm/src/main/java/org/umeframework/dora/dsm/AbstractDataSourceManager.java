@@ -50,14 +50,19 @@ public abstract class AbstractDataSourceManager<DAO, CFG> implements DataSourceM
     @SuppressWarnings("unchecked")
     @Override
     public DataSourceBean<DAO> getDataSourceBean(String key) {
-        DataSourceBean<DAO> cachedObj = (DataSourceBean<DAO>) (localCachedMap.get(key));
-        if (cachedObj == null) {
-            Cache cache = this.getDataSourceBeanCache();
-            if (cache != null) {
-                cachedObj = (DataSourceBean<DAO>) cache.get(key);
+        DataSourceBean<DAO> localCachedObj = (DataSourceBean<DAO>) (localCachedMap.get(key));
+        if (localCachedObj != null) {
+            return localCachedObj;
+        }
+        Cache cache = this.getDataSourceBeanCache();
+        if (cache != null) {
+            DataSourceBean<DAO> remoteCachedObj = (DataSourceBean<DAO>) cache.get(key);
+            if (remoteCachedObj != null) {
+                localCachedMap.put(key, remoteCachedObj);
+                return remoteCachedObj;
             }
         }
-        return cachedObj;
+        return null;
     }
 
     /*
@@ -106,13 +111,26 @@ public abstract class AbstractDataSourceManager<DAO, CFG> implements DataSourceM
     public synchronized void refreshDataSourceBean(String key) {
         Cache cache = this.getDataSourceBeanCache();
         if (cache != null) {
-            DataSourceBean<DAO> cachedObj = (DataSourceBean<DAO>) cache.get(key);
-            if (cachedObj != null) {
-                localCachedMap.put(key, cachedObj);
+            DataSourceBean<DAO> remoteCachedObj = (DataSourceBean<DAO>) cache.get(key);
+            if (remoteCachedObj != null) {
+                localCachedMap.put(key, remoteCachedObj);
             } else {
                 localCachedMap.remove(key);
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.umeframework.dora.dsm.DataSourceManager#removeDataSourceBean(java.lang.String)
+     */
+    public synchronized void removeDataSourceBean(String key) {
+        Cache cache = this.getDataSourceBeanCache();
+        if (cache != null) {
+            cache.evict(key);
+        }
+        localCachedMap.remove(key);
     }
 
     /**
