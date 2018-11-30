@@ -411,6 +411,12 @@
 			<version>${version.slf4j-log4j12}</version>
 		</dependency>
 		<dependency>
+    		<groupId>com.lmax</groupId>
+    		<artifactId>disruptor</artifactId>
+    		<version>${version.disruptor}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>${version.mybatis}</version>

@@ -55,27 +55,18 @@ public abstract class BaseMessageProperties implements MessageProperties {
             Map<String, String> resourceProperties = null;
             try {
                 resourceProperties = loadResourceAsMap(messageFile);
-                for (Map.Entry<String, String> e : resourceProperties.entrySet()) {
-                    String key = e.getKey();
-                    String value = e.getValue();
-                    if (resourceMap.containsKey(key)) {
-                        throw new Exception("Found duplicate key define in resource file " + messageFile + ",key=" + key);
+                if (resourceProperties != null) {
+                    for (Map.Entry<String, String> e : resourceProperties.entrySet()) {
+                        String key = e.getKey();
+                        String value = e.getValue();
+                        if (resourceMap.containsKey(key)) {
+                            throw new Exception("Found duplicate key define in resource file " + messageFile + ",key=" + key);
+                        }
+                        resourceMap.put(key, value);
                     }
-                    resourceMap.put(key, value);
                 }
             } catch (Exception e) {
                 System.err.println("Warning:Can not load resource " + messageFile);
-            }
-              
-            if (resourceProperties != null) {
-                for (Map.Entry<String, String> e : resourceProperties.entrySet()) {
-                    String key = e.getKey();
-                    String value = e.getValue();
-                    if (resourceMap.containsKey(key)) {
-                        throw new Exception("Found duplicate key define in resource file " + messageFile + ",key=" + key);
-                    }
-                    resourceMap.put(key, value);
-                }
             }
         }
     }

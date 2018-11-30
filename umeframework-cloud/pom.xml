@@ -4,7 +4,7 @@
 	<distributionManagement>
 		<repository>
 			<id>local-umestore</id>
-			<url>file:../umestore</url>
+			<url>file:../../umestore</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 	</distributionManagement>

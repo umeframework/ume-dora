@@ -6,6 +6,7 @@ package org.umeframework.dora.appconfig;
 import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.Ordered;
@@ -21,6 +22,7 @@ import org.umeframework.dora.web.interceptor.GlobalAuthenticateInterceptor;
  * @author Yue Ma
  */
 @Configuration
+@ComponentScan(basePackages = "org.umeframework.dora")
 public class DefaultWebControllerConfiguration implements WebMvcConfigurer {
 	/**
 	 * System properties

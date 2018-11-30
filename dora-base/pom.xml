@@ -52,6 +52,7 @@
 		<version.xpp3>1.1.4c</version.xpp3>
         <version.log4j2>2.10.0</version.log4j2>
         <version.slf4j-log4j12>1.7.25</version.slf4j-log4j12>
+        <version.disruptor>3.4.2</version.disruptor>
 		<version.mysql-connector-java>5.1.31</version.mysql-connector-java>
 		<version.h2database>1.4.196</version.h2database>
 		<version.itextg>5.5.10</version.itextg>
