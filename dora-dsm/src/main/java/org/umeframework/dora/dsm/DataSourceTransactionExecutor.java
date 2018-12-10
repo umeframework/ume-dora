@@ -81,25 +81,79 @@ public class DataSourceTransactionExecutor {
      * @throws Throwable
      */
     public <IN> Object execute(Transactional transactional, Callbacker callbacker) throws Throwable {
+        if (this.transactionManager == null) {
+            return callbacker.call();
+        }
         boolean isRollback = false;
         TransactionStatus txStatus = null;
         Object result = null;
         try {
-            if (this.transactionManager != null) {
-                txStatus = getTransactionStatus(transactional);
-            }
+            txStatus = getTransactionStatus(transactional);
             result = callbacker.call();
         } catch (Throwable e) {
-            if (this.transactionManager != null) {
-                isRollback = getRollback(transactional, e);
-            }
+            isRollback = getRollback(transactional, e);
             throw e;
         } finally {
-            if (this.transactionManager != null) {
-                finishTransaction(txStatus, isRollback);
-            }
+            finishTransaction(txStatus, isRollback);
         }
         return result;
+    }
+
+    /**
+     * 业务逻辑执行模板<br>
+     * 
+     * @param param
+     *            输入参数
+     * @param propagation
+     *            事务属性定义
+     * @param callbacker
+     *            回调接口
+     * @return 执行结果
+     * @throws Throwable
+     */
+    public <IN> Object execute(Propagation propagation, Class<?>[] rollbackFors, Callbacker callbacker) throws Throwable {
+        if (this.transactionManager == null) {
+            return callbacker.call();
+        }
+        boolean isRollback = false;
+        TransactionStatus txStatus = null;
+        Object result = null;
+        try {
+            txStatus = this.transactionManager.getTransaction(new DefaultTransactionDefinition(propagation.value()));
+            result = callbacker.call();
+        } catch (Throwable e) {
+            isRollback = getRollback(rollbackFors, e);
+            throw e;
+        } finally {
+            finishTransaction(txStatus, isRollback);
+        }
+        return result;
+    }
+    
+    /**
+     * execute
+     * 
+     * @param propagation
+     * @param rollbackFor
+     * @param callbacker
+     * @return
+     * @throws Throwable
+     */
+    public <IN> Object execute(Propagation propagation, Class<?> rollbackFor, Callbacker callbacker) throws Throwable {
+        return execute(propagation, new Class<?>[] {rollbackFor} , callbacker);
+    }
+
+    /**
+     * execute
+     * 
+     * @param propagation
+     * @param callbacker
+     * @return
+     * @throws Throwable
+     */
+    public <IN> Object execute(Propagation propagation, Callbacker callbacker) throws Throwable {
+        Class<?>[] rollbackFor = {RuntimeException.class};
+        return execute(propagation, rollbackFor, callbacker);
     }
 
     /**
@@ -127,6 +181,42 @@ public class DataSourceTransactionExecutor {
     /**
      * 检查事务是否需要撤销<br>
      * 
+     * @param rollbackFors
+     * @param e
+     * @return
+     */
+    protected boolean getRollback(Class<?>[] rollbackFors, Throwable e) {
+        boolean isRollback = false;
+        for (Class<?> i : rollbackFors) {
+            if (i.isAssignableFrom(e.getClass())) {
+                isRollback = true;
+                break;
+            }
+        }
+        return isRollback;
+    }
+
+    /**
+     * 检查事务是否需要撤销<br>
+     * 
+     * @param rollbackFors
+     * @param e
+     * @return
+     */
+    protected boolean getRollback(String[] rollbackFors, Throwable e) {
+        boolean isRollback = false;
+        for (String i : rollbackFors) {
+            if (i.equalsIgnoreCase(e.getClass().getSimpleName())) {
+                isRollback = true;
+                break;
+            }
+        }
+        return isRollback;
+    }
+
+    /**
+     * 检查事务是否需要撤销<br>
+     * 
      * @param transactional
      * @param e
      * @return
@@ -137,22 +227,12 @@ public class DataSourceTransactionExecutor {
             if (!isRollback && transactional.rollbackFor() != null) {
                 // 检查是否有回滚设置
                 Class<? extends Throwable>[] range = transactional.rollbackFor();
-                for (Class<? extends Throwable> i : range) {
-                    if (i.isAssignableFrom(e.getClass())) {
-                        isRollback = true;
-                        break;
-                    }
-                }
+                isRollback = getRollback(range, e);
             }
             if (!isRollback && transactional.rollbackForClassName() != null) {
                 // 检查是否有回滚设置
                 String[] range = transactional.rollbackForClassName();
-                for (String i : range) {
-                    if (i.equalsIgnoreCase(e.getClass().getSimpleName())) {
-                        isRollback = true;
-                        break;
-                    }
-                }
+                isRollback = getRollback(range, e);
             }
             // 此处设为默认回滚
             isRollback = true;
