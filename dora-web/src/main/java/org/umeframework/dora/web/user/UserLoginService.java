@@ -1,7 +1,7 @@
 /*
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
-package org.umeframework.dora.service.user;
+package org.umeframework.dora.web.user;
 
 /**
  * Service login/logout common interface declare.<br>

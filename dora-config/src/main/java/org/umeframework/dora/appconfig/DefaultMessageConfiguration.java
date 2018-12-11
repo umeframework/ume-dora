@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.exception.SystemException;
 import org.umeframework.dora.message.MessageProperties;
 

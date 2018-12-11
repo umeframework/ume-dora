@@ -5,7 +5,7 @@ package org.umeframework.dora.service;
 
 import javax.annotation.Resource;
 
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.dao.RdbDao;
 
 /**

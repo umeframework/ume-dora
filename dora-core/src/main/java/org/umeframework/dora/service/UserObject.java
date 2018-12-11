@@ -12,9 +12,8 @@ import java.sql.Timestamp;
  * @author Yue MA
  */
 public class UserObject implements Serializable {
-
     /**
-	 * serial version UID
+	 * serial version ID
 	 */
 	private static final long serialVersionUID = -7782561093844234342L;
 	/**

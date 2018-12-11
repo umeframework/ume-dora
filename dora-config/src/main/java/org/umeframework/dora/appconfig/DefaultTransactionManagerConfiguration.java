@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 
 /**
  * Transaction configuration.<br>

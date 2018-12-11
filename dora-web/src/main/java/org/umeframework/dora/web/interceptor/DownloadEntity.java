@@ -12,7 +12,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.contant.ContextConstants;
+import org.umeframework.dora.context.RequestContext;
 
 /**
  * DownloadEntity
@@ -20,7 +21,7 @@ import org.umeframework.dora.context.SessionContext;
  * @author Yue MA
  *
  */
-public class DownloadEntity implements Serializable {
+public class DownloadEntity implements Serializable, ContextConstants {
 	/**
 	 * serial version UID
 	 */
@@ -102,7 +103,7 @@ public class DownloadEntity implements Serializable {
 	 * @throws IOException
 	 */
 	public void download() throws IOException {
-		HttpServletResponse response = SessionContext.open().getResponse();
+		HttpServletResponse response = RequestContext.open().get(HTTP_RESPONSE);
 		if (response != null) {
 			OutputStream outputStream = null;
 			try {

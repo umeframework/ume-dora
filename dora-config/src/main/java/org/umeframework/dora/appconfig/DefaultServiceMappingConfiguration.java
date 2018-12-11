@@ -8,7 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.property.ConfigProperties;
 import org.umeframework.dora.property.impl.ConfigPropertiesImpl;
 import org.umeframework.dora.service.mapping.ServiceMapping;

@@ -1,7 +1,7 @@
 /*
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
-package org.umeframework.dora.service.user.impl;
+package org.umeframework.dora.web.user.impl;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -9,14 +9,14 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.umeframework.dora.bean.BeanConfigConst;
 import org.umeframework.dora.cache.CacheManager;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.exception.TimeoutException;
 import org.umeframework.dora.service.BaseComponent;
 import org.umeframework.dora.service.UserObject;
-import org.umeframework.dora.service.user.UserCacheService;
 import org.umeframework.dora.util.CodecUtil;
 import org.umeframework.dora.util.DateUtil;
+import org.umeframework.dora.web.user.UserCacheService;
 
 /**
  * User object cache service implementation.<br>

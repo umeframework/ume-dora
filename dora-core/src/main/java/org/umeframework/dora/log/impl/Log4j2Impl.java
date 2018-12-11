@@ -5,7 +5,6 @@ package org.umeframework.dora.log.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.umeframework.dora.context.SessionContext;
 import org.umeframework.dora.log.Logger;
 
 /**
@@ -50,7 +49,7 @@ public class Log4j2Impl implements Logger {
             for (Object e : messages) {
                 message.append(e);
             }
-            appender.debug(buildMessage(String.valueOf(message)));
+            appender.debug(buildThreadContext(String.valueOf(message)));
         }
     }
 
@@ -61,7 +60,7 @@ public class Log4j2Impl implements Logger {
      */
     public void debug(Object message) {
         if (appender != null) {
-            appender.debug(buildMessage(String.valueOf(message)));
+            appender.debug(buildThreadContext(String.valueOf(message)));
         }
     }
 
@@ -77,7 +76,7 @@ public class Log4j2Impl implements Logger {
             for (Object e : messages) {
                 message.append(e);
             }
-            appender.info(buildMessage(String.valueOf(message)));
+            appender.info(buildThreadContext(String.valueOf(message)));
         }
     }
 
@@ -88,7 +87,7 @@ public class Log4j2Impl implements Logger {
      */
     public void info(Object message) {
         if (appender != null) {
-            appender.info(buildMessage(String.valueOf(message)));
+            appender.info(buildThreadContext(String.valueOf(message)));
         }
     }
 
@@ -100,7 +99,7 @@ public class Log4j2Impl implements Logger {
     @Override
     public void warn(Object message) {
         if (appender != null) {
-            appender.warn(buildMessage(String.valueOf(message)));
+            appender.warn(buildThreadContext(String.valueOf(message)));
         }
     }
 
@@ -112,7 +111,7 @@ public class Log4j2Impl implements Logger {
     @Override
     public void warn(Object message, Throwable ex) {
         if (appender != null) {
-            appender.warn(buildMessage(String.valueOf(message) + "," + ex));
+            appender.warn(buildThreadContext(String.valueOf(message) + "," + ex));
         }
     }
 
@@ -124,7 +123,7 @@ public class Log4j2Impl implements Logger {
     @Override
     public void error(Object message) {
         if (appender != null) {
-            appender.error(buildMessage(String.valueOf(message)));
+            appender.error(buildThreadContext(String.valueOf(message)));
         }
     }
 
@@ -136,7 +135,7 @@ public class Log4j2Impl implements Logger {
     @Override
     public void error(Object message, Throwable ex) {
         if (appender != null) {
-            appender.error(buildMessage(String.valueOf(message)), ex);
+            appender.error(buildThreadContext(String.valueOf(message)), ex);
         }
     }
 
@@ -148,7 +147,7 @@ public class Log4j2Impl implements Logger {
     @Override
     public void fatal(Object message) {
         if (appender != null) {
-            appender.fatal(buildMessage(String.valueOf(message)));
+            appender.fatal(buildThreadContext(String.valueOf(message)));
         }
     }
 
@@ -160,35 +159,19 @@ public class Log4j2Impl implements Logger {
     @Override
     public void fatal(Object message, Throwable ex) {
         if (appender != null) {
-            appender.fatal(buildMessage(String.valueOf(message)), ex);
+            appender.fatal(buildThreadContext(String.valueOf(message)), ex);
         }
     }
 
     /**
-     * Build append log parameters base on session context properties.<br>
+     * Build append log parameters base on ThreadContext properties.<br>
      * 
      * @param message
      * @return
      */
-    protected String buildMessage(String message) {
-        SessionContext ctx = SessionContext.open();
-        String client = ctx.getClientAddress();
-        String system = ctx.getSysId();
-        String service = ctx.getServiceId();
-        String uid = ctx.getUid();
+    protected String buildThreadContext(String message) {
         String thread = String.valueOf(Thread.currentThread().getId());
-
-        client = client != null ? client : "";
-        system = system != null ? system : "";
-        service = service != null ? service : "";
-        uid = uid != null ? uid : "";
-
         ThreadContext.put("thread", thread);
-        ThreadContext.put("system", system);
-        ThreadContext.put("service", service);
-        ThreadContext.put("client", client);
-        ThreadContext.put("user", uid);
-
         return message;
     }
 

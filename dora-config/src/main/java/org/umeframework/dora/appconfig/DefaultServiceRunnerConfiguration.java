@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.service.mapping.ServiceMapping;
 import org.umeframework.dora.service.runner.ServiceRunner;
 import org.umeframework.dora.service.runner.impl.AjaxServiceRunnerImpl;

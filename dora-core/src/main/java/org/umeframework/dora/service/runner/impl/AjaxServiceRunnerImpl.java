@@ -11,14 +11,15 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wink.json4j.JSONArray;
 import org.umeframework.dora.ajax.AjaxParser;
 import org.umeframework.dora.ajax.AjaxRender;
 import org.umeframework.dora.ajax.ParserException;
-import org.umeframework.dora.bean.BeanConfigConst;
 import org.umeframework.dora.bean.BeanUtil;
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.exception.ApplicationException;
 import org.umeframework.dora.service.ServiceWrapper;
 import org.umeframework.dora.util.StringUtil;
@@ -30,6 +31,10 @@ import org.umeframework.dora.util.StringUtil;
  *
  */
 public class AjaxServiceRunnerImpl extends AbstractServcieRunner<String, String> {
+    /**
+     * Parameter pass by Url
+     */
+    public static final String CONTEXT_KEY_SERVICE_URL_PARAMETER = AjaxServiceRunnerImpl.class.getName() + ".SERVICE_URL_PARAMETER";
     /**
      * JSON array start flag (using for direct parameters input)
      */
@@ -72,7 +77,8 @@ public class AjaxServiceRunnerImpl extends AbstractServcieRunner<String, String>
             throw new ApplicationException("No find '" + serviceId + "' in service mapping configuration.");
         }
         Set<String> permitRequestMethodSet = serviceWrapper.getHttpRequestMethodSet();
-        String currentRequestMethod = SessionContext.open().getRequestCategory();
+        HttpServletRequest request = RequestContext.open().get(HTTP_REQUEST);
+        String currentRequestMethod = request != null ? request.getMethod().toUpperCase() : null;
         if (permitRequestMethodSet != null && currentRequestMethod != null) {
             if (!permitRequestMethodSet.contains(currentRequestMethod)) {
                 throw new ApplicationException("No find '" + serviceId + "'" + " for '" + currentRequestMethod + "' in service mapping configuration.");
@@ -81,10 +87,10 @@ public class AjaxServiceRunnerImpl extends AbstractServcieRunner<String, String>
 
         Method serviceMethod = serviceWrapper.getServiceMethod();
         Object[] params = null;
-
-        Map<String, String[]> requestParams = SessionContext.open().getRequestParameterMap();
-        ;
-        String[] pathParams = SessionContext.open().getServicePathParameters();
+        
+        Map<String, String[]> requestParams = request != null ? request.getParameterMap() : null;
+        
+        String[] pathParams = RequestContext.open().get(CONTEXT_KEY_SERVICE_URL_PARAMETER);
         if (serviceMethod.getParameterTypes().length > 0) {
             if (StringUtil.isNotEmpty(ajaxInput)) {
                 // Input is not empty

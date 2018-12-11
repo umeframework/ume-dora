@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.umeframework.dora.ajax.AjaxRender;
 import org.umeframework.dora.ajax.ParserException;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.exception.AuthenticationException;
 import org.umeframework.dora.service.ServiceErrorResponse;
 

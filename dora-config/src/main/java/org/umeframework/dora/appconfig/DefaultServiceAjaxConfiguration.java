@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.umeframework.dora.ajax.AjaxParser;
 import org.umeframework.dora.ajax.AjaxRender;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 
 /**
  * Json perse/render configuration.<br>

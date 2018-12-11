@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.dao.DaoHelper;
 import org.umeframework.dora.log.Logger;
 import org.umeframework.dora.service.TableObject;

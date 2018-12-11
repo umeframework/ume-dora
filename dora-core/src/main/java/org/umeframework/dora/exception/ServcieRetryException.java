@@ -3,7 +3,7 @@
  */
 package org.umeframework.dora.exception;
 
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.context.RequestContext;
 
 /**
  * Exception information define for application level error which should cause
@@ -53,7 +53,7 @@ public class ServcieRetryException extends ApplicationException {
             Object[] parameters) {
         super(cause, messageId, parameters);
 
-        ServcieRetryException sre = (ServcieRetryException) SessionContext.open().getServiceRetryException();
+        ServcieRetryException sre = (ServcieRetryException) RequestContext.open().get(CONTEXT_KEY);
         if (sre != null) {
             this.retryInterval = sre.getRetryInterval();
             this.retryMaxTime = sre.getRetryMaxTime();

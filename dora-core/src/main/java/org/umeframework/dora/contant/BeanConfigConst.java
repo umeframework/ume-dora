@@ -1,7 +1,7 @@
 /* 
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0 
  */
-package org.umeframework.dora.bean;
+package org.umeframework.dora.contant;
 
 /**
  * Default name of bean auto configuration.<br>

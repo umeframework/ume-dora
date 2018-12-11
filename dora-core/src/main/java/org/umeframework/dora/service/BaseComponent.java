@@ -7,8 +7,9 @@ import java.sql.Timestamp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.contant.ContextConstants;
+import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.exception.ApplicationException;
 import org.umeframework.dora.log.Logger;
 import org.umeframework.dora.message.MessageProperties;
@@ -18,7 +19,7 @@ import org.umeframework.dora.message.MessageProperties;
  *
  * @author Yue MA
  */
-public abstract class BaseComponent {
+public abstract class BaseComponent implements ContextConstants {
 	/**
 	 * logger
 	 */
@@ -60,7 +61,7 @@ public abstract class BaseComponent {
 	 * @return
 	 */
 	public String getUid() {
-		return SessionContext.open().getUid();
+		return RequestContext.open().get(UID);
 	}
 
 	/**
@@ -69,7 +70,7 @@ public abstract class BaseComponent {
 	 * @return
 	 */
 	public String getSysId() {
-		return SessionContext.open().getSysId();
+        return RequestContext.open().get(SYS);
 	}
 
 	/**
@@ -78,7 +79,7 @@ public abstract class BaseComponent {
 	 * @return
 	 */
 	public String getServiceId() {
-		return SessionContext.open().getServiceId();
+        return RequestContext.open().get(SID);
 	}
 
 	/**
@@ -87,7 +88,7 @@ public abstract class BaseComponent {
 	 * @return
 	 */
 	protected Timestamp getTransactionStartTime() {
-		return SessionContext.open().getTransactionTime();
+		return RequestContext.open().get(TRANSACTION_START_TIME);
 	}
 
 	/**

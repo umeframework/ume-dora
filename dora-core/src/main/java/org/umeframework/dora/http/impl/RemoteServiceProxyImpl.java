@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.umeframework.dora.ajax.AjaxParser;
 import org.umeframework.dora.ajax.AjaxRender;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.exception.ApplicationException;
 import org.umeframework.dora.http.HttpProxy;
 import org.umeframework.dora.http.RemoteServiceProxy;

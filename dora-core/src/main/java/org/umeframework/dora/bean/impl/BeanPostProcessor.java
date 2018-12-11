@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.umeframework.dora.bean.BeanFactory;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.service.BaseComponent;
 
 /**

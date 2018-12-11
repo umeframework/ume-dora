@@ -1,22 +1,23 @@
 /*
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
-package org.umeframework.dora.service.user.impl;
+package org.umeframework.dora.web.user.impl;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.contant.HttpSessionConstants;
+import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.exception.AuthenticationException;
 import org.umeframework.dora.service.BaseComponent;
 import org.umeframework.dora.service.UserObject;
-import org.umeframework.dora.service.user.UserAuthenticator;
-import org.umeframework.dora.service.user.UserCacheService;
-import org.umeframework.dora.service.user.UserLoginService;
 import org.umeframework.dora.util.CodecUtil;
 import org.umeframework.dora.util.DateUtil;
+import org.umeframework.dora.web.user.UserAuthenticator;
+import org.umeframework.dora.web.user.UserCacheService;
+import org.umeframework.dora.web.user.UserLoginService;
 
 /**
  * Service login/logout common implementation.<br>
@@ -68,7 +69,7 @@ public class UserLoginServiceImpl extends BaseComponent implements UserLoginServ
 		// use default token generate rule if no business token provided
 		String token = createToken(userObj);
 		// Set internal token into context
-		SessionContext.open().setToken(token);
+        RequestContext.open().set(TOKEN,token);
 		// caching user object
 		if (singleLogin) {
 			// check multiple login
@@ -90,9 +91,9 @@ public class UserLoginServiceImpl extends BaseComponent implements UserLoginServ
 	synchronized public void logout(String loginId) {
 		userCacheService.deleteTokenByUID(loginId);
 		// updateLogoutStatus(sysUserId);
-		HttpSession hs = SessionContext.open().getHttpSession();
+		HttpSession hs = RequestContext.open().get(HTTP_SESSION);
 		if (hs != null) {
-			hs.removeAttribute(SessionContext.TOKEN);
+            hs.removeAttribute(HttpSessionConstants.TOKEN_ID);
 		}
 		
 		super.getLogger().info("User logout: ", loginId);

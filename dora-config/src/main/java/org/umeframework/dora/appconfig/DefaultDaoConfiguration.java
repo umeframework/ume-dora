@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.dao.RdbDao;
 import org.umeframework.dora.dao.impl.BatisDaoImpl;
 import org.umeframework.dora.dao.mybatis.ex.StatementHandlerInterceptor;

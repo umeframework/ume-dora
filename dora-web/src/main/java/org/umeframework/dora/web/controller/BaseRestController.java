@@ -10,9 +10,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.umeframework.dora.bean.BeanConfigConst;
 import org.umeframework.dora.bean.BeanFactory;
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.exception.ServcieRetryException;
 import org.umeframework.dora.service.BaseComponent;
 import org.umeframework.dora.service.runner.ServiceRunner;
@@ -72,14 +72,14 @@ public abstract class BaseRestController extends BaseComponent {
                             retryException.setRetryIndex(retryException.getRetryIndex() + 1);
                             getLogger().warn("Restart service: " + serviceId + " round " + retryException.getRetryIndex());
                             Thread.sleep(interal);
-                            SessionContext.open().setServiceRetryException(retryException);
+                            RequestContext.open().set(ServcieRetryException.CONTEXT_KEY, retryException);
                             jsonOutput = serviceRunner.execute(retryException.getRetryServiceId(), jsonInput);
-                            SessionContext.open().setServiceRetryException(null);
+                            RequestContext.open().remove(ServcieRetryException.CONTEXT_KEY);
                             getLogger().warn("Restart service: " + serviceId + " round " + retryException.getRetryIndex() + " successful.");
                             break;
                         } catch (ServcieRetryException e) {
                             // do next loop when met same ServcieRetryException errors.
-                            SessionContext.open().setServiceRetryException(retryException);
+                            RequestContext.open().set(ServcieRetryException.CONTEXT_KEY, retryException);
                             getLogger().warn("Restart service: " + serviceId + " round " + retryException.getRetryIndex() + " failed.");
                         }
                     }

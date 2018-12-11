@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.context.RequestContext;
+import org.umeframework.dora.service.runner.impl.AjaxServiceRunnerImpl;
 import org.umeframework.dora.util.StringUtil;
 
 /**
@@ -71,7 +72,7 @@ public class CommonApiController extends BaseRestController {
 		pathParams = pathParams.startsWith("/") ? pathParams.substring(1) : pathParams;
 		pathParams = pathParams.endsWith("/") ? pathParams.substring(0, pathParams.length() - 1) : pathParams;
 		if (StringUtil.isNotEmpty(pathParams)) {
-			SessionContext.open().setServicePathParameters(pathParams.split("/"));
+			RequestContext.open().set(AjaxServiceRunnerImpl.CONTEXT_KEY_SERVICE_URL_PARAMETER, pathParams.split("/"));
 		}
 
 		return execute(request, response, system, resource, jsonInput);

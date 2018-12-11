@@ -13,10 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.umeframework.dora.ajax.AjaxRender;
-import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.service.BaseComponent;
 import org.umeframework.dora.service.ServiceWrapper;
 import org.umeframework.dora.service.mapping.ServiceMapping;
@@ -107,10 +108,9 @@ public class ServiceMappingDescImpl extends BaseComponent implements ServiceMapp
         Class<?>[] paramTypes = serviceMethod.getParameterTypes();
         Type[] genericParamTypes = serviceMethod.getGenericParameterTypes();
 
-        SessionContext ctx = SessionContext.open();
-
-        String url = ctx.getServerName() + ":" + ctx.getServerPort();
-        url = url + ctx.getRequestServletPath();
+        HttpServletRequest request = RequestContext.open().get(HTTP_REQUEST);
+        String url = (request != null ? request.getServerName() : null) + ":" + (request != null ? request.getServerPort() : null);
+        url = url + (request != null ? request.getServletPath() : null);
 
         url = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
         url = "http://" + url.substring(0, url.lastIndexOf("/") + 1) + serviceId + "/";

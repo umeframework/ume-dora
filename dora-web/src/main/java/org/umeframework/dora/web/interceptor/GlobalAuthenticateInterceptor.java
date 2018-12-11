@@ -9,23 +9,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.contant.HttpSessionConstants;
+import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.exception.AuthenticationException;
 import org.umeframework.dora.service.BaseComponent;
 import org.umeframework.dora.service.ServiceWrapper;
 import org.umeframework.dora.service.UserObject;
 import org.umeframework.dora.service.mapping.ServiceMapping;
-import org.umeframework.dora.service.user.UserAccessValidator;
-import org.umeframework.dora.service.user.UserCacheService;
 import org.umeframework.dora.util.StringUtil;
 import org.umeframework.dora.web.controller.CommonApiController;
+import org.umeframework.dora.web.user.UserAccessValidator;
+import org.umeframework.dora.web.user.UserCacheService;
 
 /**
  * Global authenticate intercept handler.<br>
@@ -33,217 +35,251 @@ import org.umeframework.dora.web.controller.CommonApiController;
  * @author Yue MA
  */
 public class GlobalAuthenticateInterceptor extends BaseComponent implements HandlerInterceptor {
-	/**
-	 * Service mapping instance
-	 */
-    @Autowired(required=false)
+    /**
+     * Service mapping instance
+     */
+    @Autowired(required = false)
     @Qualifier(BeanConfigConst.DEFAULT_SERVICE_MAPPING)
-	private ServiceMapping serviceMapping;
-	/**
-	 * User cache instance
-	 */
-    @Autowired(required=false)
+    private ServiceMapping serviceMapping;
+    /**
+     * User cache instance
+     */
+    @Autowired(required = false)
     @Qualifier(BeanConfigConst.DEFAULT_USER_CACHE_SERVICE)
-	private UserCacheService userCacheService;
-	/**
-	 * User access control resource checker
-	 */
-	private UserAccessValidator<UserObject> userAccessValidator;
-	/**
-	 * Token will pass by client for authenticate
-	 */
-	private boolean enableTokenClient = true;
-	/**
-	 * Token will store in http session, enableTokenClient is prefer while both enableTokenClient and enableTokenSession were true
-	 */
-	private boolean enableTokenSession = true;
+    private UserCacheService userCacheService;
+    /**
+     * User access control resource checker
+     */
+    private UserAccessValidator<UserObject> userAccessValidator;
+    /**
+     * Token will pass by client for authenticate
+     */
+    private boolean enableTokenClient = true;
+    /**
+     * Token will store in http session, enableTokenClient is prefer while both enableTokenClient and enableTokenSession were true
+     */
+    private boolean enableTokenSession = true;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.web.servlet.HandlerInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
-	 */
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws AuthenticationException {
-		super.getLogger().debug("SessionContext Open...");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.HandlerInterceptor#preHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
+     */
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws AuthenticationException {
+        super.getLogger().debug("SessionContext Open...");
+        RequestContext<String> ctx = RequestContext.open();
+        String sys = null;
+        String sid = null;
+        String uid = null;
+        try {
+            ctx.set(HTTP_REQUEST, request);
+            ctx.set(HTTP_RESPONSE, response);
+            ctx.set(TRANSACTION_START_TIME, new Timestamp(System.currentTimeMillis()));
+            String token = request.getHeader(HttpSessionConstants.TOKEN_ID);
+            if (StringUtil.isEmpty(token)) {
+                token = request.getParameter(HttpSessionConstants.TOKEN_ID);
+                if (StringUtil.isEmpty(token)) {
+                    // try use token pass from parameter when no token in header
+                    token = request.getParameter(HttpSessionConstants.TOKEN_ID);
+                }
+            }
+            ctx.set(TOKEN, token);
+            HttpSession session = request.getSession(false);
+            ctx.set(HTTP_SESSION, session);
 
-		SessionContext ctx = SessionContext.open();
-		ctx.setRequest(request);
-		ctx.setResponse(response);
-		ctx.setTransactionTime(new Timestamp(System.currentTimeMillis()));
-		String token = request.getHeader(SessionContext.TOKEN);
-		if (StringUtil.isEmpty(token)) {
-			token = request.getParameter(SessionContext.TOKEN);
-			if (StringUtil.isEmpty(token)) {
-				// try use token pass from parameter when no token in header
-				token = request.getParameter(SessionContext.TOKEN);
-			}
-		}
-		ctx.setToken(token);
-		HttpSession session = request.getSession(false);
-		ctx.setHttpSession(session);
+            if (!(handler instanceof HandlerMethod)) {
+                // Skip in case of No HandlerMethod Input
+                return true;
+            }
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            RequestMapping requestMapping = handlerMethod.getMethod().getDeclaredAnnotation(RequestMapping.class);
+            if (requestMapping == null) {
+                // Skip in case of No @RequestMapping declared
+                return true;
+            }
 
-		if (!(handler instanceof HandlerMethod)) {
-			// Skip in case of No HandlerMethod Input
-			return true;
-		}
-		HandlerMethod handlerMethod = (HandlerMethod) handler;
-		RequestMapping requestMapping = handlerMethod.getMethod().getDeclaredAnnotation(RequestMapping.class);
-		if (requestMapping == null) {
-			// Skip in case of No @RequestMapping declared
-			return true;
-		}
+            boolean isCommonRequestMapping = false;
+            String servletPath = request.getServletPath();
+            String commonApiPathStart = "/" + CommonApiController.COMMON_API_ROOT_MAPPING + "/";
+            String commonApiPath = CommonApiController.COMMON_API_SERVICE_MAPPING;
+            for (String e : requestMapping.value()) {
+                if (e.contains(commonApiPath)) {
+                    isCommonRequestMapping = true;
 
-		boolean isCommonRequestMapping = false;
-		String servletPath = request.getServletPath();
-		String sysId = null;
-		String serviceId = null;
-		String commonApiPathStart = "/" + CommonApiController.COMMON_API_ROOT_MAPPING + "/";
-		String commonApiPath = CommonApiController.COMMON_API_SERVICE_MAPPING;
-		for (String e : requestMapping.value()) {
-			if (e.contains(commonApiPath)) {
-				isCommonRequestMapping = true;
-				
-				String partPath = servletPath.substring(servletPath.indexOf(commonApiPathStart));
-				String[] names = partPath.split("/");
-				sysId = names[2];
-				serviceId = names[3];
-				break;
-			}
-		}
-		
-		ctx.setSysId(sysId);
-		ctx.setServiceId(serviceId);
+                    String partPath = servletPath.substring(servletPath.indexOf(commonApiPathStart));
+                    String[] names = partPath.split("/");
+                    sys = names[2];
+                    sid = names[3];
+                    break;
+                }
+            }
 
-		super.getLogger().debug("SysId:" + sysId);
-		super.getLogger().debug("ServiceId:" + serviceId);
-		
-		if (!isCommonRequestMapping || serviceMapping == null) {
-			// Skip in case of No Common request mapping define such as "/capi/{system}/{resource}"
-			return true;
-		}
-		// start process for common request mapping
-		ServiceWrapper serviceWrapper = serviceMapping.getService(serviceId);
+            ctx.set(SYS, sys);
+            ctx.set(SID, sid);
 
-		if (serviceWrapper == null) {
-			throw new AuthenticationException("Service " + serviceId + "  is not exist.");
-		}
-		if (!serviceWrapper.isAuthenticate()) {
-			if (session == null) {
-				// create HttpSession when service is non-authentication (first time access after open browse usually)
-				session = request.getSession();
-				ctx.setHttpSession(session);
-				getLogger().info("Create new session for non-authenticated service.");
-			}
-			return true;
-		}
+            super.getLogger().debug("SYS:" + sys);
+            super.getLogger().debug("SID:" + sid);
 
-		if (enableTokenSession && StringUtil.isEmpty(token) && session != null) {
-			// try use token pass from session store when enableTokenSession
-			Object tokenInSession = session.getAttribute(SessionContext.TOKEN);
-			if (tokenInSession != null) {
-				token = tokenInSession.toString();
-				ctx.setToken(token);
-			}
-		}
+            if (!isCommonRequestMapping || serviceMapping == null) {
+                // Skip in case of No Common request mapping define such as "/capi/{system}/{resource}"
+                return true;
+            }
+            // start process for common request mapping
+            ServiceWrapper serviceWrapper = serviceMapping.getService(sid);
 
-		if (StringUtil.isEmpty(token)) {
-			throw new AuthenticationException("Authentication failed: current access was not authorized.");
-		}
-		if (userCacheService == null) {
-			// serviceAuthenticateProperties and userCacheService instance must provide for this intercept
-			throw new AuthenticationException("Authentication failed: login service was not setup.");
-		}
-		UserObject userObj = userCacheService.getUserObject(token);
-		if (userObj == null) {
-			throw new AuthenticationException("Authentication failed: current user was not authorized.");
-		}
-		if (userAccessValidator != null && !userAccessValidator.isValid(userObj, token, sysId, serviceId)) {
-			throw new AuthenticationException("Authentication failed: User access validation error.");
-		}
-		return true;
-	}
+            if (serviceWrapper == null) {
+                throw new AuthenticationException("Service " + sid + "  is not exist.");
+            }
+            if (!serviceWrapper.isAuthenticate()) {
+                if (session == null) {
+                    // create HttpSession when service is non-authentication (first time access after open browse usually)
+                    session = request.getSession();
+                    ctx.set(HTTP_SESSION, session);
+                    getLogger().info("Create new session for non-authenticated service.");
+                }
+                return true;
+            }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.web.servlet.HandlerInterceptor#postHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, org.springframework.web.servlet.ModelAndView)
-	 */
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-	}
+            if (enableTokenSession && StringUtil.isEmpty(token) && session != null) {
+                // try use token pass from session store when enableTokenSession
+                Object tokenInSession = session.getAttribute(HttpSessionConstants.TOKEN_ID);
+                if (tokenInSession != null) {
+                    token = tokenInSession.toString();
+                    ctx.set(TOKEN, token);
+                }
+            }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.web.servlet.HandlerInterceptor#afterCompletion(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, java.lang.Exception)
-	 */
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-		try {
-			String serviceId = SessionContext.open().getServiceId();
-			String token = SessionContext.open().getToken();
-			HttpSession session = SessionContext.open().getHttpSession();
-			if (serviceId != null && serviceMapping != null) {
-				ServiceWrapper serviceRef = serviceMapping.getService(serviceId);
-				// Response common items into HTTP header
-				if (!serviceRef.isAuthenticate()) {
-					// must get token again because login service could create new token and store in context
-					token = SessionContext.open().getToken();
-				}
-				if (enableTokenClient) {
-					response.addHeader(SessionContext.TOKEN, token);
-				}
-				if (enableTokenSession && session != null) {
-					session.setAttribute(SessionContext.TOKEN, token);
-				}
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			// close context
-			SessionContext.close();
-			super.getLogger().debug("SessionContext Closed.");
-		}
-	}
+            if (StringUtil.isEmpty(token)) {
+                throw new AuthenticationException("Authentication failed: current access was not authorized.");
+            }
+            if (userCacheService == null) {
+                // serviceAuthenticateProperties and userCacheService instance must provide for this intercept
+                throw new AuthenticationException("Authentication failed: login service was not setup.");
+            }
+            UserObject userObj = userCacheService.getUserObject(token);
+            if (userObj == null) {
+                throw new AuthenticationException("Authentication failed: current user was not authorized.");
+            }
+            uid = userObj.getUid();
+            if (userAccessValidator != null && !userAccessValidator.isValid(userObj, token, sys, sid)) {
+                throw new AuthenticationException("Authentication failed: User access validation error.");
+            }
+            return true;
+        } finally {
+            ThreadContext.put("system", sys);
+            ThreadContext.put("service", sid);
+            ThreadContext.put("client", parseIpAddrFromServletRequest(request));
+            ThreadContext.put("user", uid);
+        }
+    }
 
-	/**
-	 * @param enableTokenClient
-	 *            the enableTokenClient to set
-	 */
-	public void setEnableTokenClient(boolean enableTokenClient) {
-		this.enableTokenClient = enableTokenClient;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.HandlerInterceptor#postHandle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, org.springframework.web.servlet.ModelAndView)
+     */
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    }
 
-	/**
-	 * @param userAccessValidator
-	 *            the userAccessValidator to set
-	 */
-	public void setUserAccessValidator(UserAccessValidator<UserObject> userAccessValidator) {
-		this.userAccessValidator = userAccessValidator;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.HandlerInterceptor#afterCompletion(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, java.lang.Exception)
+     */
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        try {
+            String serviceId = RequestContext.open().get(SID);
+            String token = RequestContext.open().get(TOKEN);
+            HttpSession session = RequestContext.open().get(HTTP_SESSION);
+            if (serviceId != null && serviceMapping != null) {
+                ServiceWrapper serviceRef = serviceMapping.getService(serviceId);
+                // Response common items into HTTP header
+                if (!serviceRef.isAuthenticate()) {
+                    // must get token again because login service could create new token and store in context
+                    token = RequestContext.open().get(TOKEN);
+                }
+                if (enableTokenClient) {
+                    response.addHeader(HttpSessionConstants.TOKEN_ID, token);
+                }
+                if (enableTokenSession && session != null) {
+                    session.setAttribute(HttpSessionConstants.TOKEN_ID, token);
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            // close context
+            RequestContext.close();
+            super.getLogger().debug("SessionContext Closed.");
+        }
+    }
 
-	/**
-	 * @param enableTokenSession
-	 *            the enableTokenSession to set
-	 */
-	public void setEnableTokenSession(boolean enableTokenSession) {
-		this.enableTokenSession = enableTokenSession;
-	}
+    /**
+     * parseIpAddrFromServletRequest
+     * 
+     * @param request
+     * @return
+     */
+    private String parseIpAddrFromServletRequest(HttpServletRequest request) {
+        String ipAddr = request.getHeader("x-forwarded-for");
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getRemoteAddr();
+        }
+        return ipAddr;
+    }
 
-	/**
-	 * @param serviceMapping
-	 *            the serviceMapping to set
-	 */
-	public void setServiceMapping(ServiceMapping serviceMapping) {
-		this.serviceMapping = serviceMapping;
-	}
+    /**
+     * @param enableTokenClient
+     *            the enableTokenClient to set
+     */
+    public void setEnableTokenClient(boolean enableTokenClient) {
+        this.enableTokenClient = enableTokenClient;
+    }
 
-	/**
-	 * @param userCacheService
-	 *            the userCacheService to set
-	 */
-	public void setUserCacheService(UserCacheService userCacheService) {
-		this.userCacheService = userCacheService;
-	}
+    /**
+     * @param userAccessValidator
+     *            the userAccessValidator to set
+     */
+    public void setUserAccessValidator(UserAccessValidator<UserObject> userAccessValidator) {
+        this.userAccessValidator = userAccessValidator;
+    }
+
+    /**
+     * @param enableTokenSession
+     *            the enableTokenSession to set
+     */
+    public void setEnableTokenSession(boolean enableTokenSession) {
+        this.enableTokenSession = enableTokenSession;
+    }
+
+    /**
+     * @param serviceMapping
+     *            the serviceMapping to set
+     */
+    public void setServiceMapping(ServiceMapping serviceMapping) {
+        this.serviceMapping = serviceMapping;
+    }
+
+    /**
+     * @param userCacheService
+     *            the userCacheService to set
+     */
+    public void setUserCacheService(UserCacheService userCacheService) {
+        this.userCacheService = userCacheService;
+    }
 }

@@ -6,9 +6,9 @@ package org.umeframework.dora.appconfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.service.user.UserLoginService;
-import org.umeframework.dora.service.user.impl.UserLoginServiceImpl;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.web.user.UserLoginService;
+import org.umeframework.dora.web.user.impl.UserLoginServiceImpl;
 
 /**
  * Default login service configuration.<br>

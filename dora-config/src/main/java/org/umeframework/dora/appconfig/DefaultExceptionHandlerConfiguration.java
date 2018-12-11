@@ -6,7 +6,7 @@ package org.umeframework.dora.appconfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.umeframework.dora.bean.BeanConfigConst;
+import org.umeframework.dora.contant.BeanConfigConst;
 import org.umeframework.dora.exception.ExceptionHandler;
 import org.umeframework.dora.exception.impl.ExceptionHandlerImpl;
 

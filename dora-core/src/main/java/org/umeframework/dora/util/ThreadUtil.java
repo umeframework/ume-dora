@@ -5,7 +5,7 @@ package org.umeframework.dora.util;
 
 import java.lang.reflect.Method;
 
-import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.log.Logger;
 
 /**
@@ -31,7 +31,7 @@ public class ThreadUtil extends Thread {
          * @param parentContext
          * @param parameters
          */
-        void doBefore(SessionContext parentContext, Object[] parameters);
+        void doBefore(RequestContext<?> parentContext, Object[] parameters);
 
         /**
          * doAfter
@@ -40,7 +40,7 @@ public class ThreadUtil extends Thread {
          * @param result
          * @return
          */
-        Object doAfter(SessionContext parentContext, Object result);
+        Object doAfter(RequestContext<?> parentContext, Object result);
 
         /**
          * doException
@@ -49,14 +49,14 @@ public class ThreadUtil extends Thread {
          * @param e
          * @return
          */
-        Object doException(SessionContext parentContext, Throwable e);
+        Object doException(RequestContext<?> parentContext, Throwable e);
 
         /**
          * doFinally
          * 
          * @param parentContext
          */
-        void doFinally(SessionContext parentContext);
+        void doFinally(RequestContext<?> parentContext);
     }
 
     /**
@@ -78,7 +78,7 @@ public class ThreadUtil extends Thread {
     /**
      * RequestContext of invoker side
      */
-    private SessionContext parentContext;
+    private RequestContext<?> parentContext;
     /**
      * logger
      */
@@ -97,7 +97,7 @@ public class ThreadUtil extends Thread {
         this.function = function;
         this.parameters = parameters;
         this.handler = callback;
-        this.parentContext = SessionContext.open();
+        this.parentContext = RequestContext.open();
         this.logger = logger;
     }
 
@@ -113,7 +113,7 @@ public class ThreadUtil extends Thread {
                 logger.info("New thread to execute: " + function + " of " + instance);
             }
 
-            SessionContext childContext = SessionContext.openFrom(parentContext);
+            RequestContext<?> childContext = RequestContext.openFrom(parentContext);
 
             Object result = null;
             try {

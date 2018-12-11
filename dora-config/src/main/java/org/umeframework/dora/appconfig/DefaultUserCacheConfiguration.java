@@ -6,11 +6,11 @@ package org.umeframework.dora.appconfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.umeframework.dora.bean.BeanConfigConst;
 import org.umeframework.dora.cache.CacheManager;
 import org.umeframework.dora.cache.impl.TempMemoryCachedImpl;
-import org.umeframework.dora.service.user.UserCacheService;
-import org.umeframework.dora.service.user.impl.UserCacheServiceImpl;
+import org.umeframework.dora.contant.BeanConfigConst;
+import org.umeframework.dora.web.user.UserCacheService;
+import org.umeframework.dora.web.user.impl.UserCacheServiceImpl;
 
 /**
  * Default login service configuration.<br>
