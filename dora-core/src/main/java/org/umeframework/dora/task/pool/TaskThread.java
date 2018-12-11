@@ -1,16 +1,12 @@
 package org.umeframework.dora.task.pool;
 
 import java.io.Serializable;
-import java.sql.Connection;
 
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.umeframework.dora.context.SessionContext;
+import org.umeframework.dora.dsm.DataSourceTransactionExecutor;
 import org.umeframework.dora.log.Logger;
-import org.umeframework.dora.transaction.TransactionManager;
 
 /**
  * TaskThread<br>
@@ -35,9 +31,9 @@ public class TaskThread<T> implements Runnable, Serializable {
      */
     private TaskRunner<T> taskRunner;
     /**
-     * transactionManager
+     * PlatformTransactionManager
      */
-    private TransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
     /**
      * SessionContext<br>
      */
@@ -51,7 +47,7 @@ public class TaskThread<T> implements Runnable, Serializable {
      * @param transactionManager
      * @param transactionDefinition
      */
-    public TaskThread(TaskRunner<T> taskRunner, T taskParam, TransactionManager transactionManager) {
+    public TaskThread(TaskRunner<T> taskRunner, T taskParam, PlatformTransactionManager transactionManager) {
         this.context = SessionContext.open();
         this.taskRunner = taskRunner;
         this.taskParam = taskParam;
@@ -72,40 +68,24 @@ public class TaskThread<T> implements Runnable, Serializable {
             logger.info("Start thread for " + runnerName);
         }
 
-        SessionContext currentRequestContext = SessionContext.open();
-        currentRequestContext.inheritFrom(this.context);
+        SessionContext.openFrom(this.context);
 
-        Transactional isTransactional = runnerClass.getAnnotation(Transactional.class);
-        boolean isRollback = false;
         try {
-            if (this.transactionManager != null) {
-                int txPropagation = Propagation.REQUIRES_NEW.value();
-                if (isTransactional != null) {
-                    txPropagation = isTransactional.propagation().value();
-                    if (isTransactional.isolation() != null && !Isolation.DEFAULT.equals(isTransactional.isolation()) && this.transactionManager instanceof DataSourceTransactionManager) {
-                        DataSourceTransactionManager dtm = (DataSourceTransactionManager) this.transactionManager;
-                        Connection conn = DataSourceUtils.getConnection(dtm.getDataSource());
-                        conn.setTransactionIsolation(isTransactional.isolation().value());
-                    }
+            Transactional transactional = runnerClass.getAnnotation(Transactional.class);
+            T inParam = this.getTaskParam();
+            
+            new DataSourceTransactionExecutor(transactionManager).execute(transactional, new DataSourceTransactionExecutor.CallbackerWithoutReturn() {
+                @Override
+                public void callWithoutReturn() throws Throwable {
+                    taskRunner.run(inParam);
                 }
-                this.transactionManager.begin(txPropagation);
-            }
-            taskRunner.run(this.getTaskParam());
-            if (logger != null) {
-                logger.info("End thread for " + runnerName);
-            }
+            });
         } catch (Throwable e) {
             if (logger != null) {
                 logger.error("Error in thread " + runnerName + " cause:" + e);
                 logger.error("Error parammeters:" + this.getTaskParam());
             }
-            if (this.transactionManager != null) {
-                isRollback = getRollback(isTransactional, e);
-            }
         } finally {
-            if (this.transactionManager != null) {
-                finalTransaction(isRollback);
-            }
             long useTime = System.currentTimeMillis() - startTime;
             if (logger != null) {
                 logger.debug(runnerClass.getSimpleName(), ",", "run", ",", useTime);
@@ -165,20 +145,6 @@ public class TaskThread<T> implements Runnable, Serializable {
             isRollback = true;
         }
         return isRollback;
-    }
-
-    /**
-     * finalTransaction<br>
-     * 
-     * @param txStatus
-     * @param isRollback
-     */
-    protected void finalTransaction(boolean isRollback) {
-        if (isRollback) {
-            this.transactionManager.rollback();
-        } else {
-            this.transactionManager.commit();
-        }
     }
 
     /**

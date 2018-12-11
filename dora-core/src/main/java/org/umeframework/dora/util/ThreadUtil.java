@@ -31,9 +31,7 @@ public class ThreadUtil extends Thread {
          * @param parentContext
          * @param parameters
          */
-        void doBefore(
-                SessionContext parentContext,
-                Object[] parameters);
+        void doBefore(SessionContext parentContext, Object[] parameters);
 
         /**
          * doAfter
@@ -42,9 +40,7 @@ public class ThreadUtil extends Thread {
          * @param result
          * @return
          */
-        Object doAfter(
-                SessionContext parentContext,
-                Object result);
+        Object doAfter(SessionContext parentContext, Object result);
 
         /**
          * doException
@@ -53,17 +49,14 @@ public class ThreadUtil extends Thread {
          * @param e
          * @return
          */
-        Object doException(
-                SessionContext parentContext,
-                Throwable e);
+        Object doException(SessionContext parentContext, Throwable e);
 
         /**
          * doFinally
          * 
          * @param parentContext
          */
-        void doFinally(
-                SessionContext parentContext);
+        void doFinally(SessionContext parentContext);
     }
 
     /**
@@ -99,12 +92,7 @@ public class ThreadUtil extends Thread {
      * @param parameters
      * @param callback
      */
-    public ThreadUtil(
-            Object instance,
-            String function,
-            Object[] parameters,
-            ThreadHandler callback,
-            Logger logger) {
+    public ThreadUtil(Object instance, String function, Object[] parameters, ThreadHandler callback, Logger logger) {
         this.instance = instance;
         this.function = function;
         this.parameters = parameters;
@@ -121,11 +109,11 @@ public class ThreadUtil extends Thread {
     @Override
     public void run() {
         synchronized (block) {
-            if (logger != null)
+            if (logger != null) {
                 logger.info("New thread to execute: " + function + " of " + instance);
+            }
 
-            SessionContext childContext = SessionContext.open();
-            childContext.inheritFrom(parentContext);
+            SessionContext childContext = SessionContext.openFrom(parentContext);
 
             Object result = null;
             try {
@@ -161,8 +149,7 @@ public class ThreadUtil extends Thread {
      * @param instance
      *            the instance to set
      */
-    public void setInstance(
-            Object instance) {
+    public void setInstance(Object instance) {
         this.instance = instance;
     }
 
@@ -177,8 +164,7 @@ public class ThreadUtil extends Thread {
      * @param function
      *            the function to set
      */
-    public void setFunction(
-            String function) {
+    public void setFunction(String function) {
         this.function = function;
     }
 
@@ -193,8 +179,7 @@ public class ThreadUtil extends Thread {
      * @param parameters
      *            the parameters to set
      */
-    public void setParameters(
-            Object[] parameters) {
+    public void setParameters(Object[] parameters) {
         this.parameters = parameters;
     }
 
@@ -209,8 +194,7 @@ public class ThreadUtil extends Thread {
      * @param handler
      *            the handler to set
      */
-    public void setHandler(
-            ThreadHandler handler) {
+    public void setHandler(ThreadHandler handler) {
         this.handler = handler;
     }
 
@@ -225,8 +209,7 @@ public class ThreadUtil extends Thread {
      * @param logger
      *            the logger to set
      */
-    public void setLogger(
-            Logger logger) {
+    public void setLogger(Logger logger) {
         this.logger = logger;
     }
 

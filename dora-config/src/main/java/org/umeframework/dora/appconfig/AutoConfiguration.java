@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Import;
           DefaultDataSourceConfiguration.class,
           DefaultExceptionHandlerConfiguration.class,
           DefaultHttpProxyConfiguration.class,
-          DefaultJdbcDataSourceManagerConfiguration.class,
           DefaultLogConfiguration.class,
           DefaultMessageConfiguration.class,
           DefaultServiceAjaxConfiguration.class,

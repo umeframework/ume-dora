@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Import;
 @Import({
           DefaultDaoConfiguration.class,
           DefaultDataSourceConfiguration.class,
-          DefaultJdbcDataSourceManagerConfiguration.class,
           DefaultTransactionManagerConfiguration.class 
           })
 public class AutoConfigurationDao {

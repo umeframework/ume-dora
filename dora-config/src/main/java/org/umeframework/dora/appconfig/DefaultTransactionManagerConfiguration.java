@@ -9,10 +9,9 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.log.Logger;
-import org.umeframework.dora.transaction.TransactionManager;
-import org.umeframework.dora.transaction.impl.TransactionManagerImpl;
 
 /**
  * Transaction configuration.<br>
@@ -26,11 +25,6 @@ public class DefaultTransactionManagerConfiguration {
 	 */
 	@Resource(name = BeanConfigConst.DEFAULT_DATASOURCE)
 	private DataSource dataSource;
-	/**
-	 * logger
-	 */
-	@Resource(name = BeanConfigConst.DEFAULT_LOGGER)
-	private Logger logger;
 
 	/**
 	 * transactionManager
@@ -40,17 +34,10 @@ public class DefaultTransactionManagerConfiguration {
 	 */
 	@Scope("singleton")
 	@Bean(name = BeanConfigConst.DEFAULT_TRANSACTION_MANAGER)
-	public TransactionManager transactionManager() throws Exception {
-		// if (dataSource == null) {
-		// this.logger.warn("TransactionManager instance was inject as null because no found available dataSource.");
-		// return null;
-		// }
-
-		TransactionManagerImpl instance = new TransactionManagerImpl();
-		org.springframework.jdbc.datasource.DataSourceTransactionManager ptx = new org.springframework.jdbc.datasource.DataSourceTransactionManager();
+	public PlatformTransactionManager transactionManager() throws Exception {
+		DataSourceTransactionManager ptx = new DataSourceTransactionManager();
 		ptx.setDataSource(dataSource);
-		instance.setPlatformTransactionManager(ptx);
-		return instance;
+		return ptx;
 	}
 
 }

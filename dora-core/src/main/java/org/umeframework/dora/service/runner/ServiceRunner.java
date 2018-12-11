@@ -3,34 +3,47 @@
  */
 package org.umeframework.dora.service.runner;
 
-import org.umeframework.dora.service.ServiceResponse;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.umeframework.dora.service.mapping.ServiceMapping;
 
 /**
- * Service Runner 
+ * Service Runner
  *
  * @author Yue MA
  *
  */
-@SuppressWarnings("deprecation")
-public interface ServiceRunner {
-
-	/**
-	 * executeService
-	 * 
-	 * @param serviceId
-	 * @param params
-	 * @return
-	 * @throws Throwable
-	 */
-    ServiceResponse<Object> executeForServiceResponse(String serviceId, Object[] params) throws Throwable;
-
-	/**
-	 * execute
-	 * 
-	 * @param serviceId
-	 * @param params
-	 * @return
-	 * @throws Throwable
-	 */
-	Object execute(String serviceId, Object[] params) throws Throwable;
+public interface ServiceRunner<IN, OUT> {
+    /**
+     * execute
+     * 
+     * @param serviceId
+     * @param params
+     * @return
+     * @throws Throwable
+     */
+    OUT execute(String serviceId, IN params) throws Throwable;
+    /**
+     * getTransactionManager
+     * 
+     * @return
+     */
+    PlatformTransactionManager getTransactionManager();
+    /**
+     * setTransactionManager
+     * 
+     * @param transactionManager
+     */
+    void setTransactionManager(PlatformTransactionManager transactionManager);
+    /**
+     * getServiceMapping
+     * 
+     * @return
+     */
+    ServiceMapping getServiceMapping();
+    /**
+     * setServiceMapping
+     * 
+     * @param serviceMapping
+     */
+    void setServiceMapping(ServiceMapping serviceMapping);
 }

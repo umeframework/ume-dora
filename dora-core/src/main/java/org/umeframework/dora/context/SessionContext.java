@@ -4,15 +4,12 @@
 package org.umeframework.dora.context;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 
 /**
  * SessionContext
@@ -20,504 +17,453 @@ import javax.sql.DataSource;
  * @author Yue MA
  */
 public class SessionContext {
-	/**
-	 * Constants 'Token' string
-	 */
-	public static final String TOKEN = "Token";
-	/**
-	 * ThreadLocal instance
-	 */
+    /**
+     * Constants 'Token' string
+     */
+    public static final String TOKEN = "Token";
+    /**
+     * ThreadLocal instance
+     */
     private static final ThreadLocal<SessionContext> contextHolder = new InheritableThreadLocal<SessionContext>();
-	/**
-	 * Sync control flag
-	 */
-	private static final byte[] block = new byte[0];
+    /**
+     * Sync control flag
+     */
+    private static final byte[] block = new byte[0];
 
-	/**
-	 * HttpServletRequest reference
-	 */
-	private HttpServletRequest request;
-	/**
-	 * HttpServletResponse reference
-	 */
-	private HttpServletResponse response;
-	/**
-	 * HttpSession reference
-	 */
-	private HttpSession httpSession;
-	/**
-	 * Token
-	 */
-	private String token;
-	/**
-	 * Transaction time
-	 */
-	private Timestamp transactionTime;
-	/**
-	 * Service retry exception
-	 */
-	private RuntimeException serviceRetryException;
-	/**
-	 * System ID
-	 */
-	private String sysId;
-	/**
-	 * Service ID
-	 */
-	private String serviceId;
-	/**
-	 * Unique ID
-	 */
-	private String uid;
-	/**
-	 * DataSource reference
-	 */
-	private DataSource dataSource;
-	/**
-	 * Request path parameters
-	 */
-	private String[] servicePathParameters;
-	/**
-	 * Message list
-	 */
-	private List<String> messages;
-	/**
-	 * Any data
-	 */
+    /**
+     * HttpServletRequest reference
+     */
+    private HttpServletRequest request;
+    /**
+     * HttpServletResponse reference
+     */
+    private HttpServletResponse response;
+    /**
+     * HttpSession reference
+     */
+    private HttpSession httpSession;
+    /**
+     * Token
+     */
+    private String token;
+    /**
+     * Transaction time
+     */
+    private Timestamp transactionTime;
+    /**
+     * Service retry exception
+     */
+    private RuntimeException serviceRetryException;
+    /**
+     * System ID
+     */
+    private String sysId;
+    /**
+     * Service ID
+     */
+    private String serviceId;
+    /**
+     * Unique ID
+     */
+    private String uid;
+    /**
+     * Request path parameters
+     */
+    private String[] servicePathParameters;
+    /**
+     * Any data
+     */
     private Map<String, Object> dataMap;
 
-	/**
-	 * Create new SessionContext instance
-	 *
-	 * @return
-	 */
-	public static SessionContext open() {
-		SessionContext context = contextHolder.get();
-		synchronized (block) {
-			if (context == null) {
-				context = new SessionContext();
-				contextHolder.set(context);
-			}
-		}
-		return context;
-	}
+    /**
+     * Create new SessionContext instance
+     *
+     * @return
+     */
+    public static SessionContext open() {
+        SessionContext context = contextHolder.get();
+        synchronized (block) {
+            if (context == null) {
+                context = new SessionContext();
+                contextHolder.set(context);
+            }
+        }
+        return context;
+    }
 
-	/**
-	 * Close current SessionContext instance
-	 */
-	public static void close() {
-		SessionContext context = contextHolder.get();
-		synchronized (block) {
-			if (context != null) {
-				context.reset();
-			}
-			contextHolder.set(null);
-			contextHolder.remove();
-		}
-	}
-	
-    /* (non-Javadoc)
+    /**
+     * Close current SessionContext instance
+     */
+    public static void close() {
+        SessionContext context = contextHolder.get();
+        synchronized (block) {
+            if (context != null) {
+                context.setHttpSession(null);
+                context.setRequest(null);
+                context.setResponse(null);
+                context.setServiceId(null);
+                context.setServicePathParameters(null);
+                context.setServiceRetryException(null);
+                context.setSysId(null);
+                context.setToken(null);
+                context.setTransactionTime(null);
+                context.setUid(null);
+                context.dataMap.clear();
+            }
+            contextHolder.set(null);
+            contextHolder.remove();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
      * 
      * @see java.lang.Object#clone()
      */
     public SessionContext clone() {
         SessionContext context = new SessionContext();
-        context.inheritFrom(this);
+        context.setHttpSession(this.getHttpSession());
+        context.setRequest(this.getRequest());
+        context.setResponse(this.getResponse());
+        context.setServiceId(this.getServiceId());
+        context.setServicePathParameters(this.getServicePathParameters());
+        context.setServiceRetryException(this.getServiceRetryException());
+        context.setSysId(this.getSysId());
+        context.setToken(this.getToken());
+        context.setTransactionTime(this.getTransactionTime());
+        context.setUid(this.getUid());
+        context.dataMap = this.getDataMap();
         return context;
     }
-    
-	/**
-	 * Copy from another SessionContext instance
-	 * 
-	 * @param tar
-	 */
-	public void inheritFrom(SessionContext src) {
-		this.setDataSource(src.getDataSource());
-		this.setHttpSession(src.getHttpSession());
-		this.setRequest(src.getRequest());
-		this.setResponse(src.getResponse());
-		this.setServiceId(src.getServiceId());
-		this.setServicePathParameters(src.getServicePathParameters());
-		this.setServiceRetryException(src.getServiceRetryException());
-		this.setSysId(src.getSysId());
-		this.setToken(src.getToken());
-		this.setTransactionTime(src.getTransactionTime());
-		this.setUid(src.getUid());
-		this.dataMap = src.getDataMap();
-		this.messages = src.getMessages();
-	}
-	
-	/**
-	 * Clear current SessionContext status
-	 */
-	public SessionContext reset() {
-		SessionContext context = contextHolder.get();
-		context.setDataSource(null);
-		context.setHttpSession(null);
-		context.setRequest(null);
-		context.setResponse(null);
-		context.setServiceId(null);
-		context.setServicePathParameters(null);
-		context.setServiceRetryException(null);
-		context.setSysId(null);
-		context.setToken(null);
-		context.setTransactionTime(null);
-		context.setUid(null);
-		context.dataMap.clear();
-		context.messages.clear();
-		return context;
-	}
 
-	/**
-	 * RequestContext
-	 */
-	private SessionContext() {
-		this.dataMap = new HashMap<>();
-		this.messages = new ArrayList<String>();
-	}
-	
-	/**
-	 * getIpAddr
-	 * 
-	 * @param request
-	 * @return
-	 */
-	public String getIpAddr(HttpServletRequest request) {
-		String ipAddr = request.getHeader("x-forwarded-for");
-		if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
-			ipAddr = request.getHeader("Proxy-Client-IP");
-		}
-		if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
-			ipAddr = request.getHeader("WL-Proxy-Client-IP");
-		}
-		if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
-			ipAddr = request.getHeader("HTTP_CLIENT_IP");
-		}
-		if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
-			ipAddr = request.getHeader("HTTP_X_FORWARDED_FOR");
-		}
-		if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
-			ipAddr = request.getRemoteAddr();
-		}
-		return ipAddr;
-	}
-	
-	/**
-	 * addMessage
-	 *
-	 * @param message
-	 */
-	public void addMessage(String message) {
-		messages.add(message);
-	}
+    /**
+     * Copy from another SessionContext instance
+     * 
+     * @param tar
+     */
+    public static SessionContext openFrom(SessionContext src) {
+        synchronized (block) {
+            SessionContext context = open();
+            context.setHttpSession(src.getHttpSession());
+            context.setRequest(src.getRequest());
+            context.setResponse(src.getResponse());
+            context.setServiceId(src.getServiceId());
+            context.setServicePathParameters(src.getServicePathParameters());
+            context.setServiceRetryException(src.getServiceRetryException());
+            context.setSysId(src.getSysId());
+            context.setToken(src.getToken());
+            context.setTransactionTime(src.getTransactionTime());
+            context.setUid(src.getUid());
+            context.dataMap = src.getDataMap();
+            return context;
+        }
+    }
 
-	/**
-	 * @param dataMap the dataMap to set
-	 */
-	public <E> void setData(String key, E value) {
-		this.dataMap.put(key, value);
-	}
+    /**
+     * RequestContext
+     */
+    private SessionContext() {
+        this.dataMap = new HashMap<>();
+    }
 
-	/**
-	 * @param dataMap the dataMap to set
-	 */
-	@SuppressWarnings("unchecked")
-	public <E> E getData(String key) {
-		return (E) this.dataMap.get(key);
-	}
+    /**
+     * getIpAddr
+     * 
+     * @param request
+     * @return
+     */
+    public String getIpAddr(HttpServletRequest request) {
+        String ipAddr = request.getHeader("x-forwarded-for");
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddr == null || ipAddr.length() == 0 || "unknown".equalsIgnoreCase(ipAddr)) {
+            ipAddr = request.getRemoteAddr();
+        }
+        return ipAddr;
+    }
 
-	/**
-	 * @return the dataMap
-	 */
-	public Map<String, Object> getDataMap() {
-		return dataMap;
-	}
 
-//	/**
-//	 * @return the transactionStatus
-//	 */
-//	public Stack<TransactionStatus> getTransactionStatusStack() {
-//		return transactionStatusStack;
-//	}
-//
-//	/**
-//	 * @param transactionStatus
-//	 *            the transactionStatus to set
-//	 */
-//	public void setTransactionStatusStack(Stack<TransactionStatus> transactionStatusStack) {
-//		this.transactionStatusStack = transactionStatusStack;
-//	}
+    /**
+     * @param dataMap
+     *            the dataMap to set
+     */
+    public <E> void setData(String key, E value) {
+        this.dataMap.put(key, value);
+    }
 
-	/**
-	 * getMessages
-	 *
-	 */
-	public List<String> getMessages() {
-		return messages;
-	}
+    /**
+     * @param dataMap
+     *            the dataMap to set
+     */
+    @SuppressWarnings("unchecked")
+    public <E> E getData(String key) {
+        return (E) this.dataMap.get(key);
+    }
 
-	/**
-	 * @return the servletRequest
-	 */
-	public HttpServletRequest getRequest() {
-		return request;
-	}
+    /**
+     * @return the dataMap
+     */
+    public Map<String, Object> getDataMap() {
+        return dataMap;
+    }
 
-	/**
-	 * @param servletRequest
-	 *            the servletRequest to set
-	 */
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
+    /**
+     * @return the servletRequest
+     */
+    public HttpServletRequest getRequest() {
+        return request;
+    }
 
-	/**
-	 * @return the servletResponse
-	 */
-	public HttpServletResponse getResponse() {
-		return response;
-	}
+    /**
+     * @param servletRequest
+     *            the servletRequest to set
+     */
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
 
-	/**
-	 * @param servletResponse
-	 *            the servletResponse to set
-	 */
-	public void setResponse(HttpServletResponse response) {
-		this.response = response;
-	}
+    /**
+     * @return the servletResponse
+     */
+    public HttpServletResponse getResponse() {
+        return response;
+    }
 
-	/**
-	 * @return the httpSession
-	 */
-	public HttpSession getHttpSession() {
-		return httpSession;
-	}
+    /**
+     * @param servletResponse
+     *            the servletResponse to set
+     */
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
+    }
 
-	/**
-	 * @param httpSession
-	 *            the httpSession to set
-	 */
-	public void setHttpSession(HttpSession httpSession) {
-		this.httpSession = httpSession;
-	}
+    /**
+     * @return the httpSession
+     */
+    public HttpSession getHttpSession() {
+        return httpSession;
+    }
 
-	/**
-	 * @return the token
-	 */
-	public String getToken() {
-		return token;
-	}
+    /**
+     * @param httpSession
+     *            the httpSession to set
+     */
+    public void setHttpSession(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
 
-	/**
-	 * @param token
-	 *            the token to set
-	 */
-	public void setToken(String token) {
-		this.token = token;
-	}
+    /**
+     * @return the token
+     */
+    public String getToken() {
+        return token;
+    }
 
-	/**
-	 * @return the transactionTime
-	 */
-	public Timestamp getTransactionTime() {
-		return transactionTime;
-	}
+    /**
+     * @param token
+     *            the token to set
+     */
+    public void setToken(String token) {
+        this.token = token;
+    }
 
-	/**
-	 * @param transactionTime
-	 *            the transactionTime to set
-	 */
-	public void setTransactionTime(Timestamp transactionTime) {
-		this.transactionTime = transactionTime;
-	}
+    /**
+     * @return the transactionTime
+     */
+    public Timestamp getTransactionTime() {
+        return transactionTime;
+    }
 
-	/**
-	 * @return the sysId
-	 */
-	public String getSysId() {
-		return sysId;
-	}
+    /**
+     * @param transactionTime
+     *            the transactionTime to set
+     */
+    public void setTransactionTime(Timestamp transactionTime) {
+        this.transactionTime = transactionTime;
+    }
 
-	/**
-	 * @param sysId
-	 *            the sysId to set
-	 */
-	public void setSysId(String sysId) {
-		this.sysId = sysId;
-	}
+    /**
+     * @return the sysId
+     */
+    public String getSysId() {
+        return sysId;
+    }
 
-	/**
-	 * @return the serviceId
-	 */
-	public String getServiceId() {
-		return serviceId;
-	}
+    /**
+     * @param sysId
+     *            the sysId to set
+     */
+    public void setSysId(String sysId) {
+        this.sysId = sysId;
+    }
 
-	/**
-	 * @param serviceId
-	 *            the serviceId to set
-	 */
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
+    /**
+     * @return the serviceId
+     */
+    public String getServiceId() {
+        return serviceId;
+    }
 
-	/**
-	 * @return the uid
-	 */
-	public String getUid() {
-		return uid;
-	}
+    /**
+     * @param serviceId
+     *            the serviceId to set
+     */
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
 
-	/**
-	 * @param uid
-	 *            the uid to set
-	 */
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
+    /**
+     * @return the uid
+     */
+    public String getUid() {
+        return uid;
+    }
 
-	/**
-	 * @return the servicePathParameters
-	 */
-	public String[] getServicePathParameters() {
-		return servicePathParameters;
-	}
+    /**
+     * @param uid
+     *            the uid to set
+     */
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
-	/**
-	 * @param servicePathParameters
-	 *            the servicePathParameters to set
-	 */
-	public void setServicePathParameters(String[] servicePathParameters) {
-		this.servicePathParameters = servicePathParameters;
-	}
+    /**
+     * @return the servicePathParameters
+     */
+    public String[] getServicePathParameters() {
+        return servicePathParameters;
+    }
 
-	/**
-	 * @return the serviceRetryException
-	 */
-	public RuntimeException getServiceRetryException() {
-		return serviceRetryException;
-	}
+    /**
+     * @param servicePathParameters
+     *            the servicePathParameters to set
+     */
+    public void setServicePathParameters(String[] servicePathParameters) {
+        this.servicePathParameters = servicePathParameters;
+    }
 
-	/**
-	 * @param serviceRetryException
-	 *            the serviceRetryException to set
-	 */
-	public void setServiceRetryException(RuntimeException serviceRetryException) {
-		this.serviceRetryException = serviceRetryException;
-	}
+    /**
+     * @return the serviceRetryException
+     */
+    public RuntimeException getServiceRetryException() {
+        return serviceRetryException;
+    }
 
-	/**
-	 * @return the dataSource
-	 */
-	public DataSource getDataSource() {
-		return dataSource;
-	}
+    /**
+     * @param serviceRetryException
+     *            the serviceRetryException to set
+     */
+    public void setServiceRetryException(RuntimeException serviceRetryException) {
+        this.serviceRetryException = serviceRetryException;
+    }
 
-	/**
-	 * @param dataSource
-	 *            the dataSource to set
-	 */
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-	/**
-	 * getClientAddress
-	 * 
-	 * @return
-	 */
-	public String getClientAddress() {
-		return request != null ? getIpAddr(request) : null;
-	}
+    /**
+     * getClientAddress
+     * 
+     * @return
+     */
+    public String getClientAddress() {
+        return request != null ? getIpAddr(request) : null;
+    }
 
-	/**
-	 * getLocalAddr
-	 * 
-	 * @return
-	 */
-	public String getLocalAddr() {
-		return request != null ? request.getLocalAddr() : null;
-	}
+    /**
+     * getLocalAddr
+     * 
+     * @return
+     */
+    public String getLocalAddr() {
+        return request != null ? request.getLocalAddr() : null;
+    }
 
-	/**
-	 * getLocalName
-	 * 
-	 * @return
-	 */
-	public String getLocalName() {
-		return request != null ? request.getLocalName() : null;
-	}
+    /**
+     * getLocalName
+     * 
+     * @return
+     */
+    public String getLocalName() {
+        return request != null ? request.getLocalName() : null;
+    }
 
-	/**
-	 * getLocalPort
-	 * 
-	 * @return
-	 */
-	public Integer getLocalPort() {
-		return request != null ? request.getLocalPort() : null;
-	}
+    /**
+     * getLocalPort
+     * 
+     * @return
+     */
+    public Integer getLocalPort() {
+        return request != null ? request.getLocalPort() : null;
+    }
 
-	/**
-	 * getServerName
-	 * 
-	 * @return
-	 */
-	public String getServerName() {
-		return request != null ? request.getServerName() : null;
-	}
+    /**
+     * getServerName
+     * 
+     * @return
+     */
+    public String getServerName() {
+        return request != null ? request.getServerName() : null;
+    }
 
-	/**
-	 * getServerPort
-	 * 
-	 * @return
-	 */
-	public Integer getServerPort() {
-		return request != null ? request.getServerPort() : null;
-	}
+    /**
+     * getServerPort
+     * 
+     * @return
+     */
+    public Integer getServerPort() {
+        return request != null ? request.getServerPort() : null;
+    }
 
-	/**
-	 * getRequestContextPath
-	 * 
-	 * @return
-	 */
-	public String getRequestContextPath() {
-		return request != null ? request.getContextPath() : null;
-	}
+    /**
+     * getRequestContextPath
+     * 
+     * @return
+     */
+    public String getRequestContextPath() {
+        return request != null ? request.getContextPath() : null;
+    }
 
-	/**
-	 * getRequestServletPath
-	 * 
-	 * @return
-	 */
-	public String getRequestServletPath() {
-		return request != null ? request.getServletPath() : null;
-	}
+    /**
+     * getRequestServletPath
+     * 
+     * @return
+     */
+    public String getRequestServletPath() {
+        return request != null ? request.getServletPath() : null;
+    }
 
-	/**
-	 * getRequestPathInfo
-	 * 
-	 * @return
-	 */
-	public String getRequestPathInfo() {
-		return request != null ? request.getPathInfo() : null;
-	}
+    /**
+     * getRequestPathInfo
+     * 
+     * @return
+     */
+    public String getRequestPathInfo() {
+        return request != null ? request.getPathInfo() : null;
+    }
 
-	/**
-	 * getRequestCategory
-	 * 
-	 * @return
-	 */
-	public String getRequestCategory() {
-		return request != null ? request.getMethod().toUpperCase() : null;
-	}
+    /**
+     * getRequestCategory
+     * 
+     * @return
+     */
+    public String getRequestCategory() {
+        return request != null ? request.getMethod().toUpperCase() : null;
+    }
 
-	/**
-	 * getRequestParameterMap
-	 * 
-	 * @return
-	 */
-	public Map<String, String[]> getRequestParameterMap() {
-		return request != null ? request.getParameterMap() : null;
-	}
-
+    /**
+     * getRequestParameterMap
+     * 
+     * @return
+     */
+    public Map<String, String[]> getRequestParameterMap() {
+        return request != null ? request.getParameterMap() : null;
+    }
 
 }

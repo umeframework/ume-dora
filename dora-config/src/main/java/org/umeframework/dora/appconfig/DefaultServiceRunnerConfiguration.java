@@ -3,14 +3,16 @@
  */
 package org.umeframework.dora.appconfig;
 
+import javax.annotation.Resource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.umeframework.dora.bean.BeanConfigConst;
-import org.umeframework.dora.service.runner.AjaxServiceRunner;
+import org.umeframework.dora.service.mapping.ServiceMapping;
 import org.umeframework.dora.service.runner.ServiceRunner;
 import org.umeframework.dora.service.runner.impl.AjaxServiceRunnerImpl;
-import org.umeframework.dora.service.runner.impl.TransactionalServiceRunnerImpl;
 
 /**
  * Service runner configuration.<br>
@@ -19,7 +21,17 @@ import org.umeframework.dora.service.runner.impl.TransactionalServiceRunnerImpl;
  */
 @Configuration
 public class DefaultServiceRunnerConfiguration {
-	
+    /**
+     * transaction manager
+     */
+    @Resource(name = BeanConfigConst.DEFAULT_SERVICE_MAPPING)
+    private ServiceMapping serviceMapping;
+    /**
+     * transaction manager
+     */
+    @Resource(name = BeanConfigConst.DEFAULT_TRANSACTION_MANAGER)
+    private PlatformTransactionManager transactionManager;
+
 	
 	/**
 	 * Ajax service runner
@@ -28,19 +40,11 @@ public class DefaultServiceRunnerConfiguration {
 	 */
 	@Bean(name = BeanConfigConst.DEFAULT_SYS_ID)
 	@Scope("prototype")
-	public AjaxServiceRunner ajaxServiceRunner() {
-		return new AjaxServiceRunnerImpl();
+	public ServiceRunner<String, String> ajaxServiceRunner() {
+	    ServiceRunner<String, String> serviceRunner = new AjaxServiceRunnerImpl();
+	    serviceRunner.setServiceMapping(serviceMapping);
+	    serviceRunner.setTransactionManager(transactionManager);
+		return serviceRunner;
 	}
 	
-	/**
-	 * Service runner
-	 * 
-	 * @return
-	 */
-	@Bean(name = BeanConfigConst.DEFAULT_SERVICE_RUNNER)
-	@Scope("prototype")
-	public ServiceRunner serviceRunner() {
-		return new TransactionalServiceRunnerImpl();
-	}
-
 }

@@ -34,18 +34,6 @@ public abstract class BaseComponent {
 	private MessageProperties messageProperties;
 
 	/**
-	 * Append message to service context
-	 *
-	 * @param message - message ID or message content
-	 * @param parameters - message options
-	 */
-	protected void createMessage(String message, Object... parameters) {
-		MessageProperties messageProperties = getMessageProperties();
-		String text = messageProperties.get(message, parameters);
-		SessionContext.open().addMessage(text != null ? text : message);
-	}
-	
-	/**
 	 * Throw application exception
 	 * 
 	 * @param message - message ID or message content

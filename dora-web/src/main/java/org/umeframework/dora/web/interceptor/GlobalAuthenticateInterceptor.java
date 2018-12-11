@@ -67,7 +67,7 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws AuthenticationException {
 		super.getLogger().debug("SessionContext Open...");
 
-		SessionContext ctx = SessionContext.open().reset();
+		SessionContext ctx = SessionContext.open();
 		ctx.setRequest(request);
 		ctx.setResponse(response);
 		ctx.setTransactionTime(new Timestamp(System.currentTimeMillis()));

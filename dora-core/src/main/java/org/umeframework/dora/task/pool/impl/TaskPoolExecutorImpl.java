@@ -6,11 +6,11 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.transaction.PlatformTransactionManager;
 import org.umeframework.dora.service.BaseComponent;
 import org.umeframework.dora.task.pool.TaskPoolExecutor;
 import org.umeframework.dora.task.pool.TaskRunner;
 import org.umeframework.dora.task.pool.TaskThread;
-import org.umeframework.dora.transaction.TransactionManager;
 
 /**
  * TaskPoolExecutorImpl<br>
@@ -21,14 +21,8 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
     /**
      * transactionManager
      */
-    private TransactionManager transactionManager;
-    public TransactionManager getTransactionManager() {
-        return transactionManager;
-    }
+    private PlatformTransactionManager transactionManager;
 
-    public void setTransactionManager(TransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
-    }
     /**
      * threadPoolExecutor<br>
      */
@@ -270,6 +264,20 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the transactionManager
+     */
+    public PlatformTransactionManager getTransactionManager() {
+        return transactionManager;
+    }
+
+    /**
+     * @param transactionManager the transactionManager to set
+     */
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
 }

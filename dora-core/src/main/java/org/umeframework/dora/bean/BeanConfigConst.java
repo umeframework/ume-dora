@@ -55,8 +55,8 @@ public interface BeanConfigConst {
 	String DEFAULT_SERVICE_MAPPING = "doraServiceMapping";
 	// Default name of service mapping DESC instance
 	String DEFAULT_SERVICE_MAPPING_DESC = "doraServiceMappingDesc";
-	// Default name of service runner instance
-	String DEFAULT_SERVICE_RUNNER = "doraServiceRunner";
+//	// Default name of service runner instance
+//	String DEFAULT_SERVICE_RUNNER = "doraServiceRunner";
 	// Default name of transaction manager instance
 	String DEFAULT_TRANSACTION_MANAGER = "doraTransactionManager";
 	// Default name of cache manager instance

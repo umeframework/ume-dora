@@ -95,7 +95,6 @@ public class UserLoginServiceImpl extends BaseComponent implements UserLoginServ
 			hs.removeAttribute(SessionContext.TOKEN);
 		}
 		
-		super.createMessage(loginId + " exit system.");
 		super.getLogger().info("User logout: ", loginId);
 	}
 
