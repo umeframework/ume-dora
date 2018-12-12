@@ -28,7 +28,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.umeframework.dora.ajax.impl.JsonRenderImpl;
-import org.umeframework.dora.jdbc.impl.JdbcDaoImpl;
+import org.umeframework.dora.dao.impl.JdbcDaoImpl;
 import org.umeframework.dora.log.Logger;
 import org.umeframework.dora.log.impl.Log4j2Impl;
 import org.umeframework.dora.tool.gen.db.DataTypeUtil;

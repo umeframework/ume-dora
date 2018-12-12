@@ -125,13 +125,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.umeframework.dora</groupId>
-			<artifactId>dora-dsm</artifactId>
-			<version>${version.dora}</version>
-			<scope>compile</scope>
-			<optional>false</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.umeframework.dora</groupId>
 			<artifactId>dora-web</artifactId>
 			<version>${version.dora}</version>
 			<scope>compile</scope>

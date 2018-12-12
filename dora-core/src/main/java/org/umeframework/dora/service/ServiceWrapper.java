@@ -6,7 +6,7 @@ package org.umeframework.dora.service;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.umeframework.dora.transaction.TransactionRequired;
+//import org.umeframework.dora.transaction.TransactionRequired;
 
 /**
  * ServiceWrapper
@@ -62,15 +62,15 @@ public class ServiceWrapper implements java.io.Serializable {
         this.serviceClazz = serviceInstance.getClass();
     }
 
-    /**
-     * required transaction judge
-     * 
-     * @return
-     */
-    public boolean isTransactional() {
-        TransactionRequired tx = serviceMethod.getAnnotation(TransactionRequired.class);
-        return tx != null;
-    }
+//    /**
+//     * required transaction judge
+//     * 
+//     * @return
+//     */
+//    public boolean isTransactional() {
+//        TransactionRequired tx = serviceMethod.getAnnotation(TransactionRequired.class);
+//        return tx != null;
+//    }
 
     /**
      * getServiceMethod

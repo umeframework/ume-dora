@@ -18,7 +18,6 @@
 	<modules>
         <module>../dora-base</module>
         <module>../dora-core</module>
-        <module>../dora-dsm</module>
         <module>../dora-orm</module>
         <module>../dora-kvs</module>
         <module>../dora-web</module>

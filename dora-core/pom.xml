@@ -14,14 +14,6 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>org.umeframework.dora</groupId>
-			<artifactId>dora-dsm</artifactId>
-			<version>${version.dora}</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${version.servlet-api}</version>
@@ -78,13 +70,6 @@
             <scope>compile</scope>
             <optional>false</optional>
         </dependency>
-<!-- 		<dependency>
-			<groupId>commons-digester</groupId>
-			<artifactId>commons-digester</artifactId>
-			<version>${version.commons-digester}</version>
-			<scope>compile</scope>
-			<optional>false</optional>
-		</dependency> -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -184,6 +169,35 @@
 			<scope>compile</scope>
 			<optional>false</optional>
 		</dependency>
+ 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${version.mybatis}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${version.mybatis-spring}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>

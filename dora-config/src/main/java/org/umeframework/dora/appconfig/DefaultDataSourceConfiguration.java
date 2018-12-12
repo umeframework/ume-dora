@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.umeframework.dora.contant.BeanConfigConst;
-import org.umeframework.dora.jdbc.JdbcDataSourceManager;
 
 /**
  * Data source configuration.<br>
@@ -49,13 +48,13 @@ public class DefaultDataSourceConfiguration {
 	public DataSource dataSource() throws Exception {
 
 		Properties dsProp = new Properties();
-		dsProp.setProperty(JdbcDataSourceManager.DataSourceProperty.url.toString(), cfg.getJdbcUrl());
-		dsProp.setProperty(JdbcDataSourceManager.DataSourceProperty.driverClassName.toString(), cfg.getJdbcDriverClass());
-		dsProp.setProperty(JdbcDataSourceManager.DataSourceProperty.username.toString(), cfg.getJdbcUsername());
-		dsProp.setProperty(JdbcDataSourceManager.DataSourceProperty.password.toString(), cfg.getJdbcPassword());
+		dsProp.setProperty("url", cfg.getJdbcUrl());
+		dsProp.setProperty("driverClassName", cfg.getJdbcDriverClass());
+		dsProp.setProperty("username", cfg.getJdbcUsername());
+		dsProp.setProperty("password", cfg.getJdbcPassword());
 		String autoCommit = cfg.getJdbcDefaultAutoCommit();
 		autoCommit = autoCommit != null && autoCommit.trim().toLowerCase().equals("true") ? "true" : "false";
-		dsProp.setProperty(JdbcDataSourceManager.DataSourceProperty.defaultAutoCommit.toString(), autoCommit);
+		dsProp.setProperty("defaultAutoCommit", autoCommit);
 
 		BasicDataSource ds = BasicDataSourceFactory.createDataSource(dsProp);
 		ds.setInitialSize(Integer.parseInt(cfg.getJdbcInitialSize()));
