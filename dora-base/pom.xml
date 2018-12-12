@@ -45,9 +45,7 @@
 		<version.commons-logging>1.2</version.commons-logging>
 		<version.commons-pool>1.6</version.commons-pool>
 		<version.commons-validator>1.5.0</version.commons-validator>
-		<version.oro>2.0.8</version.oro>
 		<version.json4j>1.4</version.json4j>
-		<version.velocity>1.7</version.velocity>
 		<version.xstream>1.4</version.xstream>
 		<version.xpp3>1.1.4c</version.xpp3>
         <version.log4j2>2.10.0</version.log4j2>
@@ -55,10 +53,12 @@
         <version.disruptor>3.4.2</version.disruptor>
 		<version.mysql-connector-java>5.1.31</version.mysql-connector-java>
 		<version.h2database>1.4.196</version.h2database>
-		<version.itextg>5.5.10</version.itextg>
-		<version.poi>3.15</version.poi>
 		<version.xmlbeans>2.3.0</version.xmlbeans>
         <version.reflectasm>1.11.3</version.reflectasm>
+<!-- 		<version.itextg>5.5.10</version.itextg>
+		<version.poi>3.15</version.poi>
+		<version.oro>2.0.8</version.oro>
+		<version.velocity>1.7</version.velocity> -->
 
 		<!-- dora-kvs use -->
 		<version.jedis>2.9.0</version.jedis>

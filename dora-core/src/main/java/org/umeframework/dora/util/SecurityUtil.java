@@ -3,12 +3,15 @@
  */
 package org.umeframework.dora.util;
 
+
+import java.util.Base64;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.umeframework.dora.exception.ApplicationException;
 
-import com.itextpdf.text.pdf.codec.Base64;
+//import com.itextpdf.text.pdf.codec.Base64;
 
 /**
  * SecurityUtil
@@ -62,7 +65,7 @@ public class SecurityUtil {
 		Cipher cipher = Cipher.getInstance(secretCipher);
 		cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
 		byte[] encrypted = cipher.doFinal(ssrc.getBytes(secretCharset));
-		return Base64.encodeBytes(encrypted);
+		return Base64.getEncoder().encodeToString(encrypted);
 	}
 
 	/**
@@ -79,7 +82,7 @@ public class SecurityUtil {
 			SecretKeySpec skeySpec = new SecretKeySpec(raw, secretKeySpec);
 			Cipher cipher = Cipher.getInstance(secretCipher);
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-			byte[] encrypted1 = Base64.decode(ssrc);
+			byte[] encrypted1 = Base64.getDecoder().decode(ssrc);
 			byte[] original = cipher.doFinal(encrypted1);
 			originalString = new String(original, secretCharset);
 		} catch (Exception e) {
