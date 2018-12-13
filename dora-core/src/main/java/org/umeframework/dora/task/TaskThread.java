@@ -48,11 +48,12 @@ public class TaskThread<T> implements Runnable, Serializable {
      * @param transactionManager
      * @param transactionDefinition
      */
-    public TaskThread(TaskRunner<T> taskRunner, T taskParam, PlatformTransactionManager transactionManager) {
+    public TaskThread(TaskRunner<T> taskRunner, T taskParam, PlatformTransactionManager transactionManager, Logger logger) {
         this.context = RequestContext.getCurrentContext();
         this.taskRunner = taskRunner;
         this.taskParam = taskParam;
         this.transactionManager = transactionManager;
+        this.logger = logger;
     }
 
     /*

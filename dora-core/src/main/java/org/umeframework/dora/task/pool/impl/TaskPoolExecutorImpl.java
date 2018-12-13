@@ -93,7 +93,7 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
     @Override
     public <E> void runAsync(TaskRunner<E> taskProc, E taskParam) {
         doValidation(taskProc, taskParam);
-        TaskThread<E> task = new TaskThread<E>(taskProc, taskParam, transactionManager);
+        TaskThread<E> task = new TaskThread<E>(taskProc, taskParam, transactionManager, super.getLogger());
         runAsync(task);
     }
 
@@ -105,7 +105,7 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
     @Override
     public <E> void run(TaskRunner<E> taskProc, E taskParam) {
         doValidation(taskProc, taskParam);
-        TaskThread<E> task = new TaskThread<E>(taskProc, taskParam, transactionManager);
+        TaskThread<E> task = new TaskThread<E>(taskProc, taskParam, transactionManager, super.getLogger());
         run(task);
     }
 

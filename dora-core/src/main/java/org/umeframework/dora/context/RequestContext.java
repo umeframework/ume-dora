@@ -34,19 +34,6 @@ public class RequestContext {
      */
     private Map<String, Object> valueMap;
 
-//    /**
-//     * Init new instance
-//     *
-//     * @return
-//     */
-//    public static RequestContext open() {
-//        synchronized (block) {
-//            // create new instance
-//            contextHolder.set(new RequestContext());
-//            return contextHolder.get();
-//        }
-//    }
-    
     /**
      * openFrom
      * 
@@ -108,7 +95,7 @@ public class RequestContext {
      * @see java.lang.Object#clone()
      */
     @SuppressWarnings("unchecked")
-    private RequestContext deepCopy() {
+    public RequestContext deepCopy() {
         RequestContext context = new RequestContext();
         // Deep copy
         if (this.valueMap == null) {
