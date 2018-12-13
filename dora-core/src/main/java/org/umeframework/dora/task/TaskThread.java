@@ -1,4 +1,4 @@
-package org.umeframework.dora.task.pool;
+package org.umeframework.dora.task;
 
 import java.io.Serializable;
 
@@ -38,7 +38,7 @@ public class TaskThread<T> implements Runnable, Serializable {
     /**
      * SessionContext<br>
      */
-    private RequestContext<?> context;
+    private RequestContext context;
 
     /**
      * TaskThread<br>
@@ -49,7 +49,7 @@ public class TaskThread<T> implements Runnable, Serializable {
      * @param transactionDefinition
      */
     public TaskThread(TaskRunner<T> taskRunner, T taskParam, PlatformTransactionManager transactionManager) {
-        this.context = RequestContext.open();
+        this.context = RequestContext.getCurrentContext();
         this.taskRunner = taskRunner;
         this.taskParam = taskParam;
         this.transactionManager = transactionManager;
@@ -62,7 +62,7 @@ public class TaskThread<T> implements Runnable, Serializable {
      */
     @Override
     public void run() {
-        RequestContext.openFrom(this.context);
+        RequestContext.cloneFrom(this.context);
         long startTime = System.currentTimeMillis();
         String runnerName = taskRunner.getName();
         Class<?> runnerClass = taskRunner.getClass();
@@ -77,9 +77,8 @@ public class TaskThread<T> implements Runnable, Serializable {
                 logger.error("Error parammeters:" + this.getTaskParam());
             }
         } finally {
-            long useTime = System.currentTimeMillis() - startTime;
             if (logger != null) {
-                logger.debug(runnerClass.getSimpleName(), ",", "run", ",", useTime);
+                logger.debug(runnerClass.getSimpleName(), ",", "run", ",", System.currentTimeMillis() - startTime);
             }
             RequestContext.close();
         }
@@ -91,12 +90,7 @@ public class TaskThread<T> implements Runnable, Serializable {
      * @throws Throwable
      */
     public void execute() throws Throwable {
-        String runnerName = taskRunner.getName();
         Class<?> runnerClass = taskRunner.getClass();
-        if (logger != null) {
-            logger.info("Start thread for " + runnerName);
-        }
-
         T inParam = this.getTaskParam();
         if (transactionManager != null) {
             Transactional transactional = runnerClass.getAnnotation(Transactional.class);
@@ -118,60 +112,6 @@ public class TaskThread<T> implements Runnable, Serializable {
         } else {
             taskRunner.run(inParam);
         }
-    }
-
-    /**
-     * getRollback<br>
-     * 
-     * @param isTransactional
-     * @param e
-     * @return
-     */
-    protected boolean getRollback(Transactional isTransactional, Throwable e) {
-        boolean isRollback = false;
-        if (isTransactional != null) {
-            if (!isRollback && isTransactional.rollbackFor() != null) {
-                Class<? extends Throwable>[] range = isTransactional.rollbackFor();
-                for (Class<? extends Throwable> i : range) {
-                    if (i.isAssignableFrom(e.getClass())) {
-                        isRollback = true;
-                        break;
-                    }
-                }
-            }
-            if (!isRollback && isTransactional.rollbackForClassName() != null) {
-                String[] range = isTransactional.rollbackForClassName();
-                for (String i : range) {
-                    if (i.equalsIgnoreCase(e.getClass().getSimpleName())) {
-                        isRollback = true;
-                        break;
-                    }
-                }
-            }
-            isRollback = true;
-
-            if (isRollback && isTransactional.noRollbackFor() != null) {
-                Class<? extends Throwable>[] range = isTransactional.noRollbackFor();
-                for (Class<? extends Throwable> i : range) {
-                    if (i.isAssignableFrom(e.getClass())) {
-                        isRollback = false;
-                        break;
-                    }
-                }
-            }
-            if (isRollback && isTransactional.noRollbackForClassName() != null) {
-                String[] range = isTransactional.noRollbackForClassName();
-                for (String i : range) {
-                    if (i.equalsIgnoreCase(e.getClass().getSimpleName())) {
-                        isRollback = false;
-                        break;
-                    }
-                }
-            }
-        } else {
-            isRollback = true;
-        }
-        return isRollback;
     }
 
     /**

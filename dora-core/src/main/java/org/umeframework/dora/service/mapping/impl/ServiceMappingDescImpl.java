@@ -108,7 +108,7 @@ public class ServiceMappingDescImpl extends BaseComponent implements ServiceMapp
         Class<?>[] paramTypes = serviceMethod.getParameterTypes();
         Type[] genericParamTypes = serviceMethod.getGenericParameterTypes();
 
-        HttpServletRequest request = RequestContext.open().get(HTTP_REQUEST);
+        HttpServletRequest request = RequestContext.getCurrentContext().get(HTTP_REQUEST);
         String url = (request != null ? request.getServerName() : null) + ":" + (request != null ? request.getServerPort() : null);
         url = url + (request != null ? request.getServletPath() : null);
 

@@ -53,7 +53,7 @@ public class ServcieRetryException extends ApplicationException {
             Object[] parameters) {
         super(cause, messageId, parameters);
 
-        ServcieRetryException sre = (ServcieRetryException) RequestContext.open().get(CONTEXT_KEY);
+        ServcieRetryException sre = (ServcieRetryException) RequestContext.getCurrentContext().get(CONTEXT_KEY);
         if (sre != null) {
             this.retryInterval = sre.getRetryInterval();
             this.retryMaxTime = sre.getRetryMaxTime();

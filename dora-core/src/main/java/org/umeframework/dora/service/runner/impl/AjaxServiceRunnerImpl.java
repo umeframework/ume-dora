@@ -77,7 +77,7 @@ public class AjaxServiceRunnerImpl extends AbstractServcieRunner<String, String>
             throw new ApplicationException("No find '" + serviceId + "' in service mapping configuration.");
         }
         Set<String> permitRequestMethodSet = serviceWrapper.getHttpRequestMethodSet();
-        HttpServletRequest request = RequestContext.open().get(HTTP_REQUEST);
+        HttpServletRequest request = RequestContext.getCurrentContext().get(HTTP_REQUEST);
         String currentRequestMethod = request != null ? request.getMethod().toUpperCase() : null;
         if (permitRequestMethodSet != null && currentRequestMethod != null) {
             if (!permitRequestMethodSet.contains(currentRequestMethod)) {
@@ -90,7 +90,7 @@ public class AjaxServiceRunnerImpl extends AbstractServcieRunner<String, String>
         
         Map<String, String[]> requestParams = request != null ? request.getParameterMap() : null;
         
-        String[] pathParams = RequestContext.open().get(CONTEXT_KEY_SERVICE_URL_PARAMETER);
+        String[] pathParams = RequestContext.getCurrentContext().get(CONTEXT_KEY_SERVICE_URL_PARAMETER);
         if (serviceMethod.getParameterTypes().length > 0) {
             if (StringUtil.isNotEmpty(ajaxInput)) {
                 // Input is not empty

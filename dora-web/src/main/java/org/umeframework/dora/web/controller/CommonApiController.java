@@ -72,7 +72,7 @@ public class CommonApiController extends BaseRestController {
 		pathParams = pathParams.startsWith("/") ? pathParams.substring(1) : pathParams;
 		pathParams = pathParams.endsWith("/") ? pathParams.substring(0, pathParams.length() - 1) : pathParams;
 		if (StringUtil.isNotEmpty(pathParams)) {
-			RequestContext.open().set(AjaxServiceRunnerImpl.CONTEXT_KEY_SERVICE_URL_PARAMETER, pathParams.split("/"));
+			RequestContext.getCurrentContext().set(AjaxServiceRunnerImpl.CONTEXT_KEY_SERVICE_URL_PARAMETER, pathParams.split("/"));
 		}
 
 		return execute(request, response, system, resource, jsonInput);

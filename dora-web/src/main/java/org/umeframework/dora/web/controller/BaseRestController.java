@@ -72,14 +72,14 @@ public abstract class BaseRestController extends BaseComponent {
                             retryException.setRetryIndex(retryException.getRetryIndex() + 1);
                             getLogger().warn("Restart service: " + serviceId + " round " + retryException.getRetryIndex());
                             Thread.sleep(interal);
-                            RequestContext.open().set(ServcieRetryException.CONTEXT_KEY, retryException);
+                            RequestContext.getCurrentContext().set(ServcieRetryException.CONTEXT_KEY, retryException);
                             jsonOutput = serviceRunner.execute(retryException.getRetryServiceId(), jsonInput);
-                            RequestContext.open().remove(ServcieRetryException.CONTEXT_KEY);
+                            RequestContext.getCurrentContext().remove(ServcieRetryException.CONTEXT_KEY);
                             getLogger().warn("Restart service: " + serviceId + " round " + retryException.getRetryIndex() + " successful.");
                             break;
                         } catch (ServcieRetryException e) {
                             // do next loop when met same ServcieRetryException errors.
-                            RequestContext.open().set(ServcieRetryException.CONTEXT_KEY, retryException);
+                            RequestContext.getCurrentContext().set(ServcieRetryException.CONTEXT_KEY, retryException);
                             getLogger().warn("Restart service: " + serviceId + " round " + retryException.getRetryIndex() + " failed.");
                         }
                     }

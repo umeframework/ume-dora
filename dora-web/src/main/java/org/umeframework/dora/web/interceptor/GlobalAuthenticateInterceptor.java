@@ -67,15 +67,15 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws AuthenticationException {
+        RequestContext.reset();
         super.getLogger().debug("SessionContext Open...");
-        RequestContext<String> ctx = RequestContext.open();
         String sys = null;
         String sid = null;
         String uid = null;
         try {
-            ctx.set(HTTP_REQUEST, request);
-            ctx.set(HTTP_RESPONSE, response);
-            ctx.set(TRANSACTION_START_TIME, new Timestamp(System.currentTimeMillis()));
+            RequestContext.getCurrentContext().set(HTTP_REQUEST, request);
+            RequestContext.getCurrentContext().set(HTTP_RESPONSE, response);
+            RequestContext.getCurrentContext().set(TRANSACTION_START_TIME, new Timestamp(System.currentTimeMillis()));
             String token = request.getHeader(HttpSessionConstants.TOKEN_ID);
             if (StringUtil.isEmpty(token)) {
                 token = request.getParameter(HttpSessionConstants.TOKEN_ID);
@@ -84,9 +84,9 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
                     token = request.getParameter(HttpSessionConstants.TOKEN_ID);
                 }
             }
-            ctx.set(TOKEN, token);
+            RequestContext.getCurrentContext().set(TOKEN, token);
             HttpSession session = request.getSession(false);
-            ctx.set(HTTP_SESSION, session);
+            RequestContext.getCurrentContext().set(HTTP_SESSION, session);
 
             if (!(handler instanceof HandlerMethod)) {
                 // Skip in case of No HandlerMethod Input
@@ -115,8 +115,8 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
                 }
             }
 
-            ctx.set(SYS, sys);
-            ctx.set(SID, sid);
+            RequestContext.getCurrentContext().set(SYS, sys);
+            RequestContext.getCurrentContext().set(SID, sid);
 
             super.getLogger().debug("SYS:" + sys);
             super.getLogger().debug("SID:" + sid);
@@ -135,7 +135,7 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
                 if (session == null) {
                     // create HttpSession when service is non-authentication (first time access after open browse usually)
                     session = request.getSession();
-                    ctx.set(HTTP_SESSION, session);
+                    RequestContext.getCurrentContext().set(HTTP_SESSION, session);
                     getLogger().info("Create new session for non-authenticated service.");
                 }
                 return true;
@@ -146,7 +146,7 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
                 Object tokenInSession = session.getAttribute(HttpSessionConstants.TOKEN_ID);
                 if (tokenInSession != null) {
                     token = tokenInSession.toString();
-                    ctx.set(TOKEN, token);
+                    RequestContext.getCurrentContext().set(TOKEN, token);
                 }
             }
 
@@ -191,15 +191,15 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         try {
-            String serviceId = RequestContext.open().get(SID);
-            String token = RequestContext.open().get(TOKEN);
-            HttpSession session = RequestContext.open().get(HTTP_SESSION);
+            String serviceId = RequestContext.getCurrentContext().get(SID);
+            String token = RequestContext.getCurrentContext().get(TOKEN);
+            HttpSession session = RequestContext.getCurrentContext().get(HTTP_SESSION);
             if (serviceId != null && serviceMapping != null) {
                 ServiceWrapper serviceRef = serviceMapping.getService(serviceId);
                 // Response common items into HTTP header
                 if (!serviceRef.isAuthenticate()) {
                     // must get token again because login service could create new token and store in context
-                    token = RequestContext.open().get(TOKEN);
+                    token = RequestContext.getCurrentContext().get(TOKEN);
                 }
                 if (enableTokenClient) {
                     response.addHeader(HttpSessionConstants.TOKEN_ID, token);
@@ -211,9 +211,9 @@ public class GlobalAuthenticateInterceptor extends BaseComponent implements Hand
         } catch (Exception e) {
             throw e;
         } finally {
+            super.getLogger().debug("SessionContext Closed.");
             // close context
             RequestContext.close();
-            super.getLogger().debug("SessionContext Closed.");
         }
     }
 

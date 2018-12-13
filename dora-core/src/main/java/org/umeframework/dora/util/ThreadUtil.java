@@ -11,54 +11,10 @@ import org.umeframework.dora.log.Logger;
 /**
  * ThreadUtil
  * 
- * @author mayue
+ * @author Yue Ma
  *
  */
 public class ThreadUtil extends Thread {
-    /**
-     * Block for synchronized thread
-     */
-    private static final byte[] block = new byte[0];
-
-    /**
-     * Thread call back interface
-     */
-    public static interface ThreadHandler {
-
-        /**
-         * doBefore
-         * 
-         * @param parentContext
-         * @param parameters
-         */
-        void doBefore(RequestContext<?> parentContext, Object[] parameters);
-
-        /**
-         * doAfter
-         * 
-         * @param parentContext
-         * @param result
-         * @return
-         */
-        Object doAfter(RequestContext<?> parentContext, Object result);
-
-        /**
-         * doException
-         * 
-         * @param parentContext
-         * @param e
-         * @return
-         */
-        Object doException(RequestContext<?> parentContext, Throwable e);
-
-        /**
-         * doFinally
-         * 
-         * @param parentContext
-         */
-        void doFinally(RequestContext<?> parentContext);
-    }
-
     /**
      * Instance for execute in sub thread
      */
@@ -72,17 +28,17 @@ public class ThreadUtil extends Thread {
      */
     private Object[] parameters;
     /**
-     * Call back instance for result handling
-     */
-    private ThreadHandler handler;
-    /**
      * RequestContext of invoker side
      */
-    private RequestContext<?> parentContext;
+    private RequestContext context;
     /**
      * logger
      */
     private Logger logger;
+    /**
+     * result
+     */
+    private Object result; 
 
     /**
      * ThreadUtil
@@ -92,12 +48,11 @@ public class ThreadUtil extends Thread {
      * @param parameters
      * @param callback
      */
-    public ThreadUtil(Object instance, String function, Object[] parameters, ThreadHandler callback, Logger logger) {
+    public ThreadUtil(Object instance, String function, Object[] parameters, Logger logger) {
         this.instance = instance;
         this.function = function;
         this.parameters = parameters;
-        this.handler = callback;
-        this.parentContext = RequestContext.open();
+        this.context = RequestContext.getCurrentContext();
         this.logger = logger;
     }
 
@@ -108,33 +63,17 @@ public class ThreadUtil extends Thread {
      */
     @Override
     public void run() {
-        synchronized (block) {
-            if (logger != null) {
-                logger.info("New thread to execute: " + function + " of " + instance);
-            }
-
-            RequestContext<?> childContext = RequestContext.openFrom(parentContext);
-
-            Object result = null;
-            try {
-                Method method = ReflectUtil.getNonBridgeMethod(instance.getClass(), this.function);
-                if (handler != null) {
-                    handler.doBefore(childContext, parameters);
-                }
-                result = method.invoke(instance, parameters);
-                if (handler != null) {
-                    result = handler.doAfter(childContext, result);
-                }
-            } catch (Throwable e) {
-                logger.error("Exception in thread:" + this.function + "," + this.instance, e);
-                if (handler != null) {
-                    result = handler.doException(childContext, e);
-                }
-            } finally {
-                if (handler != null) {
-                    handler.doFinally(childContext);
-                }
-            }
+        RequestContext.cloneFrom(context);
+        if (logger != null) {
+            logger.info("New thread to execute: " + function + " of " + instance);
+        }
+        try {
+            Method method = ReflectUtil.getNonBridgeMethod(instance.getClass(), this.function);
+            result = method.invoke(instance, parameters);
+        } catch (Throwable e) {
+            logger.error("Exception in thread:" + this.function + "," + this.instance, e);
+        } finally {
+            RequestContext.close();
         }
     }
 
@@ -184,21 +123,6 @@ public class ThreadUtil extends Thread {
     }
 
     /**
-     * @return the handler
-     */
-    public ThreadHandler getHandler() {
-        return handler;
-    }
-
-    /**
-     * @param handler
-     *            the handler to set
-     */
-    public void setHandler(ThreadHandler handler) {
-        this.handler = handler;
-    }
-
-    /**
      * @return the logger
      */
     public Logger getLogger() {
@@ -211,6 +135,13 @@ public class ThreadUtil extends Thread {
      */
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    /**
+     * @return the result
+     */
+    public Object getResult() {
+        return result;
     }
 
 }

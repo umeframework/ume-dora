@@ -61,7 +61,7 @@ public abstract class BaseComponent implements ContextConstants {
 	 * @return
 	 */
 	public String getUid() {
-		return RequestContext.open().get(UID);
+		return RequestContext.getCurrentContext().get(UID);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public abstract class BaseComponent implements ContextConstants {
 	 * @return
 	 */
 	public String getSysId() {
-        return RequestContext.open().get(SYS);
+        return RequestContext.getCurrentContext().get(SYS);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public abstract class BaseComponent implements ContextConstants {
 	 * @return
 	 */
 	public String getServiceId() {
-        return RequestContext.open().get(SID);
+        return RequestContext.getCurrentContext().get(SID);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public abstract class BaseComponent implements ContextConstants {
 	 * @return
 	 */
 	protected Timestamp getTransactionStartTime() {
-		return RequestContext.open().get(TRANSACTION_START_TIME);
+		return RequestContext.getCurrentContext().get(TRANSACTION_START_TIME);
 	}
 
 	/**

@@ -40,7 +40,7 @@ public class DbmsAlertManager extends BaseComponent {
             MessageHandler callbacker) {
         DbmsAlertMonitor monitor = new DbmsAlertMonitor(dataSource, messageTimeout, messageId, callbacker);
         threadHolder.put(messageId, monitor);
-        new ThreadUtil(threadHolder.get(messageId), "registeAndExecute", null, null, getLogger()).start();
+        new ThreadUtil(threadHolder.get(messageId), "registeAndExecute", null, getLogger()).start();
     }
 
     /**

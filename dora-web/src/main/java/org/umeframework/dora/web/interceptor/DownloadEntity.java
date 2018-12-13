@@ -103,7 +103,7 @@ public class DownloadEntity implements Serializable, ContextConstants {
 	 * @throws IOException
 	 */
 	public void download() throws IOException {
-		HttpServletResponse response = RequestContext.open().get(HTTP_RESPONSE);
+		HttpServletResponse response = RequestContext.getCurrentContext().get(HTTP_RESPONSE);
 		if (response != null) {
 			OutputStream outputStream = null;
 			try {

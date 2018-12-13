@@ -19,11 +19,11 @@ import org.apache.commons.beanutils.ConversionException;
  * 
  * @author Yue MA
  */
-public class RequestContext<T> {
+public class RequestContext {
     /**
      * ThreadLocal instance
      */
-    private static final ThreadLocal<RequestContext<?>> contextHolder = new InheritableThreadLocal<RequestContext<?>>();
+    private static final ThreadLocal<RequestContext> contextHolder = new InheritableThreadLocal<RequestContext>();
     /**
      * Sync control flag
      */
@@ -32,31 +32,56 @@ public class RequestContext<T> {
     /**
      * value container
      */
-    private Map<T, Object> valueMap;
+    private Map<String, Object> valueMap;
 
+//    /**
+//     * Init new instance
+//     *
+//     * @return
+//     */
+//    public static RequestContext open() {
+//        synchronized (block) {
+//            // create new instance
+//            contextHolder.set(new RequestContext());
+//            return contextHolder.get();
+//        }
+//    }
+    
     /**
-     * Create new SessionContext instance
-     *
+     * openFrom
+     * 
+     * @param src
      * @return
      */
-    public static <E> RequestContext<E> open() {
+    public static RequestContext cloneFrom(RequestContext src) {
         synchronized (block) {
-            @SuppressWarnings("unchecked")
-            RequestContext<E> context = (RequestContext<E>) contextHolder.get();
-            if (context == null) {
-                context = new RequestContext<E>();
-                contextHolder.set(context);
-            }
-            return context;
+            contextHolder.set(src.deepCopy());
+            return contextHolder.get();
         }
     }
 
     /**
-     * Close current SessionContext instance
+     * Close current instance
+     * 
+     * @return
+     */
+    public static RequestContext getCurrentContext() {
+        synchronized (block) {
+            RequestContext context = contextHolder.get();
+            if (context == null) {
+                contextHolder.set(new RequestContext());
+                context = contextHolder.get();
+            }
+            return context;
+        }
+    }
+    
+    /**
+     * Close current instance
      */
     public static void close() {
-        RequestContext<?> context = contextHolder.get();
         synchronized (block) {
+            RequestContext context = contextHolder.get();
             if (context != null) {
                 context.valueMap.clear();
             }
@@ -64,39 +89,27 @@ public class RequestContext<T> {
             contextHolder.remove();
         }
     }
-
+    
     /**
-     * Copy from another SessionContext instance
-     * 
-     * @param tar
+     * Reset current instance values
      */
-    public static <E> RequestContext<E> openFrom(RequestContext<E> src) {
+    public static void reset() {
         synchronized (block) {
-            RequestContext<E> context = open();
-            context.valueMap = src.valueMap;
-            return context;
+            RequestContext context = contextHolder.get();
+            if (context != null) {
+                context.valueMap.clear();
+            }
         }
     }
 
-    /**
-     * copy
-     * 
-     * @return
-     */
-    public RequestContext<T> copy() {
-        RequestContext<T> context = new RequestContext<T>();
-        context.valueMap = this.valueMap;
-        return context;
-    }
-    
     /*
      * (non-Javadoc)
      * 
      * @see java.lang.Object#clone()
      */
     @SuppressWarnings("unchecked")
-    public RequestContext<T> clone() {
-        RequestContext<T> context = new RequestContext<T>();
+    private RequestContext deepCopy() {
+        RequestContext context = new RequestContext();
         // Deep copy
         if (this.valueMap == null) {
             context.valueMap = null;
@@ -109,7 +122,7 @@ public class RequestContext<T> {
                 out.writeObject(this.valueMap);
                 out.flush();
                 in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-                context.valueMap = (Map<T, Object>) (in.readObject());
+                context.valueMap = (Map<String, Object>) (in.readObject());
             } catch (Exception e) {
                 throw new ConversionException(e);
             } finally {
@@ -141,7 +154,7 @@ public class RequestContext<T> {
      * @param key
      * @param value
      */
-    public <E> void set(T key, E value) {
+    public <E> void set(String key, E value) {
         this.valueMap.put(key, value);
     }
 
@@ -150,7 +163,7 @@ public class RequestContext<T> {
      * 
      * @param key
      */
-    public <E> void remove(T key) {
+    public void remove(String key) {
         this.valueMap.remove(key);
     }
 
@@ -161,7 +174,7 @@ public class RequestContext<T> {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public <E> E get(T key) {
+    public <E> E get(String key) {
         return (E) this.valueMap.get(key);
     }
 
@@ -170,7 +183,7 @@ public class RequestContext<T> {
      * 
      * @return
      */
-    public Set<T> keySet() {
+    public Set<String> keySet() {
         return this.valueMap.keySet();
     }
 

@@ -54,7 +54,7 @@ public class TempMemoryCachedImpl extends CachedSupport implements CacheManager 
 		getLogger().info("Temp memory cache instance start.");
 
 		if (super.getExpire() > 0) {
-			new ThreadUtil(this, "checkExpired", new Object[] { super.getExpire() }, null, this.getLogger()).start();
+			new ThreadUtil(this, "checkExpired", new Object[] { super.getExpire() }, this.getLogger()).start();
 			getLogger().info("Temp memory cache monitor thread start.");
 		}
 	}

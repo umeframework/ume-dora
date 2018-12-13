@@ -69,7 +69,7 @@ public class UserLoginServiceImpl extends BaseComponent implements UserLoginServ
 		// use default token generate rule if no business token provided
 		String token = createToken(userObj);
 		// Set internal token into context
-        RequestContext.open().set(TOKEN,token);
+        RequestContext.getCurrentContext().set(TOKEN,token);
 		// caching user object
 		if (singleLogin) {
 			// check multiple login
@@ -91,7 +91,7 @@ public class UserLoginServiceImpl extends BaseComponent implements UserLoginServ
 	synchronized public void logout(String loginId) {
 		userCacheService.deleteTokenByUID(loginId);
 		// updateLogoutStatus(sysUserId);
-		HttpSession hs = RequestContext.open().get(HTTP_SESSION);
+		HttpSession hs = RequestContext.getCurrentContext().get(HTTP_SESSION);
 		if (hs != null) {
             hs.removeAttribute(HttpSessionConstants.TOKEN_ID);
 		}

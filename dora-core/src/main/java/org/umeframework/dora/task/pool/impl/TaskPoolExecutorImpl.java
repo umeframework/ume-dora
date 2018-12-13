@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.transaction.PlatformTransactionManager;
 import org.umeframework.dora.service.BaseComponent;
+import org.umeframework.dora.task.TaskRunner;
+import org.umeframework.dora.task.TaskThread;
 import org.umeframework.dora.task.pool.TaskPoolExecutor;
-import org.umeframework.dora.task.pool.TaskRunner;
-import org.umeframework.dora.task.pool.TaskThread;
 
 /**
  * TaskPoolExecutorImpl<br>
@@ -39,7 +39,7 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
     /**
      * maximumPoolSize<br>
      */
-    private int maximumPoolSize = 10;
+    private int maximumPoolSize = 25;
     /**
      * keepAliveTime<br>
      */
@@ -47,7 +47,7 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
     /**
      * blockingQueueMaximumSize<br>
      */
-    private int blockingQueueMaximumSize = 500;
+    private int blockingQueueMaximumSize = 65536;
     /**
      * timeUnit<br>
      */
@@ -67,16 +67,6 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
      */
     @Override
     synchronized public void close() {
-        /*
-         * if (this.getThreadPoolExecutor().getQueue() != null && !this.getThreadPoolExecutor().getQueue().isEmpty()) {
-         * Iterator<Runnable> itr = this.getThreadPoolExecutor().getQueue().iterator();
-         * while (itr.hasNext()) {
-         * Runnable task = itr.next();
-         * this.getThreadPoolExecutor().remove(task);
-         * }
-         * }
-         */
-
         threadPoolExecutor.shutdown();
         super.getLogger().info("Shutdown TaskPoolExecutor:" + name);
     }
@@ -129,7 +119,7 @@ public class TaskPoolExecutorImpl extends BaseComponent implements TaskPoolExecu
         try {
             taskThread.run();
         } catch (Throwable e) {
-            super.getLogger().error("TaskPoolExecutor doSync error:", e);
+            super.getLogger().error("TaskPoolExecutor run error:", e);
         }
     }
 
