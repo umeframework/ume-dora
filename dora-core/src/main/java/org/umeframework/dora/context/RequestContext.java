@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,12 +37,7 @@ public class RequestContext implements Serializable {
     /**
      * value container
      */
-    private Map<String, Serializable> valueMap;
-
-    /**
-     * transient value container
-     */
-    private Map<String, Object> transientValueMap;
+    private Map<String, Object> valueMap;
 
     /**
      * copyFrom
@@ -111,7 +104,6 @@ public class RequestContext implements Serializable {
             RequestContext context = contextHolder.get();
             if (context != null) {
                 context.valueMap.clear();
-                context.transientValueMap.clear();
             }
         }
     }
@@ -124,7 +116,6 @@ public class RequestContext implements Serializable {
     public RequestContext copy() {
         RequestContext context = new RequestContext();
         context.valueMap = this.valueMap;
-        context.transientValueMap = this.transientValueMap;
         return context;
     }
 
@@ -140,27 +131,23 @@ public class RequestContext implements Serializable {
         if (this.valueMap == null) {
             context.valueMap = null;
         } else {
-            ObjectOutputStream out = null;
-            ObjectInputStream in = null;
             try {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                out = new ObjectOutputStream(bos);
-                out.writeObject(this.valueMap);
-                out.flush();
-                in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-                context.valueMap = (Map<String, Serializable>) (in.readObject());
-            } catch (Exception e) {
-                throw new ConversionException(e);
-            } finally {
+                context.valueMap = (Map<String, Object>) (deepCopyObject(valueMap));
+            } catch (Exception deepCopyError) {
+                Map<String, Object> serializableValueMap = new HashMap<>();
+                for (Map.Entry<String, Object> e : this.valueMap.entrySet()) {
+                    Object value = e.getValue();
+                    try {
+                        deepCopyObject(value);
+                        serializableValueMap.put(e.getKey(), value);
+                    } catch (Exception deepCopyElementError) {
+                        // Skip unSerializable object
+                    }
+                }
                 try {
-                    if (out != null) {
-                        out.close();
-                    }
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException e) {
-                    throw new ConversionException(e);
+                    context.valueMap = (Map<String, Object>) (deepCopyObject(serializableValueMap));
+                } catch (Exception deepCopySerializableValueMapError) {
+                    throw new ConversionException(deepCopySerializableValueMapError);
                 }
             }
         }
@@ -168,11 +155,41 @@ public class RequestContext implements Serializable {
     }
 
     /**
+     * deepCopyObject
+     * 
+     * @param src
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private Object deepCopyObject(Object src) throws IOException, ClassNotFoundException {
+        if (src == null) {
+            return null;
+        }
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            out = new ObjectOutputStream(bos);
+            out.writeObject(src);
+            out.flush();
+            in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+            return in.readObject();
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+        }
+    }
+
+    /**
      * RequestContext
      */
     private RequestContext() {
         this.valueMap = new HashMap<>();
-        this.transientValueMap = new HashMap<>();
     }
 
     /**
@@ -182,11 +199,7 @@ public class RequestContext implements Serializable {
      * @param value
      */
     public void set(String key, Object value) {
-        if (value instanceof Serializable) {
-            valueMap.put(key, (Serializable) value);
-        } else {
-            transientValueMap.put(key, value);
-        }
+        valueMap.put(key, value);
     }
 
     /**
@@ -195,12 +208,7 @@ public class RequestContext implements Serializable {
      * @param key
      */
     public void remove(String key) {
-        if (valueMap.containsKey(key)) {
-            valueMap.remove(key);
-        }
-        if (transientValueMap.containsKey(key)) {
-            transientValueMap.remove(key);
-        }
+        valueMap.remove(key);
     }
 
     /**
@@ -211,13 +219,7 @@ public class RequestContext implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public <E> E get(String key) {
-        if (valueMap.containsKey(key)) {
-            return (E) valueMap.get(key);
-        }
-        if (transientValueMap.containsKey(key)) {
-            return (E) transientValueMap.get(key);
-        }
-        return null;
+        return (E) valueMap.get(key);
     }
 
     /**
@@ -225,12 +227,7 @@ public class RequestContext implements Serializable {
      * 
      * @return
      */
-    public List<String> keySet() {
-        Set<String> keySet1 = valueMap.keySet();
-        Set<String> keySet2 = transientValueMap.keySet();
-        List<String> keySet = new ArrayList<>(keySet1.size() + keySet2.size());
-        keySet.addAll(keySet1);
-        keySet.addAll(keySet2);
-        return keySet;
+    public Set<String> keySet() {
+        return valueMap.keySet();
     }
 }
