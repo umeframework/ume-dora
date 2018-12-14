@@ -28,6 +28,8 @@
         <module>../umeframework-boot</module>
         <module>../umeframework-tool</module>
         
+        <module>../umeframework-cloud</module>
+        
 	</modules>
 	
 

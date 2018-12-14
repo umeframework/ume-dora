@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +39,12 @@ public class RequestContext implements Serializable {
     /**
      * value container
      */
-    private Map<String, Object> valueMap;
+    private Map<String, Serializable> valueMap;
+
+    /**
+     * transient value container
+     */
+    private Map<String, Object> transientValueMap;
 
     /**
      * copyFrom
@@ -51,7 +58,7 @@ public class RequestContext implements Serializable {
             return contextHolder.get();
         }
     }
-    
+
     /**
      * openFrom
      * 
@@ -64,7 +71,6 @@ public class RequestContext implements Serializable {
             return contextHolder.get();
         }
     }
-
 
     /**
      * Close current instance
@@ -81,21 +87,22 @@ public class RequestContext implements Serializable {
             return context;
         }
     }
-    
+
     /**
      * Close current instance
      */
     public static void close() {
         synchronized (block) {
-            RequestContext context = contextHolder.get();
-            if (context != null) {
-                context.valueMap.clear();
-            }
+            // Can not clear valueMap because Sub Threads in using when start task
+            // RequestContext context = contextHolder.get();
+            // if (context != null) {
+            // context.valueMap.clear();
+            // }
             contextHolder.set(null);
             contextHolder.remove();
         }
     }
-    
+
     /**
      * Reset current instance values
      */
@@ -104,10 +111,11 @@ public class RequestContext implements Serializable {
             RequestContext context = contextHolder.get();
             if (context != null) {
                 context.valueMap.clear();
+                context.transientValueMap.clear();
             }
         }
     }
-    
+
     /**
      * copy
      * 
@@ -116,6 +124,7 @@ public class RequestContext implements Serializable {
     public RequestContext copy() {
         RequestContext context = new RequestContext();
         context.valueMap = this.valueMap;
+        context.transientValueMap = this.transientValueMap;
         return context;
     }
 
@@ -139,7 +148,7 @@ public class RequestContext implements Serializable {
                 out.writeObject(this.valueMap);
                 out.flush();
                 in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
-                context.valueMap = (Map<String, Object>) (in.readObject());
+                context.valueMap = (Map<String, Serializable>) (in.readObject());
             } catch (Exception e) {
                 throw new ConversionException(e);
             } finally {
@@ -163,6 +172,7 @@ public class RequestContext implements Serializable {
      */
     private RequestContext() {
         this.valueMap = new HashMap<>();
+        this.transientValueMap = new HashMap<>();
     }
 
     /**
@@ -171,8 +181,12 @@ public class RequestContext implements Serializable {
      * @param key
      * @param value
      */
-    public <E> void set(String key, E value) {
-        this.valueMap.put(key, value);
+    public void set(String key, Object value) {
+        if (value instanceof Serializable) {
+            valueMap.put(key, (Serializable) value);
+        } else {
+            transientValueMap.put(key, value);
+        }
     }
 
     /**
@@ -181,7 +195,12 @@ public class RequestContext implements Serializable {
      * @param key
      */
     public void remove(String key) {
-        this.valueMap.remove(key);
+        if (valueMap.containsKey(key)) {
+            valueMap.remove(key);
+        }
+        if (transientValueMap.containsKey(key)) {
+            transientValueMap.remove(key);
+        }
     }
 
     /**
@@ -192,7 +211,13 @@ public class RequestContext implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public <E> E get(String key) {
-        return (E) this.valueMap.get(key);
+        if (valueMap.containsKey(key)) {
+            return (E) valueMap.get(key);
+        }
+        if (transientValueMap.containsKey(key)) {
+            return (E) transientValueMap.get(key);
+        }
+        return null;
     }
 
     /**
@@ -200,8 +225,12 @@ public class RequestContext implements Serializable {
      * 
      * @return
      */
-    public Set<String> keySet() {
-        return this.valueMap.keySet();
+    public List<String> keySet() {
+        Set<String> keySet1 = valueMap.keySet();
+        Set<String> keySet2 = transientValueMap.keySet();
+        List<String> keySet = new ArrayList<>(keySet1.size() + keySet2.size());
+        keySet.addAll(keySet1);
+        keySet.addAll(keySet2);
+        return keySet;
     }
-
 }
