@@ -1,5 +1,7 @@
 package org.umeframework.dora.dsm;
 
+import java.io.Serializable;
+
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
@@ -15,7 +17,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
  * 
  * @author MA YUE
  */
-public abstract class AbstractMybatisDataSourceManager<CFG> extends AbstractDataSourceManager<SqlSession,CFG> {
+public abstract class AbstractMybatisDataSourceManager<CFG extends Serializable> extends AbstractDataSourceManager<SqlSession,CFG> {
     /**
      * getMybatisConfigLocation
      * 

@@ -1,5 +1,7 @@
 package org.umeframework.dora.dsm;
 
+import java.io.Serializable;
+
 import javax.sql.DataSource;
 
 import org.springframework.transaction.PlatformTransactionManager;
@@ -9,23 +11,27 @@ import org.springframework.transaction.PlatformTransactionManager;
  * 
  * @author MA YUE
  */
-public class DataSourceBean<DAO> implements java.io.Serializable {
+public class DataSourceBean<DAO, CFG extends Serializable> implements java.io.Serializable {
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = -1096714695407805007L;
     /**
+     * configInfo
+     */
+    private CFG configInfo;
+    /**
      * JDBC数据源实例<br>
      */
-    private DataSource dataSource;
+    private transient DataSource dataSource;
     /**
      * Mybatis DAO实例<br>
      */
-    private DAO dao;
+    private transient DAO dao;
     /**
      * 事务管理器实例<br>
      */
-    private PlatformTransactionManager transactionManager;
+    private transient PlatformTransactionManager transactionManager;
     
     /**
      * @return the dataSource
@@ -62,5 +68,17 @@ public class DataSourceBean<DAO> implements java.io.Serializable {
      */
     public void setDao(DAO dao) {
         this.dao = dao;
+    }
+    /**
+     * @return the configInfo
+     */
+    public CFG getConfigInfo() {
+        return configInfo;
+    }
+    /**
+     * @param configInfo the configInfo to set
+     */
+    public void setConfigInfo(CFG configInfo) {
+        this.configInfo = configInfo;
     }
 }

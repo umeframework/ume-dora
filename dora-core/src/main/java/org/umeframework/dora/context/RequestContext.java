@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,11 @@ import org.apache.commons.beanutils.ConversionException;
  * 
  * @author Yue MA
  */
-public class RequestContext {
+public class RequestContext implements Serializable {
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = -2364647643350116822L;
     /**
      * ThreadLocal instance
      */
@@ -35,6 +40,19 @@ public class RequestContext {
     private Map<String, Object> valueMap;
 
     /**
+     * copyFrom
+     * 
+     * @param src
+     * @return
+     */
+    public static RequestContext copyFrom(RequestContext src) {
+        synchronized (block) {
+            contextHolder.set(src.copy());
+            return contextHolder.get();
+        }
+    }
+    
+    /**
      * openFrom
      * 
      * @param src
@@ -46,6 +64,7 @@ public class RequestContext {
             return contextHolder.get();
         }
     }
+
 
     /**
      * Close current instance
@@ -88,11 +107,22 @@ public class RequestContext {
             }
         }
     }
-
-    /*
-     * (non-Javadoc)
+    
+    /**
+     * copy
      * 
-     * @see java.lang.Object#clone()
+     * @return
+     */
+    public RequestContext copy() {
+        RequestContext context = new RequestContext();
+        context.valueMap = this.valueMap;
+        return context;
+    }
+
+    /**
+     * deepCopy
+     * 
+     * @return
      */
     @SuppressWarnings("unchecked")
     public RequestContext deepCopy() {
