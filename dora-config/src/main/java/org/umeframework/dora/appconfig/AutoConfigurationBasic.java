@@ -21,8 +21,7 @@ import org.springframework.context.annotation.Import;
           DefaultServiceAjaxConfiguration.class,
           DefaultServiceRunnerConfiguration.class,
           DefaultServiceMappingConfiguration.class,
-          DefaultSystemPropertyConfiguration.class,
-          DefaultWebControllerConfiguration.class 
+          DefaultSystemPropertyConfiguration.class
           })
 public class AutoConfigurationBasic {
 }
