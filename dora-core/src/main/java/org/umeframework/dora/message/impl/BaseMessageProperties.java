@@ -4,6 +4,7 @@
 package org.umeframework.dora.message.impl;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.umeframework.dora.exception.SystemException;
@@ -117,6 +118,15 @@ public abstract class BaseMessageProperties implements MessageProperties {
      */
     public void setMsgResources(String msgResources) {
         this.msgResources = msgResources;
+    }
+    
+    /**
+     * keySet
+     * 
+     * @return
+     */
+    public Set<String> keySet() {
+        return resourceMap.keySet();
     }
 
 }

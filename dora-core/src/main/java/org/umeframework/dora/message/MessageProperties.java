@@ -3,6 +3,8 @@
  */
 package org.umeframework.dora.message;
 
+import java.util.Set;
+
 /**
  * Message resource manage class for whole code-value with dynamic parameters
  * structure resources.<br>
@@ -23,6 +25,11 @@ public interface MessageProperties {
             String id,
             Object... parameters);
 
-
+    /**
+     * keySet
+     * 
+     * @return
+     */
+    Set<String> keySet();
 
 }
