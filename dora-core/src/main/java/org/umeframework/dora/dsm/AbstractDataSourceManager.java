@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
 import org.springframework.cache.Cache;
+import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -56,7 +57,7 @@ public abstract class AbstractDataSourceManager<DAO, CFG extends Serializable> i
             return localCachedObj;
         }
         if (cache != null) {
-            DataSourceBean<DAO, CFG> bean = (DataSourceBean<DAO, CFG>) cache.get(key);
+            DataSourceBean<DAO, CFG> bean = (DataSourceBean<DAO, CFG>) getCacheValue(key);
             if (bean != null) {
                 // restore transient filed in DataSourceBean instance
                 bean = restoreDataSourceBean(bean.getConfigInfo());
@@ -78,8 +79,8 @@ public abstract class AbstractDataSourceManager<DAO, CFG extends Serializable> i
         DataSourceBean<DAO, CFG> bean = restoreDataSourceBean(configInfo);
         localCachedMap.put(key, bean);
         if (cache != null) {
-            if (cachedOnlyNotExist && cache.get(key) == null) {
-                cache.put(key, bean);
+            if (cachedOnlyNotExist && getCacheValue(key) == null) {
+                setCacheValue(key, bean);
             }
         }
         return bean;
@@ -123,7 +124,7 @@ public abstract class AbstractDataSourceManager<DAO, CFG extends Serializable> i
     @SuppressWarnings("unchecked")
     public synchronized void refreshDataSourceBean(String key) {
         if (cache != null) {
-            DataSourceBean<DAO, CFG> remoteCachedObj = (DataSourceBean<DAO, CFG>) cache.get(key);
+            DataSourceBean<DAO, CFG> remoteCachedObj = (DataSourceBean<DAO, CFG>) getCacheValue(key);
             if (remoteCachedObj != null) {
                 localCachedMap.put(key, remoteCachedObj);
             } else {
@@ -154,6 +155,33 @@ public abstract class AbstractDataSourceManager<DAO, CFG extends Serializable> i
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource);
         return transactionManager;
+    }
+    
+    /**
+     * getCacheValue
+     * 
+     * @param key
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public <E> E getCacheValue(String key) {
+        Cache cache = getCache();
+        Object value = cache.get(key);
+        if (value instanceof SimpleValueWrapper) {
+            value = (E)((SimpleValueWrapper) value).get();
+        }
+        return (E)value;
+    }
+    
+    /**
+     * setCacheValue
+     * 
+     * @param key
+     * @param value
+     */
+    public <E> void setCacheValue(String key, E value) {
+        Cache cache = getCache();
+        cache.put(key, value);
     }
 
     /**
