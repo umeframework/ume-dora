@@ -784,6 +784,20 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
         return ds;
     }
 
+    /**
+     * @return the databaseType
+     */
+    public String getDatabaseType() {
+        return databaseType;
+    }
+
+    /**
+     * @param databaseType the databaseType to set
+     */
+    public void setDatabaseType(String databaseType) {
+        this.databaseType = databaseType;
+    }
+
 //    /**
 //     * @param tableDescQueryStr
 //     *            the tableDescQueryStr to set
