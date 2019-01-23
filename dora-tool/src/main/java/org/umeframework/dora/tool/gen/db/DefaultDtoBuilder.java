@@ -255,6 +255,13 @@ public class DefaultDtoBuilder implements DtoBuilder {
                     field.getFieldAnnotationList().add(createAnnotation("ColumnLength", size));
                 }
 			}
+            jpaColumnBuilder.append(", columnDefinition=\"" + field.getColDataTypeWithLength());
+			if (field.getColNotNull() != null && !field.getColNotNull().trim().equals("")) {
+			    jpaColumnBuilder.append(" " + field.getColNotNull());
+			}
+            jpaColumnBuilder.append("\"");
+            jpaColumnBuilder.append(", table=\"" + dto.getTblId() + "\"");
+
 			// process for PK
 			String isPrimaryKey = "false";
 			if (isNotEmpty(field.getColPK())) {
