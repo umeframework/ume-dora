@@ -514,7 +514,7 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
                 length = e.get("dataLength").toString();
             }
             String pkFlag = e.get("pkFlag").toString().equals("1") ? "○" : "";
-            String notNull = e.get("notNull").toString().equals("1") ? "○" : "";
+            String notNull = e.get("notNull").toString().equals("1") || e.get("notNull").toString().toUpperCase().equals("Y")  ? "○" : "";
 
             List<Object> row = createList(new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", "" });
             colIndex++;

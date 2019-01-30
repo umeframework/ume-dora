@@ -47,7 +47,7 @@ public interface DbDescQueryStr {
             + "case when count(USER_CONSTRAINTS.CONSTRAINT_NAME) > 0 then '1' else '0' end AS \"pkFlag\", "
             + "USER_TAB_COLUMNS.NULLABLE AS \"notNull\" "
           + "from USER_TAB_COLUMNS, USER_CONSTRAINTS, USER_CONS_COLUMNS, USER_COL_COMMENTS "
-          + "where USER_TAB_COLUMNS.TABLE_NAME = 'EBAN' "
+          + "where USER_TAB_COLUMNS.TABLE_NAME = {varTableId} "
             + "and USER_TAB_COLUMNS.TABLE_NAME = USER_CONS_COLUMNS.TABLE_NAME(+) "
             + "and USER_TAB_COLUMNS.COLUMN_NAME = USER_CONS_COLUMNS.COLUMN_NAME(+) "
             + "and USER_CONS_COLUMNS.CONSTRAINT_NAME = USER_CONSTRAINTS.CONSTRAINT_NAME(+) "
