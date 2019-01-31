@@ -62,12 +62,16 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
     /**
      * 数据字典查询SQL语句
      */
-    //private String tableDescQueryStr = "select" + " COLUMN_NAME as 'colId'," + " COLUMN_COMMENT as 'colName'," + " DATA_TYPE as 'dataType'," + " case" + " when DATA_TYPE='bigint' or DATA_TYPE='tinyint' or DATA_TYPE='smallint' or DATA_TYPE='mediumint' or DATA_TYPE='int' then NUMERIC_PRECISION+1" + " when DATA_TYPE='decimal' or DATA_TYPE='double' or DATA_TYPE='float' then NUMERIC_PRECISION" + " when DATA_TYPE='varchar' or DATA_TYPE='char' then CHARACTER_MAXIMUM_LENGTH" + " else CHARACTER_OCTET_LENGTH" + " end as 'dataLength'," + " NUMERIC_PRECISION as 'dataPrecision'," + " NUMERIC_SCALE as 'dataScale'," + " case when COLUMN_KEY='PRI' then '1' else '0' end as 'pkFlag'," + " case when IS_NULLABLE='NO' then '1' else '0' end as 'notNull'," + " COLUMN_DEFAULT as 'defaultValue'" + " from INFORMATION_SCHEMA.COLUMNS" + " where TABLE_NAME = {varTableId} AND TABLE_SCHEMA = {varSchema};";
+    private String tableDescQueryStr;
     //private String tableDescQueryStr = "select" + " COLUMN_NAME as 'colId'," + " COLUMN_COMMENT as 'colName'," + " DATA_TYPE as 'dataType'," + " case" + " when DATA_TYPE='bigint' or DATA_TYPE='tinyint' or DATA_TYPE='smallint' or DATA_TYPE='mediumint' or DATA_TYPE='int' then NUMERIC_PRECISION+1" + " when DATA_TYPE='decimal' or DATA_TYPE='double' or DATA_TYPE='float' then NUMERIC_PRECISION" + " when DATA_TYPE='varchar' or DATA_TYPE='char' then CHARACTER_MAXIMUM_LENGTH" + " else CHARACTER_OCTET_LENGTH" + " end as 'dataLength'," + " NUMERIC_PRECISION as 'dataPrecision'," + " NUMERIC_SCALE as 'dataScale'," + " case when COLUMN_KEY='PRI' then '1' else '0' end as 'pkFlag'," + " case when IS_NULLABLE='NO' then '1' else '0' end as 'notNull'," + " COLUMN_DEFAULT as 'defaultValue'" + " from INFORMATION_SCHEMA.COLUMNS" + " where TABLE_NAME = {varTableId} AND TABLE_SCHEMA = {varSchema};";
     /**
      * @return the tableDescQueryStr
      */
     public String getTableDescQueryStr() {
+        if (tableDescQueryStr != null && !tableDescQueryStr.trim().equals("")) {
+            return tableDescQueryStr;
+        }
+        
         String type = databaseType.toUpperCase();
         if (type.equals("ORACLE")) {
             return TABLE_DESC_QUERY_FOR_ORACLE;
@@ -463,7 +467,9 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
             String schemaName = e[0];
             String tableName = e[1];
             Map<String, String> param = new HashMap<String, String>();
-            param.put("varSchema", schemaName);
+            if (schemaName != null && !schemaName.trim().equals("") && !schemaName.trim().equals("*")) {
+                param.put("varSchema", schemaName);
+            }
             param.put("varTableId", tableName);
             @SuppressWarnings("rawtypes")
             List<LinkedHashMap> tableDesc = dao.queryForObjectList(getTableDescQueryStr(), param, LinkedHashMap.class);
@@ -796,6 +802,13 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
      */
     public void setDatabaseType(String databaseType) {
         this.databaseType = databaseType;
+    }
+
+    /**
+     * @param tableDescQueryStr the tableDescQueryStr to set
+     */
+    public void setTableDescQueryStr(String tableDescQueryStr) {
+        this.tableDescQueryStr = tableDescQueryStr;
     }
 
 //    /**

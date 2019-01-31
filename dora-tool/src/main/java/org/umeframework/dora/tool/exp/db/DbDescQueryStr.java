@@ -32,39 +32,40 @@ public interface DbDescQueryStr {
             + " case when IS_NULLABLE='NO' then '1' else '0' end as 'notNull',"
             + " COLUMN_DEFAULT as 'defaultValue'"
             + " from INFORMATION_SCHEMA.COLUMNS"
-            + " where TABLE_NAME = {varTableId}";
+            + " where TABLE_NAME = {varTableId} and TABLE_SCHEMA = {varSchema}";
 
     /**
      * TABLE_DESC_QUERY_FOR_ORACLE
+     * Using "DBA_TAB_COLUMNS" or "USER_TAB_COLUMNS"
      */
     String TABLE_DESC_QUERY_FOR_ORACLE = "select "
-            + "USER_TAB_COLUMNS.COLUMN_NAME AS \"colId\", "
+            + "DBA_TAB_COLUMNS.COLUMN_NAME AS \"colId\", "
             + "substr(USER_COL_COMMENTS.COMMENTS, 1, 30) AS  \"colName\", "
-            + "USER_TAB_COLUMNS.DATA_TYPE AS \"dataType\", "
-            + "USER_TAB_COLUMNS.DATA_LENGTH AS \"dataLength\", "
-            + "USER_TAB_COLUMNS.DATA_PRECISION AS \"dataPrecision\", "
-            + "USER_TAB_COLUMNS.DATA_SCALE AS \"dataScale\", "
+            + "DBA_TAB_COLUMNS.DATA_TYPE AS \"dataType\", "
+            + "DBA_TAB_COLUMNS.DATA_LENGTH AS \"dataLength\", "
+            + "DBA_TAB_COLUMNS.DATA_PRECISION AS \"dataPrecision\", "
+            + "DBA_TAB_COLUMNS.DATA_SCALE AS \"dataScale\", "
             + "case when count(USER_CONSTRAINTS.CONSTRAINT_NAME) > 0 then '1' else '0' end AS \"pkFlag\", "
-            + "USER_TAB_COLUMNS.NULLABLE AS \"notNull\" "
-          + "from USER_TAB_COLUMNS, USER_CONSTRAINTS, USER_CONS_COLUMNS, USER_COL_COMMENTS "
-          + "where USER_TAB_COLUMNS.TABLE_NAME = {varTableId} "
-            + "and USER_TAB_COLUMNS.TABLE_NAME = USER_CONS_COLUMNS.TABLE_NAME(+) "
-            + "and USER_TAB_COLUMNS.COLUMN_NAME = USER_CONS_COLUMNS.COLUMN_NAME(+) "
+            + "DBA_TAB_COLUMNS.NULLABLE AS \"notNull\" "
+          + "from DBA_TAB_COLUMNS, USER_CONSTRAINTS, USER_CONS_COLUMNS, USER_COL_COMMENTS "
+          + "where DBA_TAB_COLUMNS.TABLE_NAME = {varTableId} and DBA_TAB_COLUMNS.OWNER = {varSchema} "
+            + "and DBA_TAB_COLUMNS.TABLE_NAME = USER_CONS_COLUMNS.TABLE_NAME(+) "
+            + "and DBA_TAB_COLUMNS.COLUMN_NAME = USER_CONS_COLUMNS.COLUMN_NAME(+) "
             + "and USER_CONS_COLUMNS.CONSTRAINT_NAME = USER_CONSTRAINTS.CONSTRAINT_NAME(+) "
             + "and USER_CONS_COLUMNS.TABLE_NAME = USER_CONSTRAINTS.TABLE_NAME(+) "
-            + "and USER_TAB_COLUMNS.TABLE_NAME = USER_COL_COMMENTS.TABLE_NAME(+) "
-            + "and USER_TAB_COLUMNS.COLUMN_NAME = USER_COL_COMMENTS.COLUMN_NAME(+) "
+            + "and DBA_TAB_COLUMNS.TABLE_NAME = USER_COL_COMMENTS.TABLE_NAME(+) "
+            + "and DBA_TAB_COLUMNS.COLUMN_NAME = USER_COL_COMMENTS.COLUMN_NAME(+) "
           + "group by "
-            + "USER_TAB_COLUMNS.COLUMN_NAME, "
+            + "DBA_TAB_COLUMNS.COLUMN_NAME, "
             + "USER_COL_COMMENTS.COMMENTS, "
-            + "USER_TAB_COLUMNS.DATA_TYPE, "
-            + "USER_TAB_COLUMNS.DATA_LENGTH, "
-            + "USER_TAB_COLUMNS.DATA_PRECISION, "
-            + "USER_TAB_COLUMNS.DATA_SCALE, "
-            + "USER_TAB_COLUMNS.COLUMN_ID, "
-            + "USER_TAB_COLUMNS.NULLABLE " 
+            + "DBA_TAB_COLUMNS.DATA_TYPE, "
+            + "DBA_TAB_COLUMNS.DATA_LENGTH, "
+            + "DBA_TAB_COLUMNS.DATA_PRECISION, "
+            + "DBA_TAB_COLUMNS.DATA_SCALE, "
+            + "DBA_TAB_COLUMNS.COLUMN_ID, "
+            + "DBA_TAB_COLUMNS.NULLABLE " 
           + "order by "
-            + "USER_TAB_COLUMNS.COLUMN_ID ";
+            + "DBA_TAB_COLUMNS.COLUMN_ID ";
 
     
 }
