@@ -129,26 +129,24 @@ public class DataTypeUtil {
 	 */
 	private static final Map<String, String> dbTypeMap2Text = new HashMap<String, String>();
 	static {
-		dbTypeMap2Text.put("VARCHAR", "文本");
-		dbTypeMap2Text.put("VARCHAR2", "文本");
-		dbTypeMap2Text.put("INT", "长整数");
-		dbTypeMap2Text.put("INTEGER", "长整数");
+		dbTypeMap2Text.put("VARCHAR", "定长文本");
+		dbTypeMap2Text.put("VARCHAR2", "变长文本");
+		dbTypeMap2Text.put("INT", "整数");
+		dbTypeMap2Text.put("INTEGER", "整数");
 		dbTypeMap2Text.put("DECIMAL", "数值");
-		dbTypeMap2Text.put("NUMBER", "数值");
+		dbTypeMap2Text.put("NUMBER", "数字");
 		dbTypeMap2Text.put("DATE", "日期");
 		dbTypeMap2Text.put("TIME", "时间");
 		dbTypeMap2Text.put("TIMESTAMP", "时间戳");
         dbTypeMap2Text.put("DATETIME", "日期时间");
 		dbTypeMap2Text.put("BIGINT", "大整数");
-		dbTypeMap2Text.put("CHAR", "定长文本");
+		dbTypeMap2Text.put("CHAR", "字符");
 		dbTypeMap2Text.put("LONGTEXT", "长文本");
-        //dbTypeMap2Text.put("TEXT", "长文本");
-		dbTypeMap2Text.put("BLOB", "二进制对象");
-		dbTypeMap2Text.put("CLOB", "字符大对象");
-		dbTypeMap2Text.put("TEXT", "字符大对象");
+		dbTypeMap2Text.put("BLOB", "BLOB");
+		dbTypeMap2Text.put("CLOB", "CLOB");
+		dbTypeMap2Text.put("TEXT", "TEXT");
 		dbTypeMap2Text.put("AUTO-INCREMENT", "自增序列");
-		dbTypeMap2Text.put("MEDIUMBLOB", "图片");
-
+		dbTypeMap2Text.put("MEDIUMBLOB", "MEDIUMBLOB");
 	}
 
 	/**

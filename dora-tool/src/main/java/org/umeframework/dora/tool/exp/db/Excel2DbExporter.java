@@ -510,7 +510,7 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
                 colName = colId;
             }
             String type = String.valueOf(e.get("dataType"));
-            type = DataTypeUtil.getTextDescFromType(type);
+            String remark = DataTypeUtil.getTextDescFromType(type);
             String length = "";
             if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
                 length = e.get("dataPrecision") + "," + e.get("dataScale");
@@ -522,7 +522,7 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
             String pkFlag = e.get("pkFlag").toString().equals("1") ? "○" : "";
             String notNull = e.get("notNull").toString().equals("1") || e.get("notNull").toString().toUpperCase().equals("Y")  ? "○" : "";
 
-            List<Object> row = createList(new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", "" });
+            List<Object> row = createList(new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", remark });
             colIndex++;
             rows.add(row);
         }
