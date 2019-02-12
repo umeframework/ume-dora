@@ -123,11 +123,11 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
         ((JdbcDaoImpl) dao).setLogger(logger);
     }
 
-    /**
-     * 构造函数
-     */
-    public Excel2DbExporter() throws Exception {
-    }
+//    /**
+//     * 构造函数
+//     */
+//    public Excel2DbExporter() throws Exception {
+//    }
 
     /**
      * expTableData
@@ -489,40 +489,68 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
      * @param tableName
      * @param tableDesc
      */
+    protected List<Object> createTitleRow1(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
+        return createList(new Object[] { "表描述", "", tableName, "", "", "", "TABLE SPACE", "", "", "", "", "", "" });
+    }
+    protected List<Object> createTitleRow2(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
+        return createList(new Object[] { "表名称", "", tableName, "", "", "", "TABLE SPACE (IDX)", "", "", "", "", "", "" });
+    }
+    protected List<Object> createTitleRow3(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
+        return createList(new Object[] { "分表设定", "", "", "", "", "", "TABLE SPACE (LOB)", "", "", "", "", "", "" });
+    }
+    protected List<Object> createTitleRow4(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
+        return createList(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "" });
+    }
+    protected List<Object> createTitleRow5(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
+        return createList(new Object[] { "序号", "项目名", "项目ID", "数据类型", "长度", "主键", "非空", "默认值", "固定值", "最小值", "最大值", "格式", "备注" });
+    }
+    protected List<Object> createDataRow(String tableName, int colIndex, LinkedHashMap<?, ?> e) {
+        Object colName = e.get("colName");
+        Object colId = e.get("colId");
+        if (isEmpty(String.valueOf(colName))) {
+            colName = colId;
+        }
+        String type = String.valueOf(e.get("dataType"));
+        String remark = DataTypeUtil.getTextDescFromType(type);
+        String length = "";
+        if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
+            length = e.get("dataPrecision") + "," + e.get("dataScale");
+        } else if (e.get("dataPrecision") != null) {
+            length = e.get("dataPrecision").toString();
+        } else if (e.get("dataLength") != null) {
+            length = e.get("dataLength").toString();
+        }
+        String pkFlag = e.get("pkFlag").toString().equals("1") ? "○" : "";
+        String notNull = e.get("notNull").toString().equals("1") || e.get("notNull").toString().toUpperCase().equals("Y")  ? "○" : "";
+
+        return createList(new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", remark });
+    }
     protected void createTableDocPage(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
         List<List<Object>> rows = new ArrayList<List<Object>>();
-        List<Object> row1 = createList(new Object[] { "表描述", "", tableName, "", "", "", "TABLE SPACE", "", "", "", "", "", "" });
-        List<Object> row2 = createList(new Object[] { "表名称", "", tableName, "", "", "", "TABLE SPACE (IDX)", "", "", "", "", "", "" });
-        List<Object> row3 = createList(new Object[] { "分表设定", "", "", "", "", "", "TABLE SPACE (LOB)", "", "", "", "", "", "" });
-        List<Object> row4 = createList(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "" });
-        List<Object> row5 = createList(new Object[] { "序号", "项目名", "项目ID", "数据类型", "长度", "主键", "非空", "默认值", "固定值", "最小值", "最大值", "格式", "备注" });
-        rows.add(row1);
-        rows.add(row2);
-        rows.add(row3);
-        rows.add(row4);
-        rows.add(row5);
+        List<Object> row1 = createTitleRow1(tableName, tableDesc);
+        List<Object> row2 = createTitleRow2(tableName, tableDesc);
+        List<Object> row3 = createTitleRow3(tableName, tableDesc);
+        List<Object> row4 = createTitleRow4(tableName, tableDesc);
+        List<Object> row5 = createTitleRow5(tableName, tableDesc);
+        if (row1 != null) {
+            rows.add(row1);
+        }
+        if (row2 != null) {
+            rows.add(row2);
+        }
+        if (row3 != null) {
+            rows.add(row3);
+        }
+        if (row4 != null) {
+            rows.add(row4);
+        }
+        if (row5 != null) {
+            rows.add(row5);
+        }
 
         int colIndex = 1;
         for (LinkedHashMap<?, ?> e : tableDesc) {
-            Object colName = e.get("colName");
-            Object colId = e.get("colId");
-            if (isEmpty(String.valueOf(colName))) {
-                colName = colId;
-            }
-            String type = String.valueOf(e.get("dataType"));
-            String remark = DataTypeUtil.getTextDescFromType(type);
-            String length = "";
-            if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
-                length = e.get("dataPrecision") + "," + e.get("dataScale");
-            } else if (e.get("dataPrecision") != null) {
-                length = e.get("dataPrecision").toString();
-            } else if (e.get("dataLength") != null) {
-                length = e.get("dataLength").toString();
-            }
-            String pkFlag = e.get("pkFlag").toString().equals("1") ? "○" : "";
-            String notNull = e.get("notNull").toString().equals("1") || e.get("notNull").toString().toUpperCase().equals("Y")  ? "○" : "";
-
-            List<Object> row = createList(new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", remark });
+            List<Object> row = createDataRow(tableName, colIndex, e);//  new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", remark });
             colIndex++;
             rows.add(row);
         }
