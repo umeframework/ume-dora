@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +65,28 @@ public class ExcelAccessor {
      * defaultCellWriter
      */
     private CellWriter<Object> defaultCellWriter = new SimpleCellWriter();
+    
+    /**
+     * readSheetNameList
+     * 
+     * @param excelFile
+     * @return
+     * @throws Exception
+     */
+    public List<String> readSheetNameList(File excelFile) throws Exception {
+        List<String> namelist = new LinkedList<String>();
+        Workbook book = null;
+        try {
+            book = loadExcel(excelFile);
+            for (int sheetIndex = 0; sheetIndex < book.getNumberOfSheets(); sheetIndex++) {
+                namelist.add(book.getSheetName(sheetIndex));
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return namelist;
+    }
 
     /**
      * readSheetAsObjectList
@@ -81,7 +103,7 @@ public class ExcelAccessor {
      */
     public <E> List<List<E>> readSheetAsObjectList(File excelFile, String sheetName, int[] targetColIndexes, int startRowNum, int endRowNum, CellReader<E> cellReader) throws Exception {
         endRowNum = endRowNum < 0 ? Integer.MAX_VALUE : endRowNum;
-        List<List<E>> result = new ArrayList<List<E>>();
+        List<List<E>> result = new LinkedList<List<E>>();
         Workbook book = null;
         try {
             // ファイルをオープンします
@@ -99,7 +121,7 @@ public class ExcelAccessor {
                 Sheet sheet = book.getSheetAt(sheetIndex);
                 ExcelAccessor.Coordinate range = getSheetSize(sheet);
                 for (int i = startRowNum; i <= endRowNum && i <= range.x; i++) {
-                    List<E> row = new ArrayList<E>(targetColIndexes.length);
+                    List<E> row = new LinkedList<E>();
                     for (int j = 0; j < targetColIndexes.length; j++) {
                         Cell cell = getCell(sheet, i, targetColIndexes[j]);
                         E value = cellReader.read(cell);
@@ -135,7 +157,7 @@ public class ExcelAccessor {
      */
     public <E> List<Map<String, E>> readSheetAsMapList(File excelFile, String sheetName, String[] targetColumns, int startRowNum, int endRowNum, CellReader<E> cellReader) throws Exception {
         endRowNum = endRowNum < 0 ? Integer.MAX_VALUE : endRowNum;
-        List<Map<String, E>> result = new ArrayList<Map<String, E>>();
+        List<Map<String, E>> result = new LinkedList<Map<String, E>>();
         // FileInputStream fis = null;
         Workbook book = null;
         try {
@@ -210,9 +232,9 @@ public class ExcelAccessor {
      */
     public List<List<Object>> readSheetAsObjectList(File excelFile, String sheetName, String[] targetColumns, int startRowNum, int endRowNum) throws Exception {
         List<Map<String, Object>> mapListData = readSheetAsMapList(excelFile, sheetName, targetColumns, startRowNum, endRowNum);
-        List<List<Object>> result = new ArrayList<List<Object>>();
+        List<List<Object>> result = new LinkedList<List<Object>>();
         for (Map<String, Object> mapData : mapListData) {
-            List<Object> objList = new ArrayList<Object>(mapData.size());
+            List<Object> objList = new LinkedList<Object>();
             objList.addAll(mapData.values());
             result.add(objList);
         }
@@ -420,20 +442,20 @@ public class ExcelAccessor {
      * @param cellWriter
      */
     public void createSheetWithMapList(String excelname, String sheetname, List<Map<String, Object>> rowMapValues, CellWriter<Object> cellWriter) {
-        List<List<Object>> rowValues = new ArrayList<List<Object>>(rowMapValues.size() + 1);
+        List<List<Object>> rowValues = new LinkedList<List<Object>>();
 
         // List<LinkedHashMap<String, Object>>をList<List<Object>>型に変換します
         for (int i = 0; i < rowMapValues.size(); i++) {
             Map<String, Object> map = rowMapValues.get(i);
             if (i == 0) {
                 // 一番目のタイトル行を構築します
-                List<Object> titles = new ArrayList<Object>(map.size());
+                List<Object> titles = new LinkedList<Object>();
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
                     titles.add(entry.getKey());
                 }
                 rowValues.add(titles);
             }
-            List<Object> values = new ArrayList<Object>(map.size());
+            List<Object> values = new LinkedList<Object>();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 values.add(entry.getValue());
             }
