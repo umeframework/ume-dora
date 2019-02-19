@@ -129,12 +129,13 @@ public class DataTypeUtil {
 	 */
 	private static final Map<String, String> dbTypeMap2Text = new HashMap<String, String>();
 	static {
-		dbTypeMap2Text.put("VARCHAR", "定长文本");
-		dbTypeMap2Text.put("VARCHAR2", "变长文本");
+        dbTypeMap2Text.put("CHAR", "定长文本");
+		dbTypeMap2Text.put("VARCHAR", "文本");
+		dbTypeMap2Text.put("VARCHAR2", "文本");
 		dbTypeMap2Text.put("INT", "整数");
 		dbTypeMap2Text.put("INTEGER", "整数");
 		dbTypeMap2Text.put("DECIMAL", "数值");
-		dbTypeMap2Text.put("NUMBER", "数字");
+		dbTypeMap2Text.put("NUMBER", "数值");
 		dbTypeMap2Text.put("DATE", "日期");
 		dbTypeMap2Text.put("TIME", "时间");
 		dbTypeMap2Text.put("TIMESTAMP", "时间戳");

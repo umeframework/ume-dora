@@ -63,7 +63,11 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
      * 数据字典查询SQL语句
      */
     private String tableDescQueryStr;
-    //private String tableDescQueryStr = "select" + " COLUMN_NAME as 'colId'," + " COLUMN_COMMENT as 'colName'," + " DATA_TYPE as 'dataType'," + " case" + " when DATA_TYPE='bigint' or DATA_TYPE='tinyint' or DATA_TYPE='smallint' or DATA_TYPE='mediumint' or DATA_TYPE='int' then NUMERIC_PRECISION+1" + " when DATA_TYPE='decimal' or DATA_TYPE='double' or DATA_TYPE='float' then NUMERIC_PRECISION" + " when DATA_TYPE='varchar' or DATA_TYPE='char' then CHARACTER_MAXIMUM_LENGTH" + " else CHARACTER_OCTET_LENGTH" + " end as 'dataLength'," + " NUMERIC_PRECISION as 'dataPrecision'," + " NUMERIC_SCALE as 'dataScale'," + " case when COLUMN_KEY='PRI' then '1' else '0' end as 'pkFlag'," + " case when IS_NULLABLE='NO' then '1' else '0' end as 'notNull'," + " COLUMN_DEFAULT as 'defaultValue'" + " from INFORMATION_SCHEMA.COLUMNS" + " where TABLE_NAME = {varTableId} AND TABLE_SCHEMA = {varSchema};";
+
+    // private String tableDescQueryStr = "select" + " COLUMN_NAME as 'colId'," + " COLUMN_COMMENT as 'colName'," + " DATA_TYPE as 'dataType'," + " case" + " when DATA_TYPE='bigint' or DATA_TYPE='tinyint' or DATA_TYPE='smallint' or DATA_TYPE='mediumint' or DATA_TYPE='int' then NUMERIC_PRECISION+1" +
+    // " when DATA_TYPE='decimal' or DATA_TYPE='double' or DATA_TYPE='float' then NUMERIC_PRECISION" + " when DATA_TYPE='varchar' or DATA_TYPE='char' then CHARACTER_MAXIMUM_LENGTH" + " else CHARACTER_OCTET_LENGTH" + " end as 'dataLength'," + " NUMERIC_PRECISION as 'dataPrecision'," + " NUMERIC_SCALE
+    // as 'dataScale'," + " case when COLUMN_KEY='PRI' then '1' else '0' end as 'pkFlag'," + " case when IS_NULLABLE='NO' then '1' else '0' end as 'notNull'," + " COLUMN_DEFAULT as 'defaultValue'" + " from INFORMATION_SCHEMA.COLUMNS" + " where TABLE_NAME = {varTableId} AND TABLE_SCHEMA =
+    // {varSchema};";
     /**
      * @return the tableDescQueryStr
      */
@@ -71,12 +75,11 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
         if (tableDescQueryStr != null && !tableDescQueryStr.trim().equals("")) {
             return tableDescQueryStr;
         }
-        
+
         String type = databaseType.toUpperCase();
         if (type.equals("ORACLE")) {
             return TABLE_DESC_QUERY_FOR_ORACLE;
-        }
-        else if (type.equals("DB2")) {
+        } else if (type.equals("DB2")) {
             return TABLE_DESC_QUERY_FOR_DB2;
         }
         return TABLE_DESC_QUERY_FOR_MYSQL;
@@ -89,17 +92,11 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
         String type = databaseType.toUpperCase();
         if (type.equals("ORACLE")) {
             return "current_timestamp";
-        }
-        else if (type.equals("DB2")) {
+        } else if (type.equals("DB2")) {
             return "current timestamp";
         }
         return "current_timestamp()";
     }
-
-//    /**
-//     * 取得时间戳的函数名
-//     */
-//    private String currentTimestampStr = "current_timestamp()";
 
     /**
      * logger
@@ -123,11 +120,11 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
         ((JdbcDaoImpl) dao).setLogger(logger);
     }
 
-//    /**
-//     * 构造函数
-//     */
-//    public Excel2DbExporter() throws Exception {
-//    }
+    // /**
+    // * 构造函数
+    // */
+    // public Excel2DbExporter() throws Exception {
+    // }
 
     /**
      * expTableData
@@ -152,8 +149,6 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
     public void expTableDataGenInsertSql(String inputPath) throws Throwable {
         for (File file : getFiles(inputPath)) {
             init(file.getAbsolutePath());
-            //String currentTimestampStr = "current_timestamp()";
-            //this.setCurrentTimestampStr(currentTimestampStr);
             this.createInsertSqls();
             System.out.println(file.getName() + " has been prcoessd.");
         }
@@ -169,8 +164,6 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
     public void expTableDataGenJson(String inputPath, Boolean useCamelCase) throws Throwable {
         for (File file : getFiles(inputPath)) {
             init(file.getAbsolutePath());
-            //String currentTimestampStr = "current_timestamp()";
-            //this.setCurrentTimestampStr(currentTimestampStr);
             this.createJsons(useCamelCase);
             System.out.println(file.getName() + " has been prcoessd.");
         }
@@ -492,39 +485,61 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
     protected List<Object> createTitleRow1(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
         return createList(new Object[] { "表描述", "", tableName, "", "", "", "TABLE SPACE", "", "", "", "", "", "" });
     }
+
     protected List<Object> createTitleRow2(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
         return createList(new Object[] { "表名称", "", tableName, "", "", "", "TABLE SPACE (IDX)", "", "", "", "", "", "" });
     }
+
     protected List<Object> createTitleRow3(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
         return createList(new Object[] { "分表设定", "", "", "", "", "", "TABLE SPACE (LOB)", "", "", "", "", "", "" });
     }
+
     protected List<Object> createTitleRow4(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
         return createList(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "" });
     }
+
     protected List<Object> createTitleRow5(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
         return createList(new Object[] { "序号", "项目名", "项目ID", "数据类型", "长度", "主键", "非空", "默认值", "固定值", "最小值", "最大值", "格式", "备注" });
     }
+
     protected List<Object> createDataRow(String tableName, int colIndex, LinkedHashMap<?, ?> e) {
         Object colName = e.get("colName");
         Object colId = e.get("colId");
         if (isEmpty(String.valueOf(colName))) {
             colName = colId;
         }
-        String type = String.valueOf(e.get("dataType"));
-        String remark = DataTypeUtil.getTextDescFromType(type);
+        String remark = String.valueOf(e.get("dataType"));
+        String type = DataTypeUtil.getTextDescFromType(remark);
         String length = "";
-        if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
-            length = e.get("dataPrecision") + "," + e.get("dataScale");
-        } else if (e.get("dataPrecision") != null) {
-            length = e.get("dataPrecision").toString();
-        } else if (e.get("dataLength") != null) {
-            length = e.get("dataLength").toString();
+        if (databaseType.equalsIgnoreCase("ORACLE")) {
+            if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
+                if (e.get("dataScale").toString().equals("0")) {
+                    length = e.get("dataPrecision").toString();
+                    type = DataTypeUtil.getTextDescFromType("INTEGER");
+                } else {
+                    length = e.get("dataPrecision") + "," + e.get("dataScale");
+                }
+            } else if (e.get("dataPrecision") != null && e.get("dataScale") == null) {
+                length = e.get("dataPrecision").toString();
+                type = DataTypeUtil.getTextDescFromType("INTEGER");
+            } else if (e.get("dataLength") != null) {
+                length = e.get("dataLength").toString();
+            }
+        } else {
+            if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
+                length = e.get("dataPrecision") + "," + e.get("dataScale");
+            } else if (e.get("dataPrecision") != null) {
+                length = e.get("dataPrecision").toString();
+            } else if (e.get("dataLength") != null) {
+                length = e.get("dataLength").toString();
+            }
         }
         String pkFlag = e.get("pkFlag").toString().equals("1") ? "○" : "";
-        String notNull = e.get("notNull").toString().equals("1") || e.get("notNull").toString().toUpperCase().equals("Y")  ? "○" : "";
+        String notNull = e.get("notNull").toString().equals("1") || e.get("notNull").toString().toUpperCase().equals("Y") ? "○" : "";
 
         return createList(new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", remark });
     }
+
     protected void createTableDocPage(String tableName, @SuppressWarnings("rawtypes") List<LinkedHashMap> tableDesc) {
         List<List<Object>> rows = new ArrayList<List<Object>>();
         List<Object> row1 = createTitleRow1(tableName, tableDesc);
@@ -550,7 +565,7 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
 
         int colIndex = 1;
         for (LinkedHashMap<?, ?> e : tableDesc) {
-            List<Object> row = createDataRow(tableName, colIndex, e);//  new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", remark });
+            List<Object> row = createDataRow(tableName, colIndex, e);// new Object[] { colIndex, colName, colId, type, length, pkFlag, notNull, "", "", "", "", "", remark });
             colIndex++;
             rows.add(row);
         }
@@ -558,7 +573,7 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
         super.createSheet(book, excelFile, tableName, rows, new CellWriter<Object>() {
             // Title cell style
             CellStyle titleCellstyle = book.createCellStyle();
-            
+
             @SuppressWarnings("deprecation")
             @Override
             public void write(Cell cell, Object value) {
@@ -826,33 +841,35 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
     }
 
     /**
-     * @param databaseType the databaseType to set
+     * @param databaseType
+     *            the databaseType to set
      */
     public void setDatabaseType(String databaseType) {
         this.databaseType = databaseType;
     }
 
     /**
-     * @param tableDescQueryStr the tableDescQueryStr to set
+     * @param tableDescQueryStr
+     *            the tableDescQueryStr to set
      */
     public void setTableDescQueryStr(String tableDescQueryStr) {
         this.tableDescQueryStr = tableDescQueryStr;
     }
 
-//    /**
-//     * @param tableDescQueryStr
-//     *            the tableDescQueryStr to set
-//     */
-//    public void setTableDescQueryStr(String tableDescQueryStr) {
-//        this.tableDescQueryStr = tableDescQueryStr;
-//    }
-//
-//    /**
-//     * @param currentTimestampStr
-//     *            the currentTimestampStr to set
-//     */
-//    public void setCurrentTimestampStr(String currentTimestampStr) {
-//        this.currentTimestampStr = currentTimestampStr;
-//    }
+    // /**
+    // * @param tableDescQueryStr
+    // * the tableDescQueryStr to set
+    // */
+    // public void setTableDescQueryStr(String tableDescQueryStr) {
+    // this.tableDescQueryStr = tableDescQueryStr;
+    // }
+    //
+    // /**
+    // * @param currentTimestampStr
+    // * the currentTimestampStr to set
+    // */
+    // public void setCurrentTimestampStr(String currentTimestampStr) {
+    // this.currentTimestampStr = currentTimestampStr;
+    // }
 
 }
