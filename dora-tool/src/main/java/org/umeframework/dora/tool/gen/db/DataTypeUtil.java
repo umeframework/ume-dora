@@ -21,6 +21,7 @@ public class DataTypeUtil {
 	static {
 		dataTypeMap2Java.put("文本", "String");
 		dataTypeMap2Java.put("定长文本", "String");
+        dataTypeMap2Java.put("字符", "Character");
 		dataTypeMap2Java.put("长文本", "String");
 		dataTypeMap2Java.put("整数", "Integer");
 		dataTypeMap2Java.put("长整数", "Long");
