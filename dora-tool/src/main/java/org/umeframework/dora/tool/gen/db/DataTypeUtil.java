@@ -141,7 +141,6 @@ public class DataTypeUtil {
 		dbTypeMap2Text.put("TIMESTAMP", "时间戳");
         dbTypeMap2Text.put("DATETIME", "日期时间");
 		dbTypeMap2Text.put("BIGINT", "大整数");
-		dbTypeMap2Text.put("CHAR", "字符");
 		dbTypeMap2Text.put("LONGTEXT", "长文本");
 		dbTypeMap2Text.put("BLOB", "BLOB");
 		dbTypeMap2Text.put("CLOB", "CLOB");
