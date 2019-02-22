@@ -12,9 +12,18 @@
 #set($var_UpdateAuthorAccessor="UpdateAuthor")
 #set($var_UpdateDatetimeAccessor="UpdateDatetime")
 
+#set($var_theSchema="_theSchema")
+#set($var_theDivision="_theDivision")
+#set($var_theOrderByCondition="_theOrderByCondition")
+#set($var_theGroupByCondition="_theGroupByCondition")
+#set($var_theSQLCondition="_theSQLCondition")
+#set($var_theFetchSize="_theFetchSize")
+#set($var_theFetchStart="_theFetchStart")
+
 package $dto.classPackage;
 
 import java.io.Serializable;
+import org.apache.commons.lang.StringEscapeUtils;
 #foreach ( $classImport in $dto.classImportList )
 $classImport
 #end
@@ -71,31 +80,31 @@ public class $dto.classId implements Serializable {
 	/**
      * table schema, default is empty
      */
-    private String theSchema;
+    private String ${var_theSchema};
     /**
      * table division, default is empty
      */
-    private String theDivision;
+    private String ${var_theDivision};
     /**
      * SQL Order By condition parameter
      */
-    private String theOrderByCondition;
+    private String ${var_theOrderByCondition};
     /**
      * SQL Group By condition parameter
      */
-    private String theGroupByCondition;
+    private String ${var_theGroupByCondition};
     /**
      * Dynamic SQL query condition parameter
      */
-    private String theSQLCondition;
+    private String ${var_theSQLCondition};
     /**
      * fetch max size
      */
-    private Integer theFetchSize;
+    private Integer ${var_theFetchSize};
     /**
      * fetch begin index
      */
-    private Integer theFetchStart;
+    private Integer ${var_theFetchStart};
 
 #foreach ( $field in $dto.fieldList )
     /**
@@ -171,116 +180,116 @@ public class $dto.classId implements Serializable {
     }
 #end
     /**
-     * @return the theSchema
+     * @return the ${var_theSchema}
      */
-    public String getTheSchema() {
-        return theSchema;
+    public String get${var_theSchema}() {
+        return StringEscapeUtils.escapeSql(${var_theSchema});
     }
     /**
-     * @param theSchema
-     *            the theSchema to set
+     * @param ${var_theSchema}
+     *            the ${var_theSchema} to set
      */
-    public void setTheSchema(
-            String theSchema) {
-        this.theSchema = theSchema;
+    public void set${var_theSchema}(
+            String ${var_theSchema}) {
+        this.${var_theSchema} = StringEscapeUtils.escapeSql(${var_theSchema});
     }
     /**
-     * @return the theDivision
+     * @return the ${var_theDivision}
      */
-    public String getTheDivision() {
-        return theDivision;
+    public String get${var_theDivision}() {
+        return StringEscapeUtils.escapeSql(${var_theDivision});
     }
     /**
-     * @param theDivision
-     *            the theDivision to set
+     * @param ${var_theDivision}
+     *            the ${var_theDivision} to set
      */
-    public void setTheDivision(
-            String theDivision) {
-        if (theDivision != null && theDivision.contains(" ")) {
-            throw new RuntimeException("Found illegal SQL characters input for setTheDivision:" + theDivision);
+    public void set${var_theDivision}(
+            String ${var_theDivision}) {
+        if (${var_theDivision} != null && ${var_theDivision}.contains(" ")) {
+            throw new RuntimeException("Found illegal SQL characters input for set${var_theDivision}:" + ${var_theDivision});
         }
-        this.theDivision = theDivision;
+        this.${var_theDivision} = StringEscapeUtils.escapeSql(${var_theDivision});
     }
     /**
-     * @return the theOrderByCondition
+     * @return the ${var_theOrderByCondition}
      */
-    public String getTheOrderByCondition() {
-        return theOrderByCondition;
+    public String get${var_theOrderByCondition}() {
+        return StringEscapeUtils.escapeSql(${var_theOrderByCondition});
     }
     /**
-     * @param theOrderByCondition
-     *            the theOrderByCondition to set
+     * @param  ${var_theOrderByCondition}
+     *            the  ${var_theOrderByCondition} to set
      */
-    public void setTheOrderByCondition(
-            String theOrderByCondition) {
+    public void set${var_theOrderByCondition}(
+            String  ${var_theOrderByCondition}) {
 
-        this.theOrderByCondition = theOrderByCondition;
+        this.${var_theOrderByCondition} = StringEscapeUtils.escapeSql(${var_theOrderByCondition});
     }
     /**
-     * @return the theFetchSize
+     * @return the ${var_theGroupByCondition}
      */
-    public Integer getTheFetchSize() {
-        return theFetchSize;
+    public String get${var_theGroupByCondition}() {
+        return StringEscapeUtils.escapeSql(${var_theGroupByCondition});
     }
     /**
-     * @param theFetchSize
-     *            the theFetchSize to set
+     * @param ${var_theGroupByCondition}
+     *            the ${var_theGroupByCondition} to set
      */
-    public void setTheFetchSize(
-            Integer theFetchSize) {
-        this.theFetchSize = theFetchSize;
+    public void set${var_theGroupByCondition}(
+            String ${var_theGroupByCondition}) {
+        this.${var_theGroupByCondition} = StringEscapeUtils.escapeSql(${var_theGroupByCondition});
     }
     /**
-     * @return the theGroupByCondition
+     * @return the ${var_theSQLCondition}
      */
-    public String getTheGroupByCondition() {
-        return theGroupByCondition;
+    public String get${var_theSQLCondition}() {
+        return StringEscapeUtils.escapeSql(${var_theSQLCondition});
     }
     /**
-     * @param theGroupByCondition
-     *            the theGroupByCondition to set
+     * @param ${var_theSQLCondition} the ${var_theSQLCondition} to set
      */
-    public void setTheGroupByCondition(
-            String theGroupByCondition) {
-        this.theGroupByCondition = theGroupByCondition;
+    public void set${var_theSQLCondition}(
+            String ${var_theSQLCondition}) {
+        this.${var_theSQLCondition} = StringEscapeUtils.escapeSql(${var_theSQLCondition});
     }
     /**
-     * @return the theSQLCondition
+     * @return the ${var_theFetchStart}
      */
-    public String getTheSQLCondition() {
-        return theSQLCondition;
+    public Integer get${var_theFetchStart}() {
+        return ${var_theFetchStart};
     }
     /**
-     * @param theSQLCondition the theSQLCondition to set
+     * @param ${var_theFetchStart} the ${var_theFetchStart} to set
      */
-    public void setTheSQLCondition(
-            String theSQLCondition) {
-        this.theSQLCondition = theSQLCondition;
+    public void set${var_theFetchStart}(
+            Integer ${var_theFetchStart}) {
+        this.${var_theFetchStart} = ${var_theFetchStart};
     }
     /**
-     * @return the theFetchStart
+     * @return the ${var_theFetchSize}
      */
-    public Integer getTheFetchStart() {
-        return theFetchStart;
+    public Integer get${var_theFetchSize}() {
+        return ${var_theFetchSize};
     }
     /**
-     * @param theFetchStart the theFetchStart to set
+     * @param ${var_theFetchSize}
+     *            the ${var_theFetchSize} to set
      */
-    public void setTheFetchStart(
-            Integer theFetchStart) {
-        this.theFetchStart = theFetchStart;
+    public void set${var_theFetchSize}(
+            Integer ${var_theFetchSize}) {
+        this.${var_theFetchSize} = ${var_theFetchSize};
     }
     /**
      * clearDefaultProperties
      */
     public void clearDefaultProperties() {
-        this.setTheSchema(null);
-        this.setTheDivision(null);
-        this.setTheOrderByCondition(null);
-        this.setTheGroupByCondition(null);
-        this.setTheSQLCondition(null);
-        this.setTheFetchSize(null);
-        this.setTheFetchStart(null);
+        this.set${var_theSchema}(null);
+        this.set${var_theDivision}(null);
+        this.set${var_theOrderByCondition}(null);
+        this.set${var_theGroupByCondition}(null);
+        this.set${var_theSQLCondition}(null);
+        this.set${var_theFetchSize}(null);
+        this.set${var_theFetchStart}(null);
     }
     /**
      * Create bean instance copy with selected properties
@@ -341,12 +350,12 @@ public class $dto.classId implements Serializable {
         public static final String ${var_updateAuthor} = "${var_updateAuthor}";
         public static final String ${var_updateDatetime} = "${var_updateDatetime}";
 #end
-        public static final String theGroupByCondition = "theGroupByCondition";
-        public static final String theOrderByCondition = "theOrderByCondition";
-        public static final String theSchema = "theSchema";
-        public static final String theDivision = "theDivision";
-        public static final String theFetchSize = "theFetchSize";
-        public static final String theFetchStart = "theFetchStart";
+        public static final String ${var_theGroupByCondition} = "${var_theGroupByCondition}";
+        public static final String ${var_theOrderByCondition} = "${var_theOrderByCondition}";
+        public static final String ${var_theSchema} = "${var_theSchema}";
+        public static final String ${var_theDivision} = "${var_theDivision}";
+        public static final String ${var_theFetchSize} = "${var_theFetchSize}";
+        public static final String ${var_theFetchStart} = "${var_theFetchStart}";
     }
     
     /**
