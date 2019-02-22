@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.umeframework.dora.tool.gen.db.DataTypeUtil.DatabaseType;
+//import org.umeframework.dora.tool.gen.db.DataTypeUtil.DatabaseType;
 import org.umeframework.dora.tool.gen.db.DefaultDtoBuilder;
 import org.umeframework.dora.tool.gen.db.DtoBuilder;
 import org.umeframework.dora.tool.gen.db.EntityDescBean;
@@ -52,20 +52,11 @@ public class EntityGenerator {
     /**
      * TableGenerator
      * 
-     * @param databaseProvider
      * @throws IOException
      */
-    public EntityGenerator(DatabaseType dbType) throws IOException {
+    public EntityGenerator(String... databaseCategory) throws IOException {
+        this.databaseCategory = databaseCategory;
         dtoBuilder = new DefaultDtoBuilder(this);
-    }
-
-    /**
-     * TableGenerator
-     * 
-     * @throws IOException
-     */
-    public EntityGenerator() throws IOException {
-        this(DatabaseType.MySQL);
     }
 
     /**
@@ -119,14 +110,20 @@ public class EntityGenerator {
         prepare();
 
         Collection<EntityDescBean> dtoExList = new ArrayList<EntityDescBean>(dtoList.size());
-        // dtoBuilder.setGenDtoPackage(this.getGenDtoPackage());
-        for (TableDescBean tableDto : dtoList) {
-            EntityDescBean entityDto = dtoBuilder.build(tableDto);
-            entityDto.setGenerateDefaultTableField(generateDefaultTableField ? 1 : 0);
-            dtoExList.add(entityDto);
-        }
+
+//        for (TableDescBean tableDto : dtoList) {
+//            EntityDescBean entityDto = dtoBuilder.build(tableDto);
+//            entityDto.setGenerateDefaultTableField(generateDefaultTableField ? 1 : 0);
+//            dtoExList.add(entityDto);
+//        }
 
         for (String category : databaseCategory) {
+            for (TableDescBean tableDto : dtoList) {
+                EntityDescBean entityDto = dtoBuilder.build(tableDto, category);
+                entityDto.setGenerateDefaultTableField(generateDefaultTableField ? 1 : 0);
+                dtoExList.add(entityDto);
+            }
+
             String allddlfileName = genDirSql + category + "/" + "create-table" + group + ".sql";
             String vm = templateSqlBat.replace("{PROVIDER}", category.toString().toLowerCase());
 

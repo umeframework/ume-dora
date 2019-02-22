@@ -12,7 +12,7 @@ public interface DtoBuilder {
 	 * 
 	 * @param dto
 	 */
-	EntityDescBean build(TableDescBean dto);
+	EntityDescBean build(TableDescBean dto, String databaseCategory);
 	/**
 	 * @return the genDtoExtension
 	 */

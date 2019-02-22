@@ -126,8 +126,8 @@ public class ServiceBuilder {
             Set<String> declareDtoList) {
         typeFlag = typeFlag.trim();
 
-        if (DataTypeUtil.dataTypeMap2Java.containsKey(type)) {
-            String javaType = DataTypeUtil.dataTypeMap2Java.get(type);
+        if (DataTypeUtil.dataTypeMap2Java_Default.containsKey(type)) {
+            String javaType = DataTypeUtil.dataTypeMap2Java_Default.get(type);
             return javaType;
             //return appendArrayFlag(javaType, typeFlag);
         }

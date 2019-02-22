@@ -17,7 +17,6 @@ import java.util.Set;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.umeframework.dora.tool.gen.EntityGenerator;
-import org.umeframework.dora.tool.gen.db.DataTypeUtil.DatabaseType;
 import org.umeframework.dora.tool.poi.ExcelAccessor;
 import org.umeframework.dora.util.StringKanaUtil;
 import org.umeframework.dora.util.ValidatorUtil;
@@ -39,25 +38,18 @@ public class TableExcelGenerator extends ExcelAccessor {
 
 	/**
 	 * TableExcelParser
-	 *
-	 * @param locate
-	 * @throws IOException
-	 */
-	public TableExcelGenerator() throws IOException {
-		this(DatabaseType.MySQL);
-	}
-
-	/**
-	 * TableExcelParser
 	 * 
 	 * @param dbType
 	 * @throws IOException
 	 */
-	public TableExcelGenerator(DatabaseType dbType) throws IOException {
+	public TableExcelGenerator(String...databaseCategory) throws IOException {
 		ignoreSheetNames.add("R");
 		ignoreSheetNames.add("备注");
-		entityGenerator = new EntityGenerator(dbType);
+		this.entityGenerator = new EntityGenerator(databaseCategory);
 	}
+	public TableExcelGenerator() throws IOException {
+	       this("mysql");
+    }
 
 	/** Add the skip sheet name during paring excel file */
 	public void addIgnoreSheetName(String name) {
@@ -90,7 +82,7 @@ public class TableExcelGenerator extends ExcelAccessor {
 	}
 
 	/** PROXY setter: set EntityGenerator properties */
-	public void setDatabaseCategory(String[] databaseCategory) {
+	public void setDatabaseCategory(String...databaseCategory) {
 		entityGenerator.setDatabaseCategory(databaseCategory);
 	}
 

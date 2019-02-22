@@ -70,7 +70,7 @@ public class DefaultDtoBuilder implements DtoBuilder {
 	 * @see org.umeframework.dora.tool.gen.db.DtoBuilder#build(org.umeframework.dora.tool.gen.db.DtoBean)
 	 */
 	@Override
-	public EntityDescBean build(TableDescBean dto) {
+	public EntityDescBean build(TableDescBean dto, String databaseCategory) {
 		EntityDescBean ex = this.copyFrom(dto);
 		ex.setClassName(ex.getTblName());
 		String javaStyleName = DataTypeUtil.upperCaseFirstChar(DataTypeUtil.dbName2JavaName(ex.getTblAlias()));
@@ -85,7 +85,7 @@ public class DefaultDtoBuilder implements DtoBuilder {
 		ex.setTableCrudServicePackage(tableGenerator.getGenDtoPackage() + "." + genCrudPackageExtension + ".impl");
 
 		for (FieldDescBean field : ex.getFieldList()) {
-			this.buildDtoField(field);
+			this.buildDtoField(field, databaseCategory);
 
 			// Grouping PL fields
 			if (field.getColPK().equalsIgnoreCase("Y")
@@ -139,9 +139,9 @@ public class DefaultDtoBuilder implements DtoBuilder {
 	 * 
 	 * @param field
 	 */
-	void buildDtoField(FieldDescBean field) {
-		String dbDataType = DataTypeUtil.getDBDataType(field.getColDataType(), field);
-		String javaDataType = DataTypeUtil.getJavaType(field.getColDataType(), field);
+	void buildDtoField(FieldDescBean field, String databaseCategory) {
+		String dbDataType = DataTypeUtil.getDBDataType(field.getColDataType(), field, databaseCategory);
+		String javaDataType = DataTypeUtil.getJavaType(field.getColDataType(), field, databaseCategory);
 		field.setColDataType(dbDataType);
 		field.setFieldType(javaDataType);
 		String length = field.getColLength();
@@ -190,7 +190,7 @@ public class DefaultDtoBuilder implements DtoBuilder {
 			}
 		}
 
-		if (DataTypeUtil.databaseType.equals(DataTypeUtil.DatabaseType.MySQL)) {
+		if (databaseCategory.toLowerCase().equals("mysql")) {
 			if (field.getColDataType().trim().toUpperCase().startsWith("TIMESTAMP") && field.getColNotNull().equals("")) {
 				defValStr = "NULL DEFAULT NULL";
 			} else if (field.getColDataType().trim().toUpperCase().startsWith("TIMESTAMP") && field.getColNotNull().equals("NOT NULL")) {
