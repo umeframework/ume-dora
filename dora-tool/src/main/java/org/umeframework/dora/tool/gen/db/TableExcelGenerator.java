@@ -335,6 +335,10 @@ public class TableExcelGenerator extends ExcelAccessor {
 			FieldDescBean field = new FieldDescBean();
 			String itemIndex = String.valueOf(row.get(0)).trim();
 			String itemName = String.valueOf(row.get(1)).trim();
+			if (itemName.contains("\n")) {
+			    itemName = itemName.replaceAll("\n", " ");
+			}
+	
 			String itemId = String.valueOf(row.get(2)).trim();
 			String dataType = String.valueOf(row.get(3)).trim();
 			String length = String.valueOf(row.get(4)).trim();

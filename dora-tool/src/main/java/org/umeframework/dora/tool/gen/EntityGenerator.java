@@ -111,12 +111,6 @@ public class EntityGenerator {
 
         Collection<EntityDescBean> dtoExList = new ArrayList<EntityDescBean>(dtoList.size());
 
-//        for (TableDescBean tableDto : dtoList) {
-//            EntityDescBean entityDto = dtoBuilder.build(tableDto);
-//            entityDto.setGenerateDefaultTableField(generateDefaultTableField ? 1 : 0);
-//            dtoExList.add(entityDto);
-//        }
-
         for (String category : databaseCategory) {
             for (TableDescBean tableDto : dtoList) {
                 EntityDescBean entityDto = dtoBuilder.build(tableDto, category);
