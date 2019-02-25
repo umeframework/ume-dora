@@ -1,10 +1,9 @@
 package ${dto.tableCrudServiceInterfacePackage};
 
 import java.util.List;
-import java.util.Map;
 import ${dto.classPackage}.${dto.classId};
 
-/*
+/**
  * ${dto.TblName}:${dto.tblId} CRUD service interface declare.<br>
  *
  * @author UME-Generator
@@ -87,33 +86,33 @@ public interface ${dto.tableCrudServiceInterface} {
     /**
      * Find entity by primary key set.<br>
      * 
-     * @param condition - query parameter
+     * @param criteria - query parameter
      * @return - matched entity instance
      */
-    ${dto.classId} find(${dto.classId} condition);    
+    ${dto.classId} find(${dto.classId} criteria);    
 #end    
     /**
      * Search entity list use equal match.<br>
      * 
-     * @param condition - query parameter describe by entity
+     * @param criteria - query parameter describe by entity
      * @return - matched entity instance list
      */
-    List<${dto.classId}> findList(${dto.classId} condition);
+    List<${dto.classId}> findList(${dto.classId} criteria);
     
     /**
      * Search entity list use like (%var%) match.<br>
      * 
-     * @param condition - query parameter describe by map
+     * @param criteria - query parameter describe by map
      * @return - matched entity instance list
      */
-    List<${dto.classId}> findListLike(Map<String, String> condition);
+    List<${dto.classId}> findListLike(${dto.classId} criteria);
     
     /**
      * Count.<br>
      * 
-     * @param condition - query parameter
+     * @param criteria - query parameter
      * @return - matched entity instance list
      */
-    Integer count(Map<String, String> condition);
+    Integer count(${dto.classId} criteria);
 
 }
