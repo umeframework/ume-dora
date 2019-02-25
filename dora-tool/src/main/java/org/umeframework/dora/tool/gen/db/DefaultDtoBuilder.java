@@ -556,4 +556,18 @@ public class DefaultDtoBuilder implements DtoBuilder {
         this.genCrudApiPackageExtension = genCrudApiPackageExtension;
     }
 
+    /**
+     * @return the genCrudPackageExtension
+     */
+    public String getGenCrudPackageExtension() {
+        return genCrudPackageExtension;
+    }
+
+    /**
+     * @param genCrudPackageExtension the genCrudPackageExtension to set
+     */
+    public void setGenCrudPackageExtension(String genCrudPackageExtension) {
+        this.genCrudPackageExtension = genCrudPackageExtension;
+    }
+
 }
