@@ -419,5 +419,11 @@ public class TableExcelGenerator extends ExcelAccessor {
 	public void setExcelTargetColumnLabel(String[] excelTargetColumnLabel) {
 		this.excelTargetColumnLabel = excelTargetColumnLabel;
 	}
+    /**
+     * @return the entityGenerator
+     */
+    public EntityGenerator getEntityGenerator() {
+        return entityGenerator;
+    }
 
 }

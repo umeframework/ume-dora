@@ -41,6 +41,7 @@ public class EntityGenerator {
     private String templateDto = "template/entity-dto.vm";
     private String templateCrudInterface = "template/entity-crud-interface.vm";
     private String templateCrudImpl = "template/entity-crud-impl.vm";
+    private String templateCrudApi = "template/entity-crud-api.vm";
     private String templateCrudWsid = "template/entity-crud-wsid.vm";
 
     private DtoBuilder dtoBuilder;
@@ -182,6 +183,15 @@ public class EntityGenerator {
             String packageName = dto.getTableCrudServicePackage();
             String fileName = cgCrudClass.createPackageDir(genDirJava, packageName) + dto.getTableCrudServiceClass() + ".java";
             cgCrudClass.execute("dto", dto, fileName);
+            System.out.println("[" + fileName + "] created.");
+        }
+        
+        // Generate Crud Api class
+        CodeGenerator cgCrudApi = new CodeGenerator(templateCrudApi);
+        for (EntityDescBean dto : dtoExList) {
+            String packageName = dto.getTableCrudApiPackage();
+            String fileName = cgCrudClass.createPackageDir(genDirJava, packageName) + dto.getTableCrudApiClass() + ".java";
+            cgCrudApi.execute("dto", dto, fileName);
             System.out.println("[" + fileName + "] created.");
         }
 

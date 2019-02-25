@@ -29,6 +29,14 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      */
     private String classOriId;
     /**
+     * Dto class identify name (ID low case)
+     */
+    private String classOriIdInLowCase;
+    /**
+     * Dto class identify name (ID upper case)
+     */
+    private String classOriIdInUpperCase;
+    /**
      * Dto class name
      */
     private String className;
@@ -45,6 +53,10 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      */
     private String tableCrudServicePackage;
     /**
+     * Dto Crud Api class package
+     */
+    private String tableCrudApiPackage;
+    /**
      * Dto Crud implementation class ID
      */
     private String tableCrudServiceClass;
@@ -52,6 +64,10 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      * Dto Crud interface class ID
      */
     private String tableCrudServiceInterface;
+    /**
+     * Dto Crud Api class ID
+     */
+    private String tableCrudApiClass;
     /**
      * auto increment columns
      */
@@ -240,4 +256,52 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
 	public void setClassOriId(String classOriId) {
 		this.classOriId = classOriId;
 	}
+    /**
+     * @return the classOriIdInLowCase
+     */
+    public String getClassOriIdInLowCase() {
+        return classOriIdInLowCase;
+    }
+    /**
+     * @param classOriIdInLowCase the classOriIdInLowCase to set
+     */
+    public void setClassOriIdInLowCase(String classOriIdInLowCase) {
+        this.classOriIdInLowCase = classOriIdInLowCase;
+    }
+    /**
+     * @return the classOriIdInUpperCase
+     */
+    public String getClassOriIdInUpperCase() {
+        return classOriIdInUpperCase;
+    }
+    /**
+     * @param classOriIdInUpperCase the classOriIdInUpperCase to set
+     */
+    public void setClassOriIdInUpperCase(String classOriIdInUpperCase) {
+        this.classOriIdInUpperCase = classOriIdInUpperCase;
+    }
+    /**
+     * @return the tableCrudApiPackage
+     */
+    public String getTableCrudApiPackage() {
+        return tableCrudApiPackage;
+    }
+    /**
+     * @param tableCrudApiPackage the tableCrudApiPackage to set
+     */
+    public void setTableCrudApiPackage(String tableCrudApiPackage) {
+        this.tableCrudApiPackage = tableCrudApiPackage;
+    }
+    /**
+     * @return the tableCrudApiClass
+     */
+    public String getTableCrudApiClass() {
+        return tableCrudApiClass;
+    }
+    /**
+     * @param tableCrudApiClass the tableCrudApiClass to set
+     */
+    public void setTableCrudApiClass(String tableCrudServiceApi) {
+        this.tableCrudApiClass = tableCrudServiceApi;
+    }
 }

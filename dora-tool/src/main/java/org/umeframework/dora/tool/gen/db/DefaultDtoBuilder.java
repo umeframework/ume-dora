@@ -41,10 +41,18 @@ public class DefaultDtoBuilder implements DtoBuilder {
 	 * generate Crud class extension name
 	 */
 	private String genCrudClassExtension = "CrudServiceImpl";
+    /**
+     * generate Crud class extension name
+     */
+    private String genCrudApiExtension = "CrudController";
 	/**
 	 * generate Crud package extension name
 	 */
-	private String genCrudPackageExtension = "crud";
+	private String genCrudPackageExtension = "service";
+    /**
+     * generate Crud Api package extension name
+     */
+    private String genCrudApiPackageExtension = "api";
 	/**
 	 * dtoBuildProperties
 	 */
@@ -76,13 +84,17 @@ public class DefaultDtoBuilder implements DtoBuilder {
 		String javaStyleName = DataTypeUtil.upperCaseFirstChar(DataTypeUtil.dbName2JavaName(ex.getTblAlias()));
 		ex.setClassId(javaStyleName + this.getGenDtoExtension());
 		ex.setClassOriId(javaStyleName);
+		ex.setClassOriIdInLowCase(javaStyleName.toLowerCase());
+		ex.setClassOriIdInUpperCase(javaStyleName.toUpperCase());
 		ex.setTableCrudServiceInterface(javaStyleName + this.getGenCrudInterfaceExtension());
 		ex.setTableCrudServiceClass(javaStyleName + this.getGenCrudClassExtension());
+		ex.setTableCrudApiClass(javaStyleName + this.getGenCrudApiExtension());
 
 		ex.setCurrentDate(new SimpleDateFormat("yyyy/MM/dd").format(new java.util.Date()));
 		ex.setClassPackage(tableGenerator.getGenDtoPackage());
 		ex.setTableCrudServiceInterfacePackage(tableGenerator.getGenDtoPackage() + "." + genCrudPackageExtension);
 		ex.setTableCrudServicePackage(tableGenerator.getGenDtoPackage() + "." + genCrudPackageExtension + ".impl");
+		ex.setTableCrudApiPackage(tableGenerator.getGenDtoPackage() + "." + genCrudApiPackageExtension);
 
 		for (FieldDescBean field : ex.getFieldList()) {
 			this.buildDtoField(field, databaseCategory);
@@ -515,5 +527,33 @@ public class DefaultDtoBuilder implements DtoBuilder {
 	public void setBuilderProperties(String builderProperties) {
 		this.builderProperties = builderProperties;
 	}
+
+    /**
+     * @return the genCrudApiExtension
+     */
+    public String getGenCrudApiExtension() {
+        return genCrudApiExtension;
+    }
+
+    /**
+     * @param genCrudApiExtension the genCrudApiExtension to set
+     */
+    public void setGenCrudApiExtension(String genCrudApiExtension) {
+        this.genCrudApiExtension = genCrudApiExtension;
+    }
+
+    /**
+     * @return the genCrudApiPackageExtension
+     */
+    public String getGenCrudApiPackageExtension() {
+        return genCrudApiPackageExtension;
+    }
+
+    /**
+     * @param genCrudApiPackageExtension the genCrudApiPackageExtension to set
+     */
+    public void setGenCrudApiPackageExtension(String genCrudApiPackageExtension) {
+        this.genCrudApiPackageExtension = genCrudApiPackageExtension;
+    }
 
 }

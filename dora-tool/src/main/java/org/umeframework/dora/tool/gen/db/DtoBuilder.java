@@ -45,4 +45,15 @@ public interface DtoBuilder {
 	 *            the genCrudClassExtension to set
 	 */
 	void setGenCrudClassExtension(String genCrudClassExtension);
+	
+    /**
+     * @return the genCrudApiExtension
+     */
+    String getGenCrudApiExtension();
+
+    /**
+     * @param genCrudApiExtension
+     *            the genCrudApiExtension to set
+     */
+	void setGenCrudApiExtension(String genCrudApiExtension);
 }
