@@ -11,6 +11,11 @@
 #set($var_updateDatetime="updateDatetime")
 #set($var_currentTimestamp="CURRENT TIMESTAMP")
 #set($var_tablePreFix="")
+#set($var_theDivision="_theDivision")
+#set($var_theOrderByCondition="_theOrderByCondition")
+#set($var_theSqlCondition="_theSqlCondition")
+#set($var_theFetchSize="_theFetchSize")
+#set($var_theFetchStart="_theFetchStart")
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
@@ -215,14 +220,13 @@
       <if test="${field.fieldId} != null">AND ${field.colId} = #{${field.fieldId}}</if>
 #end
 #if(${dto.generateDefaultTableField} == 1)
-      <if test="createAuthor != null">AND ${var_CREATE_AUTHOR} = #{${var_createAuthor}}</if>
-      <if test="updateAuthor != null">AND ${var_UPDATE_AUTHOR} = #{${var_updateAuthor}}</if>
-      <if test="createDatetime != null">AND ${var_CREATE_DATETIME} = #{${var_createDatetime}}</if>
-      <if test="updateDatetime != null">AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
+      <if test="${var_createAuthor} != null">AND ${var_CREATE_AUTHOR} = #{${var_createAuthor}}</if>
+      <if test="${var_updateAuthor} != null">AND ${var_UPDATE_AUTHOR} = #{${var_updateAuthor}}</if>
+      <if test="${var_createDatetime} != null">AND ${var_CREATE_DATETIME} = #{${var_createDatetime}}</if>
+      <if test="${var_updateDatetime} != null">AND ${var_UPDATE_DATETIME} = #{${var_updateDatetime}}</if>
 #end
-      <if test="theOrderByCondition != null"> ORDER BY ${theOrderByCondition}</if>
-      <if test="theGroupByCondition != null"> GROUP BY ${theGroupByCondition}</if>
-      <if test="theFetchSize != null">LIMIT ${theFetchStart}, ${theFetchSize}</if>
+      <if test="${var_theOrderByCondition} != null"> ORDER BY ${${var_theOrderByCondition}}</if>
+      <if test="${var_theFetchSize} != null">LIMIT ${${var_theFetchStart}}, ${${var_theFetchSize}}</if>
   </select>
 
   <!-- Find List Like -->
@@ -243,14 +247,13 @@
       <if test="${field.fieldId} != null">AND ${field.colId} LIKE CONCAT('%', #{${field.fieldId}}, '%')</if>
 #end
 #if(${dto.generateDefaultTableField} == 1)
-      <if test="createAuthor != null">AND ${var_CREATE_AUTHOR} LIKE CONCAT('%', #{${var_createAuthor}}, '%')</if>
-      <if test="updateAuthor != null">AND ${var_UPDATE_AUTHOR} LIKE CONCAT('%', #{${var_updateAuthor}}, '%')</if>
-      <if test="createDatetime != null">AND ${var_CREATE_DATETIME} LIKE CONCAT('%', #{${var_createDatetime}}, '%')</if>
-      <if test="updateDatetime != null">AND ${var_UPDATE_DATETIME} LIKE CONCAT('%', #{${var_updateDatetime}}, '%')</if>
+      <if test="${var_createAuthor} != null">AND ${var_CREATE_AUTHOR} LIKE CONCAT('%', #{${var_createAuthor}}, '%')</if>
+      <if test="${var_updateAuthor} != null">AND ${var_UPDATE_AUTHOR} LIKE CONCAT('%', #{${var_updateAuthor}}, '%')</if>
+      <if test="${var_createDatetime} != null">AND ${var_CREATE_DATETIME} LIKE CONCAT('%', #{${var_createDatetime}}, '%')</if>
+      <if test="${var_updateDatetime} != null">AND ${var_UPDATE_DATETIME} LIKE CONCAT('%', #{${var_updateDatetime}}, '%')</if>
 #end
-      <if test="theOrderByCondition != null"> ORDER BY ${theOrderByCondition}</if>
-      <if test="theGroupByCondition != null"> GROUP BY ${theGroupByCondition}</if>
-      <if test="theFetchSize != null">LIMIT ${theFetchStart}, ${theFetchSize}</if>
+      <if test="${var_theOrderByCondition} != null"> ORDER BY ${${var_theOrderByCondition}}</if>
+      <if test="${var_theFetchSize} != null">LIMIT ${${var_theFetchStart}}, ${${var_theFetchSize}}</if>
   </select>
   
   <!-- Count -->

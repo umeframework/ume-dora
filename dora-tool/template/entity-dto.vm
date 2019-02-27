@@ -11,47 +11,49 @@
 #set($var_CreateDatetimeAccessor="CreateDatetime")
 #set($var_UpdateAuthorAccessor="UpdateAuthor")
 #set($var_UpdateDatetimeAccessor="UpdateDatetime")
-
-#set($var_theSchema="_theSchema")
 #set($var_theDivision="_theDivision")
 #set($var_theOrderByCondition="_theOrderByCondition")
-#set($var_theGroupByCondition="_theGroupByCondition")
-#set($var_theSQLCondition="_theSQLCondition")
+#set($var_theSqlCondition="_theSqlCondition")
 #set($var_theFetchSize="_theFetchSize")
 #set($var_theFetchStart="_theFetchStart")
 
 package $dto.classPackage;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.StringEscapeUtils;
 #foreach ( $classImport in $dto.classImportList )
 $classImport
 #end
 
 /**
- * Entity class map to table "$dto.className"
+ * 数据表"$dto.className"映射的实体类<br>
  *
- * @author ume-team
+ * @author Generator
  */
 #foreach ( $classAnnotation in $dto.classAnnotationList )
 $classAnnotation
 #end
+@ApiModel(value="$dto.classId", description="$dto.className")
 public class $dto.classId implements Serializable {
    /**
-    * Default serial version code
+    * Default serial version number<br>
     */
     private static final long serialVersionUID = 1L;
 
 #foreach ( $field in $dto.fieldList )
    /**
-    * $field.fieldName 
-#if ($field.colComment != "" && $field.colComment != "null")
-    * $field.colComment
-#end   
+    * $field.fieldName<br>
     */
 #foreach ( $fieldAnnotation in $field.fieldAnnotationList )
     $fieldAnnotation
 #end
+#if ($field.colPK != "" || $field.colNotNull != "")
+    @NotNull
+#end
+    @ApiModelProperty(value="$field.fieldName", name="$field.fieldId"#if ($field.colPK != "" || $field.colNotNull != ""), required=true#end)
     private $field.fieldType $field.fieldId;
 
 #end
@@ -77,10 +79,6 @@ public class $dto.classId implements Serializable {
     @Column(name="${var_UPDATE_DATETIME}", nullable=true)
     private java.sql.Timestamp ${var_updateDatetime};
 #end
-	/**
-     * table schema, default is empty
-     */
-    private String ${var_theSchema};
     /**
      * table division, default is empty
      */
@@ -90,13 +88,9 @@ public class $dto.classId implements Serializable {
      */
     private String ${var_theOrderByCondition};
     /**
-     * SQL Group By condition parameter
-     */
-    private String ${var_theGroupByCondition};
-    /**
      * Dynamic SQL query condition parameter
      */
-    private String ${var_theSQLCondition};
+    private String ${var_theSqlCondition};
     /**
      * fetch max size
      */
@@ -180,20 +174,6 @@ public class $dto.classId implements Serializable {
     }
 #end
     /**
-     * @return the ${var_theSchema}
-     */
-    public String get${var_theSchema}() {
-        return StringEscapeUtils.escapeSql(${var_theSchema});
-    }
-    /**
-     * @param ${var_theSchema}
-     *            the ${var_theSchema} to set
-     */
-    public void set${var_theSchema}(
-            String ${var_theSchema}) {
-        this.${var_theSchema} = StringEscapeUtils.escapeSql(${var_theSchema});
-    }
-    /**
      * @return the ${var_theDivision}
      */
     public String get${var_theDivision}() {
@@ -226,31 +206,17 @@ public class $dto.classId implements Serializable {
         this.${var_theOrderByCondition} = StringEscapeUtils.escapeSql(${var_theOrderByCondition});
     }
     /**
-     * @return the ${var_theGroupByCondition}
+     * @return the ${var_theSqlCondition}
      */
-    public String get${var_theGroupByCondition}() {
-        return StringEscapeUtils.escapeSql(${var_theGroupByCondition});
+    public String get${var_theSqlCondition}() {
+        return StringEscapeUtils.escapeSql(${var_theSqlCondition});
     }
     /**
-     * @param ${var_theGroupByCondition}
-     *            the ${var_theGroupByCondition} to set
+     * @param ${var_theSqlCondition} the ${var_theSqlCondition} to set
      */
-    public void set${var_theGroupByCondition}(
-            String ${var_theGroupByCondition}) {
-        this.${var_theGroupByCondition} = StringEscapeUtils.escapeSql(${var_theGroupByCondition});
-    }
-    /**
-     * @return the ${var_theSQLCondition}
-     */
-    public String get${var_theSQLCondition}() {
-        return StringEscapeUtils.escapeSql(${var_theSQLCondition});
-    }
-    /**
-     * @param ${var_theSQLCondition} the ${var_theSQLCondition} to set
-     */
-    public void set${var_theSQLCondition}(
-            String ${var_theSQLCondition}) {
-        this.${var_theSQLCondition} = StringEscapeUtils.escapeSql(${var_theSQLCondition});
+    public void set${var_theSqlCondition}(
+            String ${var_theSqlCondition}) {
+        this.${var_theSqlCondition} = StringEscapeUtils.escapeSql(${var_theSqlCondition});
     }
     /**
      * @return the ${var_theFetchStart}
@@ -283,36 +249,61 @@ public class $dto.classId implements Serializable {
      * clearDefaultProperties
      */
     public void clearDefaultProperties() {
-        this.set${var_theSchema}(null);
         this.set${var_theDivision}(null);
         this.set${var_theOrderByCondition}(null);
-        this.set${var_theGroupByCondition}(null);
-        this.set${var_theSQLCondition}(null);
+        this.set${var_theSqlCondition}(null);
         this.set${var_theFetchSize}(null);
         this.set${var_theFetchStart}(null);
     }
-    /**
-     * Create bean instance copy with selected properties
-     * 
-     * @param selectProperties
-     *            - properties which copy to new instance
-     * @return
-     */
-    /* 
-    public ${dto.classId} copyFrom(
-            Property... selectProperties) {
-        if (selectProperties == null) {
-            return null;
-        }
-        ${dto.classId} newInstance = new ${dto.classId}();
-        for (Property property : selectProperties) {
-            String name = property.toString();
-            Object value = org.umeframework.dora.bean.BeanUtil.BeanUtil.getBeanProperty(this, name);
-            org.umeframework.dora.bean.BeanUtil.BeanUtil.setBeanProperty(newInstance, name, value);
-        }
-        return newInstance;
-    } */
     
+    /* (non-Javadoc)
+     * @see java.lang.Object
+     */
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (that == null) {
+            return false;
+        }
+        if (getClass() != that.getClass()) {
+            return false;
+        }
+        $dto.classId other = ($dto.classId) that;
+        return
+#foreach ( $field in $dto.fieldList )
+           #if(${velocityCount} > 1) && #end (this.get$field.fieldIdCap${var_LeftBrackets}) == null ? other.get$field.fieldIdCap${var_LeftBrackets}) == null : this.get$field.fieldIdCap${var_LeftBrackets}).equals(other.get$field.fieldIdCap${var_LeftBrackets})))
+#end        ;
+    }
+    /* (non-Javadoc)
+     * @see java.lang.Object
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+#foreach ( $field in $dto.fieldList )
+        result = prime * result + ((get$field.fieldIdCap${var_LeftBrackets}) == null) ? 0 : get$field.fieldIdCap${var_LeftBrackets}).hashCode());
+#end
+        return result;
+    }
+    /* (non-Javadoc)
+     * @see java.lang.Object
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+#foreach ( $field in $dto.fieldList )
+        sb.append(", ${field.fieldId}=").append(${field.fieldId});
+#end
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Constant declare: SQL ID in config file
      */
@@ -350,9 +341,8 @@ public class $dto.classId implements Serializable {
         public static final String ${var_updateAuthor} = "${var_updateAuthor}";
         public static final String ${var_updateDatetime} = "${var_updateDatetime}";
 #end
-        public static final String ${var_theGroupByCondition} = "${var_theGroupByCondition}";
+        public static final String ${var_theSqlCondition} = "${var_theSqlCondition}";
         public static final String ${var_theOrderByCondition} = "${var_theOrderByCondition}";
-        public static final String ${var_theSchema} = "${var_theSchema}";
         public static final String ${var_theDivision} = "${var_theDivision}";
         public static final String ${var_theFetchSize} = "${var_theFetchSize}";
         public static final String ${var_theFetchStart} = "${var_theFetchStart}";

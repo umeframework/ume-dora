@@ -10,10 +10,7 @@ import java.util.Map;
  * DataTypeUtil
  */
 public class DataTypeUtil {
-    // /**
-    // * database type
-    // */
-    // public static DatabaseType databaseType = DatabaseType.MySQL;
+
     /**
      * Default type mapping for Java
      */
@@ -136,6 +133,35 @@ public class DataTypeUtil {
     }
 
     /**
+     * Default type mapping for DB
+     */
+    private static final Map<String, String> dataTypeMap2JDBC_Oracle = new HashMap<String, String>();
+    static {
+        dataTypeMap2DB_Oracle.put("文本", "VARCHAR");
+        dataTypeMap2DB_Oracle.put("长文本", "LONGVARCHAR");
+        dataTypeMap2DB_Oracle.put("整数", "INTEGER");
+        dataTypeMap2DB_Oracle.put("长整数", "BIGINT");
+        dataTypeMap2DB_Oracle.put("短整数", "SMALLINT");
+        dataTypeMap2DB_Oracle.put("大整数", "BIGINT");
+        dataTypeMap2DB_Oracle.put("数值", "DECIMAL");
+        dataTypeMap2DB_Oracle.put("字符大对象", "CLOB");
+        dataTypeMap2DB_Oracle.put("二进制对象", "BLOB");
+        dataTypeMap2DB_Oracle.put("图片", "BLOB");
+        dataTypeMap2DB_Oracle.put("定长文本", "CHAR");
+        dataTypeMap2DB_Oracle.put("日期", "DATE");
+        dataTypeMap2DB_Oracle.put("时间", "TIME");
+        dataTypeMap2DB_Oracle.put("时间戳", "TIMESTAMP");
+        dataTypeMap2DB_Oracle.put("NVARCHAR2", "VARCHAR");
+        dataTypeMap2DB_Oracle.put("VARCHAR2", "VARCHAR");
+        dataTypeMap2DB_Oracle.put("VARCHAR", "VARCHAR");
+        dataTypeMap2DB_Oracle.put("CHAR", "CHAR");
+        dataTypeMap2DB_Oracle.put("NUMBER", "DECIMAL");
+        dataTypeMap2DB_Oracle.put("TIMESTAMP(6)", "TIMESTAMP");
+        dataTypeMap2DB_Oracle.put("BLOB", "BLOB");
+        dataTypeMap2DB_Oracle.put("CLOB", "CLOB");
+    }
+    
+    /**
      * Database type mapping to text description
      */
     private static final Map<String, String> dbTypeMap2Text = new HashMap<String, String>();
@@ -161,50 +187,6 @@ public class DataTypeUtil {
         dbTypeMap2Text.put("AUTO-INCREMENT", "自增序列");
         dbTypeMap2Text.put("MEDIUMBLOB", "MEDIUMBLOB");
     }
-
-    // /**
-    // * Database enum
-    // */
-    // public static enum DatabaseType {
-    // Oracle, DB2, MySQL
-    // }
-    //
-    // /**
-    // * Switch database type for genarate DDL and SQL Map
-    // *
-    // * @param dbType
-    // */
-    // public static void setDatabaseType(DataTypeUtil.DatabaseType databaseType) {
-    // DataTypeUtil.databaseType = databaseType;
-    // switch (databaseType) {
-    // case Oracle: {
-    //// // Database type mapping
-    //// dataTypeMap2DB.put("文本", "VARCHAR2");
-    //// dataTypeMap2DB.put("长文本", "VARCHAR2");
-    //// dataTypeMap2DB.put("整数", "NUMBER");
-    //// dataTypeMap2DB.put("长整数", "NUMBER");
-    //// dataTypeMap2DB.put("短整数", "NUMBER");
-    //// dataTypeMap2DB.put("大整数", "NUMBER");
-    //// dataTypeMap2DB.put("数值", "NUMBER");
-    //// dataTypeMap2DB.put("时间", "DATE");
-    //// dataTypeMap2DB.put("字符大对象", "CLOB");
-    //// dataTypeMap2DB.put("图片", "BLOB");
-    // // Java type mapping
-    // dataTypeMap2Java.put("二进制对象", "byte[]");
-    // dataTypeMap2Java.put("字符大对象", "char[]");
-    // break;
-    // }
-    // case DB2: {
-    // dataTypeMap2DB.put("字符大对象", "CLOB");
-    // dataTypeMap2DB.put("图片", "BLOB");
-    // break;
-    //
-    // }
-    // default: {
-    // break;
-    // }
-    // }
-    // }
 
     /**
      * checkDataType
@@ -256,6 +238,24 @@ public class DataTypeUtil {
         return result;
     }
 
+    /**
+     * getDBDataType
+     *
+     * @param type
+     * @param refField
+     * @return
+     */
+    public static String getJdbcType(String type, FieldDescBean refField, String databaseCategory) {
+        type = type.trim();
+        String result = null;
+        if (databaseCategory.toLowerCase().equals("oracle")) {
+            result = dataTypeMap2JDBC_Oracle.get(type);
+        } else {
+            throw new RuntimeException("Found matched JDBC Data Type: [" + type + "] ," + refField.getColId() + ", " + refField.getColName());
+        }
+        return result;
+    }
+    
     /**
      * getTextDescFromType
      * 
