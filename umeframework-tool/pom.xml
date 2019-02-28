@@ -1,23 +1,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"> 
 	<modelVersion>4.0.0</modelVersion>
+	<distributionManagement>
+		<repository>
+			<id>local-umestore</id>
+			<url>file:../../umestore</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+	</distributionManagement>
 
-    <properties>
-        <version.dora>2.0.0.RELEASE</version.dora>
-        <version.java>1.8</version.java>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	<properties>
+		<version.dora>2.0.0.RELEASE</version.dora>
+		<version.java>1.8</version.java>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <version.springframework>5.0.9.RELEASE</version.springframework>
+		<version.servlet-api>3.1.0</version.servlet-api>
+		<version.jpa-api>1.0.2.Final</version.jpa-api>
+		<version.validation-api>2.0.1.Final</version.validation-api>
+		<version.hibernate-validator>6.0.9.Final</version.hibernate-validator>
+		<version.jboss-logging>3.3.0.Final</version.jboss-logging>
+		<version.mybatis>3.4.5</version.mybatis>
+		<version.mybatis-spring>1.3.1</version.mybatis-spring>
         <docker.image.prefix>springcloud</docker.image.prefix>
-    </properties>
-    
+	</properties>
+
 	<artifactId>umeframework-tool</artifactId>
 	<packaging>pom</packaging>
-	<parent>
-		<groupId>org.umeframework</groupId>
-		<artifactId>umeframework</artifactId>
-		<version>2.0.0.RELEASE</version>
-        <relativePath>../umeframework</relativePath>
-	</parent>
+	<groupId>org.umeframework</groupId>
+	<version>2.0.0.RELEASE</version>
 
 	<dependencies>
 		<dependency>
@@ -28,36 +39,208 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.umeframework.dora</groupId>
-			<artifactId>dora-core</artifactId>
-			<version>${version.dora}</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${version.servlet-api}</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${version.validation-api}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>${version.jpa-api}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+ 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${version.springframework}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>		
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${version.springframework}</version>
+            <scope>compile</scope>
+            <optional>false</optional>
+        </dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${version.mybatis}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${version.mybatis-spring}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+
 	</dependencies>
 
-    <!-- 
+
+
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<source>${version.java}</source>
+					<target>${version.java}</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
+						<id>attach-sources</id>
+						<phase>verify</phase>
 						<goals>
-							<goal>assembly</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>src/test/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
 	</build>
-	 -->
+	
+    <url>http://umeframework.org</url>
+    <developers>
+        <developer>
+            <name>UME Group</name>
+            <organizationUrl>https://github.com/orgs/umeframework</organizationUrl>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache License Version 2.0</name>
+            <url>http://www.apache.org/licenses</url>
+        </license>
+    </licenses>
 </project>

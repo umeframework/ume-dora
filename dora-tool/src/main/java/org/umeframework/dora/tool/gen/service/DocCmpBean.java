@@ -10,14 +10,14 @@ import java.util.Set;
 
 /**
  * Component define bean
-
+ * 
  * @author Yue MA
  *
  */
 public class DocCmpBean {
-	// Sheet name
+    // Sheet name
     private String sheetName;
-	// Define items
+    // Define items
     private String id;
     private String name;
     private String comment;
@@ -30,7 +30,7 @@ public class DocCmpBean {
     private List<String> refdtoPkgList = new ArrayList<String>();
     private Set<String> classAnnotationList = new HashSet<String>();
     private Set<String> classImportList = new HashSet<String>();
-    
+
     /**
      * getWSID
      * 
@@ -45,7 +45,7 @@ public class DocCmpBean {
         }
         return null;
     }
-    
+
     /**
      * hasWS
      * 
@@ -71,8 +71,7 @@ public class DocCmpBean {
      * @param id
      *            the id to set
      */
-    public void setId(
-            String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -87,8 +86,7 @@ public class DocCmpBean {
      * @param name
      *            the name to set
      */
-    public void setName(
-            String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -103,8 +101,7 @@ public class DocCmpBean {
      * @param comment
      *            the comment to set
      */
-    public void setComment(
-            String comment) {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
@@ -119,8 +116,7 @@ public class DocCmpBean {
      * @param pkg
      *            the pkg to set
      */
-    public void setPkg(
-            String pkg) {
+    public void setPkg(String pkg) {
         this.pkg = pkg;
     }
 
@@ -135,8 +131,7 @@ public class DocCmpBean {
      * @param author
      *            the author to set
      */
-    public void setAuthor(
-            String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
@@ -151,8 +146,7 @@ public class DocCmpBean {
      * @param funcList
      *            the funcList to set
      */
-    public void setFuncList(
-            List<DocItemBean> funcList) {
+    public void setFuncList(List<DocItemBean> funcList) {
         this.funcList = funcList;
     }
 
@@ -167,8 +161,7 @@ public class DocCmpBean {
      * @param refdtoNameList
      *            the refdtoNameList to set
      */
-    public void setRefdtoNameList(
-            List<String> refdtoNameList) {
+    public void setRefdtoNameList(List<String> refdtoNameList) {
         this.refdtoNameList = refdtoNameList;
     }
 
@@ -183,8 +176,7 @@ public class DocCmpBean {
      * @param refdtoTypeList
      *            the refdtoTypeList to set
      */
-    public void setRefdtoTypeList(
-            List<String> refdtoTypeList) {
+    public void setRefdtoTypeList(List<String> refdtoTypeList) {
         this.refdtoTypeList = refdtoTypeList;
     }
 
@@ -199,8 +191,7 @@ public class DocCmpBean {
      * @param refdtoPkgList
      *            the refdtoPkgList to set
      */
-    public void setRefdtoPkgList(
-            List<String> refdtoPkgList) {
+    public void setRefdtoPkgList(List<String> refdtoPkgList) {
         this.refdtoPkgList = refdtoPkgList;
     }
 
@@ -215,8 +206,7 @@ public class DocCmpBean {
      * @param classAnnotationList
      *            the classAnnotationList to set
      */
-    public void setClassAnnotationList(
-            Set<String> classAnnotationList) {
+    public void setClassAnnotationList(Set<String> classAnnotationList) {
         this.classAnnotationList = classAnnotationList;
     }
 
@@ -231,8 +221,7 @@ public class DocCmpBean {
      * @param classImportList
      *            the classImportList to set
      */
-    public void setClassImportList(
-            Set<String> classImportList) {
+    public void setClassImportList(Set<String> classImportList) {
         this.classImportList = classImportList;
     }
 
@@ -247,8 +236,7 @@ public class DocCmpBean {
      * @param sheetName
      *            the sheetName to set
      */
-    public void setSheetName(
-            String sheetName) {
+    public void setSheetName(String sheetName) {
         this.sheetName = sheetName;
     }
 
@@ -263,8 +251,7 @@ public class DocCmpBean {
      * @param updateDate
      *            the updateDate to set
      */
-    public void setUpdateDate(
-            String updateDate) {
+    public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 

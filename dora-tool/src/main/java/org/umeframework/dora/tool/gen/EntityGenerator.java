@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 //import org.umeframework.dora.tool.gen.db.DataTypeUtil.DatabaseType;
-import org.umeframework.dora.tool.gen.db.DefaultDtoBuilder;
 import org.umeframework.dora.tool.gen.db.DtoBuilder;
 import org.umeframework.dora.tool.gen.db.EntityDescBean;
 import org.umeframework.dora.tool.gen.db.TableDescBean;
@@ -57,7 +56,7 @@ public class EntityGenerator {
      */
     public EntityGenerator(String... databaseCategory) throws IOException {
         this.databaseCategory = databaseCategory;
-        dtoBuilder = new DefaultDtoBuilder(this);
+        dtoBuilder = new DtoBuilder(this);
     }
 
     /**
@@ -185,7 +184,7 @@ public class EntityGenerator {
             cgCrudClass.execute("dto", dto, fileName);
             System.out.println("[" + fileName + "] created.");
         }
-        
+
         // Generate Crud Api class
         CodeGenerator cgCrudApi = new CodeGenerator(templateCrudApi);
         for (EntityDescBean dto : dtoExList) {

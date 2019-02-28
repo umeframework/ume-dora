@@ -15,14 +15,11 @@ public class SimpleCellReader implements CellReader<Object> {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.ibm.cn.evox.tool.common.CellReader#read(org.apache.poi.ss.usermodel
-     * .Cell)
+     * @see com.ibm.cn.evox.tool.common.CellReader#read(org.apache.poi.ss.usermodel .Cell)
      */
     @SuppressWarnings("deprecation")
-	@Override
-    public Object read(
-            Cell cell) {
+    @Override
+    public Object read(Cell cell) {
         if (cell == null) {
             return null;
         }

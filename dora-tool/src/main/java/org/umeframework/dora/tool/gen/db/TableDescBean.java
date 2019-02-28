@@ -11,15 +11,15 @@ import java.util.List;
  */
 public class TableDescBean implements java.io.Serializable {
 
-	/**
-	 * serial version UID
-	 */
-	private static final long serialVersionUID = -2945682002269108154L;
+    /**
+     * serial version UID
+     */
+    private static final long serialVersionUID = -2945682002269108154L;
     /**
      * If generate default field for each table
      */
     private int generateDefaultTableField;
-	/**
+    /**
      * current generate date
      */
     private String currentDate;
@@ -74,8 +74,7 @@ public class TableDescBean implements java.io.Serializable {
      * @param tblName
      *            the tblName to set
      */
-    public void setTblName(
-            String tblName) {
+    public void setTblName(String tblName) {
         this.tblName = tblName;
     }
 
@@ -90,8 +89,7 @@ public class TableDescBean implements java.io.Serializable {
      * @param tblId
      *            the tblId to set
      */
-    public void setTblId(
-            String tblId) {
+    public void setTblId(String tblId) {
         this.tblId = tblId;
     }
 
@@ -105,8 +103,7 @@ public class TableDescBean implements java.io.Serializable {
     /**
      * @param currentDate
      */
-    public void setCurrentDate(
-            String currentDate) {
+    public void setCurrentDate(String currentDate) {
         this.currentDate = currentDate;
     }
 
@@ -121,94 +118,98 @@ public class TableDescBean implements java.io.Serializable {
      * @param tblDivision
      *            the tblDivision to set
      */
-    public void setTblDivision(
-            String tblDivision) {
+    public void setTblDivision(String tblDivision) {
         this.tblDivision = tblDivision;
     }
 
-//	/**
-//	 * @return the autoIncrementColumnList
-//	 */
-//	public List<String> getAutoIncrementColumnList() {
-//		return autoIncrementColumnList;
-//	}
-//
-//	/**
-//	 * @param autoIncrementColumnList the autoIncrementColumnList to set
-//	 */
-//	public void setAutoIncrementColumnList(List<String> autoIncrementColumnList) {
-//		this.autoIncrementColumnList = autoIncrementColumnList;
-//	}
+    // /**
+    // * @return the autoIncrementColumnList
+    // */
+    // public List<String> getAutoIncrementColumnList() {
+    // return autoIncrementColumnList;
+    // }
+    //
+    // /**
+    // * @param autoIncrementColumnList the autoIncrementColumnList to set
+    // */
+    // public void setAutoIncrementColumnList(List<String> autoIncrementColumnList) {
+    // this.autoIncrementColumnList = autoIncrementColumnList;
+    // }
 
-	/**
-	 * @return the fieldList
-	 */
-	public List<FieldDescBean> getFieldList() {
-		return fieldList;
-	}
+    /**
+     * @return the fieldList
+     */
+    public List<FieldDescBean> getFieldList() {
+        return fieldList;
+    }
 
-	/**
-	 * @param fieldList the fieldList to set
-	 */
-	public void setFieldList(List<FieldDescBean> fieldList) {
-		this.fieldList = fieldList;
-	}
+    /**
+     * @param fieldList
+     *            the fieldList to set
+     */
+    public void setFieldList(List<FieldDescBean> fieldList) {
+        this.fieldList = fieldList;
+    }
 
-	/**
-	 * @return the docName
-	 */
-	public String getDocName() {
-		return docName;
-	}
+    /**
+     * @return the docName
+     */
+    public String getDocName() {
+        return docName;
+    }
 
-	/**
-	 * @param docName the docName to set
-	 */
-	public void setDocName(String docName) {
-		this.docName = docName;
-	}
+    /**
+     * @param docName
+     *            the docName to set
+     */
+    public void setDocName(String docName) {
+        this.docName = docName;
+    }
 
-	/**
-	 * @return the tblSpace1
-	 */
-	public String getTblSpace1() {
-		return tblSpace1;
-	}
+    /**
+     * @return the tblSpace1
+     */
+    public String getTblSpace1() {
+        return tblSpace1;
+    }
 
-	/**
-	 * @param tblSpace1 the tblSpace1 to set
-	 */
-	public void setTblSpace1(String tblSpace1) {
-		this.tblSpace1 = tblSpace1;
-	}
+    /**
+     * @param tblSpace1
+     *            the tblSpace1 to set
+     */
+    public void setTblSpace1(String tblSpace1) {
+        this.tblSpace1 = tblSpace1;
+    }
 
-	/**
-	 * @return the tblSpace2
-	 */
-	public String getTblSpace2() {
-		return tblSpace2;
-	}
+    /**
+     * @return the tblSpace2
+     */
+    public String getTblSpace2() {
+        return tblSpace2;
+    }
 
-	/**
-	 * @param tblSpace2 the tblSpace2 to set
-	 */
-	public void setTblSpace2(String tblSpace2) {
-		this.tblSpace2 = tblSpace2;
-	}
+    /**
+     * @param tblSpace2
+     *            the tblSpace2 to set
+     */
+    public void setTblSpace2(String tblSpace2) {
+        this.tblSpace2 = tblSpace2;
+    }
 
-	/**
-	 * @return the tblHistory
-	 */
-	public String getTblHistory() {
-		return tblHistory;
-	}
+    /**
+     * @return the tblHistory
+     */
+    public String getTblHistory() {
+        return tblHistory;
+    }
 
-	/**
-	 * @param tblHistory the tblHistory to set
-	 */
-	public void setTblHistory(String tblHistory) {
-		this.tblHistory = tblHistory;
-	}
+    /**
+     * @param tblHistory
+     *            the tblHistory to set
+     */
+    public void setTblHistory(String tblHistory) {
+        this.tblHistory = tblHistory;
+    }
 
     /**
      * @return the generateDefaultTableField
@@ -218,7 +219,8 @@ public class TableDescBean implements java.io.Serializable {
     }
 
     /**
-     * @param generateDefaultTableField the generateDefaultTableField to set
+     * @param generateDefaultTableField
+     *            the generateDefaultTableField to set
      */
     public void setGenerateDefaultTableField(int generateDefaultTableField) {
         this.generateDefaultTableField = generateDefaultTableField;
@@ -232,7 +234,8 @@ public class TableDescBean implements java.io.Serializable {
     }
 
     /**
-     * @param tblAlias the tblAlias to set
+     * @param tblAlias
+     *            the tblAlias to set
      */
     public void setTblAlias(String tblAlias) {
         this.tblAlias = tblAlias;

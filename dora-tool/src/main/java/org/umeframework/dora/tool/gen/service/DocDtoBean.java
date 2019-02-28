@@ -12,7 +12,7 @@ import java.util.Set;
  * DocDtoBean
  */
 public class DocDtoBean {
-	// Define items
+    // Define items
     private String sheetName;
     private String id;
     private String name;
@@ -39,8 +39,7 @@ public class DocDtoBean {
      * @param id
      *            the id to set
      */
-    public void setId(
-            String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -55,8 +54,7 @@ public class DocDtoBean {
      * @param name
      *            the name to set
      */
-    public void setName(
-            String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -71,8 +69,7 @@ public class DocDtoBean {
      * @param comment
      *            the comment to set
      */
-    public void setComment(
-            String comment) {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
@@ -87,8 +84,7 @@ public class DocDtoBean {
      * @param pkg
      *            the pkg to set
      */
-    public void setPkg(
-            String pkg) {
+    public void setPkg(String pkg) {
         this.pkg = pkg;
     }
 
@@ -103,8 +99,7 @@ public class DocDtoBean {
      * @param author
      *            the author to set
      */
-    public void setAuthor(
-            String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
@@ -119,8 +114,7 @@ public class DocDtoBean {
      * @param propList
      *            the propList to set
      */
-    public void setPropList(
-            List<DocItemBean> propList) {
+    public void setPropList(List<DocItemBean> propList) {
         this.propList = propList;
     }
 
@@ -135,8 +129,7 @@ public class DocDtoBean {
      * @param refdtoNameList
      *            the refdtoNameList to set
      */
-    public void setRefdtoNameList(
-            List<String> refdtoNameList) {
+    public void setRefdtoNameList(List<String> refdtoNameList) {
         this.refdtoNameList = refdtoNameList;
     }
 
@@ -151,8 +144,7 @@ public class DocDtoBean {
      * @param refdtoTypeList
      *            the refdtoTypeList to set
      */
-    public void setRefdtoTypeList(
-            List<String> refdtoTypeList) {
+    public void setRefdtoTypeList(List<String> refdtoTypeList) {
         this.refdtoTypeList = refdtoTypeList;
     }
 
@@ -167,8 +159,7 @@ public class DocDtoBean {
      * @param refdtoPkgList
      *            the refdtoPkgList to set
      */
-    public void setRefdtoPkgList(
-            List<String> refdtoPkgList) {
+    public void setRefdtoPkgList(List<String> refdtoPkgList) {
         this.refdtoPkgList = refdtoPkgList;
     }
 
@@ -183,8 +174,7 @@ public class DocDtoBean {
      * @param classAnnotationList
      *            the classAnnotationList to set
      */
-    public void setClassAnnotationList(
-            Set<String> classAnnotationList) {
+    public void setClassAnnotationList(Set<String> classAnnotationList) {
         this.classAnnotationList = classAnnotationList;
     }
 
@@ -199,8 +189,7 @@ public class DocDtoBean {
      * @param classImportList
      *            the classImportList to set
      */
-    public void setClassImportList(
-            Set<String> classImportList) {
+    public void setClassImportList(Set<String> classImportList) {
         this.classImportList = classImportList;
     }
 
@@ -215,8 +204,7 @@ public class DocDtoBean {
      * @param sheetName
      *            the sheetName to set
      */
-    public void setSheetName(
-            String sheetName) {
+    public void setSheetName(String sheetName) {
         this.sheetName = sheetName;
     }
 
@@ -231,8 +219,7 @@ public class DocDtoBean {
      * @param updateDate
      *            the updateDate to set
      */
-    public void setUpdateDate(
-            String updateDate) {
+    public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 
@@ -244,10 +231,10 @@ public class DocDtoBean {
     }
 
     /**
-     * @param returnTypeForServiceOut the returnTypeForServiceOut to set
+     * @param returnTypeForServiceOut
+     *            the returnTypeForServiceOut to set
      */
-    public void setReturnTypeForServiceOut(
-            String returnTypeForServiceOut) {
+    public void setReturnTypeForServiceOut(String returnTypeForServiceOut) {
         this.returnTypeForServiceOut = returnTypeForServiceOut;
     }
 

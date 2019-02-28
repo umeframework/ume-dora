@@ -32,7 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 /**
  * ExcelUtil
  */
-public class ExcelAccessor {
+public class ExcelAccessor extends TypeMapper {
     /**
      * position coordinate of cell
      */
@@ -65,7 +65,7 @@ public class ExcelAccessor {
      * defaultCellWriter
      */
     private CellWriter<Object> defaultCellWriter = new SimpleCellWriter();
-    
+
     /**
      * readSheetNameList
      * 
@@ -485,7 +485,7 @@ public class ExcelAccessor {
     public void createSheet(String excelFile, String sheetname, List<List<Object>> rowValues, CellWriter<Object> cellWriter) {
         createSheet(null, excelFile, sheetname, rowValues, cellWriter);
     }
-    
+
     /**
      * createSheet
      * 

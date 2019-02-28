@@ -11,13 +11,11 @@ import org.apache.poi.ss.usermodel.Cell;
  * @param <E>
  */
 public interface CellWriter<E> {
-	/**
-	 * write cell data to excel
-	 * 
-	 * @param cell
-	 * @return
-	 */
-	public void write(
-			Cell cell,
-			E value);
+    /**
+     * write cell data to excel
+     * 
+     * @param cell
+     * @return
+     */
+    public void write(Cell cell, E value);
 }

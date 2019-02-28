@@ -20,13 +20,10 @@ public class CommentCellReader implements CellReader<CommentCellReader.CellValue
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.ibm.cn.evox.tool.common.CellReader#read(org.apache.poi.ss.usermodel
-     * .Cell)
+     * @see com.ibm.cn.evox.tool.common.CellReader#read(org.apache.poi.ss.usermodel .Cell)
      */
     @Override
-    public CommentCellReader.CellValue read(
-            Cell cell) {
+    public CommentCellReader.CellValue read(Cell cell) {
         CellValue cv = new CellValue();
         cv.value = new ExcelAccessor().getCellValueAsString(cell);
         cv.comment = new ExcelAccessor().getCellCommentAsString(cell);

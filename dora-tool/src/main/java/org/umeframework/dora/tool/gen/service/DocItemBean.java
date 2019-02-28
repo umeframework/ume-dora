@@ -7,7 +7,7 @@ package org.umeframework.dora.tool.gen.service;
  * DocDtoParamBean
  */
 public class DocItemBean {
-	// Define items
+    // Define items
     private String index;
     private String id;
     private String name;
@@ -32,8 +32,7 @@ public class DocItemBean {
      * @param id
      *            the id to set
      */
-    public void setId(
-            String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -48,8 +47,7 @@ public class DocItemBean {
      * @param name
      *            the name to set
      */
-    public void setName(
-            String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -64,8 +62,7 @@ public class DocItemBean {
      * @param type
      *            the type to set
      */
-    public void setType(
-            String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -80,8 +77,7 @@ public class DocItemBean {
      * @param typeFlag
      *            the typeFlag to set
      */
-    public void setTypeFlag(
-            String typeFlag) {
+    public void setTypeFlag(String typeFlag) {
         this.typeFlag = typeFlag;
     }
 
@@ -96,8 +92,7 @@ public class DocItemBean {
      * @param defaultValue
      *            the defaultValue to set
      */
-    public void setDefaultValue(
-            String defaultValue) {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -112,8 +107,7 @@ public class DocItemBean {
      * @param comment
      *            the comment to set
      */
-    public void setComment(
-            String comment) {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
@@ -128,8 +122,7 @@ public class DocItemBean {
      * @param javaType
      *            the javaType to set
      */
-    public void setJavaType(
-            String javaType) {
+    public void setJavaType(String javaType) {
         this.javaType = javaType;
     }
 
@@ -144,8 +137,7 @@ public class DocItemBean {
      * @param javaId4GetSet
      *            the javaId4GetSet to set
      */
-    public void setJavaId4GetSet(
-            String javaId4GetSet) {
+    public void setJavaId4GetSet(String javaId4GetSet) {
         this.javaId4GetSet = javaId4GetSet;
     }
 
@@ -160,8 +152,7 @@ public class DocItemBean {
      * @param index
      *            the index to set
      */
-    public void setIndex(
-            String index) {
+    public void setIndex(String index) {
         this.index = index;
     }
 
@@ -173,10 +164,10 @@ public class DocItemBean {
     }
 
     /**
-     * @param javaOriType the javaOriType to set
+     * @param javaOriType
+     *            the javaOriType to set
      */
-    public void setJavaOriType(
-            String javaOriType) {
+    public void setJavaOriType(String javaOriType) {
         this.javaOriType = javaOriType;
     }
 
@@ -188,10 +179,10 @@ public class DocItemBean {
     }
 
     /**
-     * @param wsFlag the wsFlag to set
+     * @param wsFlag
+     *            the wsFlag to set
      */
-    public void setWsFlag(
-            String wsFlag) {
+    public void setWsFlag(String wsFlag) {
         this.wsFlag = wsFlag;
     }
 
@@ -203,12 +194,11 @@ public class DocItemBean {
     }
 
     /**
-     * @param wsId the wsId to set
+     * @param wsId
+     *            the wsId to set
      */
-    public void setWsId(
-            String wsId) {
+    public void setWsId(String wsId) {
         this.wsId = wsId;
     }
-
 
 }

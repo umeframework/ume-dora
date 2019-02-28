@@ -12,7 +12,7 @@ import java.util.Set;
  * DocFuncBean
  */
 public class DocFuncBean {
-	// Define items
+    // Define items
     private String sheetName;
     private String id;
     private String wsId;
@@ -29,7 +29,7 @@ public class DocFuncBean {
     private Set<String> classImportList = new HashSet<String>();
     private Set<String> inParamClassImportList = new HashSet<String>();
     private Set<String> outParamClassImportList = new HashSet<String>();
-    
+
     /**
      * getOutParam
      * 
@@ -53,8 +53,7 @@ public class DocFuncBean {
      * @param id
      *            the id to set
      */
-    public void setId(
-            String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -69,8 +68,7 @@ public class DocFuncBean {
      * @param name
      *            the name to set
      */
-    public void setName(
-            String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -85,8 +83,7 @@ public class DocFuncBean {
      * @param comment
      *            the comment to set
      */
-    public void setComment(
-            String comment) {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
@@ -101,8 +98,7 @@ public class DocFuncBean {
      * @param author
      *            the author to set
      */
-    public void setAuthor(
-            String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
@@ -117,8 +113,7 @@ public class DocFuncBean {
      * @param inParamList
      *            the inParamList to set
      */
-    public void setInParamList(
-            List<DocItemBean> inParamList) {
+    public void setInParamList(List<DocItemBean> inParamList) {
         this.inParamList = inParamList;
     }
 
@@ -133,8 +128,7 @@ public class DocFuncBean {
      * @param outParamList
      *            the outParamList to set
      */
-    public void setOutParamList(
-            List<DocItemBean> outParamList) {
+    public void setOutParamList(List<DocItemBean> outParamList) {
         this.outParamList = outParamList;
     }
 
@@ -149,8 +143,7 @@ public class DocFuncBean {
      * @param sheetName
      *            the sheetName to set
      */
-    public void setSheetName(
-            String sheetName) {
+    public void setSheetName(String sheetName) {
         this.sheetName = sheetName;
     }
 
@@ -165,8 +158,7 @@ public class DocFuncBean {
      * @param updateDate
      *            the updateDate to set
      */
-    public void setUpdateDate(
-            String updateDate) {
+    public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 
@@ -181,8 +173,7 @@ public class DocFuncBean {
      * @param details
      *            the details to set
      */
-    public void setDetails(
-            List<String> details) {
+    public void setDetails(List<String> details) {
         this.details = details;
     }
 
@@ -194,10 +185,10 @@ public class DocFuncBean {
     }
 
     /**
-     * @param pkg the pkg to set
+     * @param pkg
+     *            the pkg to set
      */
-    public void setPkg(
-            String pkg) {
+    public void setPkg(String pkg) {
         this.pkg = pkg;
     }
 
@@ -209,10 +200,10 @@ public class DocFuncBean {
     }
 
     /**
-     * @param classImportList the classImportList to set
+     * @param classImportList
+     *            the classImportList to set
      */
-    public void setClassImportList(
-            Set<String> classImportList) {
+    public void setClassImportList(Set<String> classImportList) {
         this.classImportList = classImportList;
     }
 
@@ -224,10 +215,10 @@ public class DocFuncBean {
     }
 
     /**
-     * @param wsId the wsId to set
+     * @param wsId
+     *            the wsId to set
      */
-    public void setWsId(
-            String wsId) {
+    public void setWsId(String wsId) {
         this.wsId = wsId;
     }
 
@@ -239,10 +230,10 @@ public class DocFuncBean {
     }
 
     /**
-     * @param inParamClassImportList the inParamClassImportList to set
+     * @param inParamClassImportList
+     *            the inParamClassImportList to set
      */
-    public void setInParamClassImportList(
-            Set<String> inParamClassImportList) {
+    public void setInParamClassImportList(Set<String> inParamClassImportList) {
         this.inParamClassImportList = inParamClassImportList;
     }
 
@@ -254,10 +245,10 @@ public class DocFuncBean {
     }
 
     /**
-     * @param outParamClassImportList the outParamClassImportList to set
+     * @param outParamClassImportList
+     *            the outParamClassImportList to set
      */
-    public void setOutParamClassImportList(
-            Set<String> outParamClassImportList) {
+    public void setOutParamClassImportList(Set<String> outParamClassImportList) {
         this.outParamClassImportList = outParamClassImportList;
     }
 

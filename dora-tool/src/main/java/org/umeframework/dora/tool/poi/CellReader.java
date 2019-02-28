@@ -17,6 +17,5 @@ public interface CellReader<E> {
      * @param cell
      * @return
      */
-    public E read(
-            Cell cell);
+    public E read(Cell cell);
 }

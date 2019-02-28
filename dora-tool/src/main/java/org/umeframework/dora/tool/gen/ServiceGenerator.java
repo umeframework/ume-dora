@@ -24,145 +24,148 @@ import org.umeframework.dora.tool.gen.service.ServiceExcelParser;
  * @author MA YUE
  */
 public class ServiceGenerator {
-	// generate file DIR setting
-	private String genDirJava = "src/main/gen/";
-	private String templateServiceDto = "template/service-dto.vm";
-	private String templateServiceInterface = "template/service-interface.vm";
-	
-	/**
-	 * execute
-	 *
-	 * @throws Exception
-	 */
-	public List<String> execute(String inputPath) throws Exception {
-		File[] pathnames = new File(inputPath).listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File e) {
-				return e.isDirectory();
-			}
-		});
-		List<File> files = new ArrayList<File>();
+    // generate file DIR setting
+    private String genDirJava = "src/main/gen/";
+    private String templateServiceDto = "template/service-dto.vm";
+    private String templateServiceInterface = "template/service-interface.vm";
 
-		for (File pathname : pathnames) {
-			File[] defines = pathname.listFiles(new FileFilter() {
-				@Override
-				public boolean accept(File e) {
-					String name = e.getName().toLowerCase();
-					return name.endsWith(".xls") || name.endsWith(".xlsx");
-				}
-			});
-			for (File define : defines) {
-				files.add(define);
-			}
-		}
+    /**
+     * execute
+     *
+     * @throws Exception
+     */
+    public List<String> execute(String inputPath) throws Exception {
+        File[] pathnames = new File(inputPath).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File e) {
+                return e.isDirectory();
+            }
+        });
+        List<File> files = new ArrayList<File>();
 
-		// Get all declare Dto list
-		Map<String, String> declareDtoMap = new LinkedHashMap<String, String>();
-		for (File file : files) {
-			Map<String, String> map = new ServiceExcelParser().getDeclareDtoListOfSamePackage(file);
-			declareDtoMap.putAll(map);
-		}
-		Set<String> declareDtoList = declareDtoMap.keySet();
+        for (File pathname : pathnames) {
+            File[] defines = pathname.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File e) {
+                    String name = e.getName().toLowerCase();
+                    return name.endsWith(".xls") || name.endsWith(".xlsx");
+                }
+            });
+            for (File define : defines) {
+                files.add(define);
+            }
+        }
 
-		// Parse for generate
-		CodeGenerator dtoGen = new CodeGenerator(templateServiceDto, "UTF-8");
-		CodeGenerator sifGen = new CodeGenerator(templateServiceInterface, "UTF-8");
+        // Get all declare Dto list
+        Map<String, String> declareDtoMap = new LinkedHashMap<String, String>();
+        for (File file : files) {
+            Map<String, String> map = new ServiceExcelParser().getDeclareDtoListOfSamePackage(file);
+            declareDtoMap.putAll(map);
+        }
+        Set<String> declareDtoList = declareDtoMap.keySet();
 
-		for (File file : files) {
-			// Parse excel and create DocBean
-			DocBean docBean = new ServiceExcelParser().parseWorkBook(file);
-			// create appendix information for DocBean
-			new ServiceBuilder().build(docBean, declareDtoList);
+        // Parse for generate
+        CodeGenerator dtoGen = new CodeGenerator(templateServiceDto, "UTF-8");
+        CodeGenerator sifGen = new CodeGenerator(templateServiceInterface, "UTF-8");
 
-			// Generate regular service Dto
-			for (DocDtoBean dtoBean : docBean.getDtoBeanList()) {
-				String pkg = dtoBean.getPkg();
-				String fileName = dtoGen.createPackageDir(genDirJava, pkg) + dtoBean.getId() + ".java";
-				dtoGen.execute("dtoBean", dtoBean, fileName);
-				System.out.println("[" + fileName + "] created.");
-			}
+        for (File file : files) {
+            // Parse excel and create DocBean
+            DocBean docBean = new ServiceExcelParser().parseWorkBook(file);
+            // create appendix information for DocBean
+            new ServiceBuilder().build(docBean, declareDtoList);
 
-			if (docBean.getCmpBean() == null) {
-				continue;
-			}
+            // Generate regular service Dto
+            for (DocDtoBean dtoBean : docBean.getDtoBeanList()) {
+                String pkg = dtoBean.getPkg();
+                String fileName = dtoGen.createPackageDir(genDirJava, pkg) + dtoBean.getId() + ".java";
+                dtoGen.execute("dtoBean", dtoBean, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
 
-			// Generate Service Interface
-			String pkg = docBean.getCmpBean().getPkg();
-			String className = docBean.getCmpBean().getId() + ".java";
-			String fileName = dtoGen.createPackageDir(genDirJava, pkg) + className;
-			sifGen.execute("docBean", docBean, fileName);
-			System.out.println("[" + fileName + "] created.");
+            if (docBean.getCmpBean() == null) {
+                continue;
+            }
 
-			// Generate Service Control for MVC layer
-			if (!docBean.getCmpBean().hasWS()) {
-				continue;
-			}
+            // Generate Service Interface
+            String pkg = docBean.getCmpBean().getPkg();
+            String className = docBean.getCmpBean().getId() + ".java";
+            String fileName = dtoGen.createPackageDir(genDirJava, pkg) + className;
+            sifGen.execute("docBean", docBean, fileName);
+            System.out.println("[" + fileName + "] created.");
 
-			// Generate Service Control In/Out Dto for MVC layer
-			pkg = docBean.getCmpBean().getPkg() + ".web";
-			for (DocItemBean cmpBeanItemBean : docBean.getCmpBean().getFuncList()) {
-				String wsFlag = cmpBeanItemBean.getWsFlag();
-				if (wsFlag == null || !wsFlag.equals("YES")) {
-					continue;
-				}
+            // Generate Service Control for MVC layer
+            if (!docBean.getCmpBean().hasWS()) {
+                continue;
+            }
 
-				for (DocFuncBean funcBean : docBean.getFuncBeanList()) {
-					if (!cmpBeanItemBean.getId().equals(funcBean.getId())) {
-						continue;
-					}
-					funcBean.setPkg(pkg);
-					String wsId = docBean.getCmpBean().getWSID(funcBean.getId());
-					funcBean.setWsId(wsId);
+            // Generate Service Control In/Out Dto for MVC layer
+            pkg = docBean.getCmpBean().getPkg() + ".web";
+            for (DocItemBean cmpBeanItemBean : docBean.getCmpBean().getFuncList()) {
+                String wsFlag = cmpBeanItemBean.getWsFlag();
+                if (wsFlag == null || !wsFlag.equals("YES")) {
+                    continue;
+                }
 
-				}
+                for (DocFuncBean funcBean : docBean.getFuncBeanList()) {
+                    if (!cmpBeanItemBean.getId().equals(funcBean.getId())) {
+                        continue;
+                    }
+                    funcBean.setPkg(pkg);
+                    String wsId = docBean.getCmpBean().getWSID(funcBean.getId());
+                    funcBean.setWsId(wsId);
 
-			}
+                }
 
-		}
+            }
 
-		return null;
-	}
+        }
 
-	/**
-	 * @return the genDirJava
-	 */
-	public String getGenDirJava() {
-		return genDirJava;
-	}
+        return null;
+    }
 
-	/**
-	 * @param genDirJava the genDirJava to set
-	 */
-	public void setGenDirJava(String genDirJava) {
-		this.genDirJava = genDirJava;
-	}
+    /**
+     * @return the genDirJava
+     */
+    public String getGenDirJava() {
+        return genDirJava;
+    }
 
-	/**
-	 * @return the templateServiceDto
-	 */
-	public String getTemplateServiceDto() {
-		return templateServiceDto;
-	}
+    /**
+     * @param genDirJava
+     *            the genDirJava to set
+     */
+    public void setGenDirJava(String genDirJava) {
+        this.genDirJava = genDirJava;
+    }
 
-	/**
-	 * @param templateServiceDto the templateServiceDto to set
-	 */
-	public void setTemplateServiceDto(String templateServiceDto) {
-		this.templateServiceDto = templateServiceDto;
-	}
+    /**
+     * @return the templateServiceDto
+     */
+    public String getTemplateServiceDto() {
+        return templateServiceDto;
+    }
 
-	/**
-	 * @return the templateServiceInterface
-	 */
-	public String getTemplateServiceInterface() {
-		return templateServiceInterface;
-	}
+    /**
+     * @param templateServiceDto
+     *            the templateServiceDto to set
+     */
+    public void setTemplateServiceDto(String templateServiceDto) {
+        this.templateServiceDto = templateServiceDto;
+    }
 
-	/**
-	 * @param templateServiceInterface the templateServiceInterface to set
-	 */
-	public void setTemplateServiceInterface(String templateServiceInterface) {
-		this.templateServiceInterface = templateServiceInterface;
-	}
+    /**
+     * @return the templateServiceInterface
+     */
+    public String getTemplateServiceInterface() {
+        return templateServiceInterface;
+    }
+
+    /**
+     * @param templateServiceInterface
+     *            the templateServiceInterface to set
+     */
+    public void setTemplateServiceInterface(String templateServiceInterface) {
+        this.templateServiceInterface = templateServiceInterface;
+    }
 
 }

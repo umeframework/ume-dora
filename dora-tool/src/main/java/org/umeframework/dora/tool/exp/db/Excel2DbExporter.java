@@ -31,7 +31,6 @@ import org.umeframework.dora.ajax.impl.JsonRenderImpl;
 import org.umeframework.dora.dao.impl.JdbcDaoImpl;
 import org.umeframework.dora.log.Logger;
 import org.umeframework.dora.log.impl.Log4j2Impl;
-import org.umeframework.dora.tool.gen.db.DataTypeUtil;
 import org.umeframework.dora.tool.poi.CellWriter;
 import org.umeframework.dora.tool.poi.ExcelAccessor;
 import org.umeframework.dora.tool.poi.SimpleCellWriter;
@@ -509,19 +508,19 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
             colName = colId;
         }
         String remark = String.valueOf(e.get("dataType"));
-        String type = DataTypeUtil.getTextDescFromType(remark);
+        String type = this.getTextDescFromType(remark);
         String length = "";
         if (databaseType.equalsIgnoreCase("ORACLE")) {
             if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
                 if (e.get("dataScale").toString().equals("0")) {
                     length = e.get("dataPrecision").toString();
-                    type = DataTypeUtil.getTextDescFromType("INTEGER");
+                    type = this.getTextDescFromType("INTEGER");
                 } else {
                     length = e.get("dataPrecision") + "," + e.get("dataScale");
                 }
             } else if (e.get("dataPrecision") != null && e.get("dataScale") == null) {
                 length = e.get("dataPrecision").toString();
-                type = DataTypeUtil.getTextDescFromType("INTEGER");
+                type = this.getTextDescFromType("INTEGER");
             } else if (e.get("dataLength") != null) {
                 length = e.get("dataLength").toString();
             }

@@ -1,63 +1,65 @@
 /* 
  * Copyright 2014-2017 UME Framework Group, GNU General Public License 
  */
-package org.umeframework.dora.tool.gen.db;
+package org.umeframework.dora.tool.poi;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.umeframework.dora.tool.gen.db.FieldDescBean;
+
 /**
- * DataTypeUtil
+ * TypeMapper
  */
-public class DataTypeUtil {
+public class TypeMapper {
 
     /**
      * Default type mapping for Java
      */
-    public static final Map<String, String> dataTypeMap2Java_Default = new HashMap<String, String>();
+    public static final Map<String, String> dataTypeMap2Java = new HashMap<String, String>();
     static {
-        dataTypeMap2Java_Default.put("文本", "String");
-        dataTypeMap2Java_Default.put("定长文本", "String");
-        dataTypeMap2Java_Default.put("字符", "Character");
-        dataTypeMap2Java_Default.put("长文本", "String");
-        dataTypeMap2Java_Default.put("整数", "Integer");
-        dataTypeMap2Java_Default.put("长整数", "Long");
-        dataTypeMap2Java_Default.put("短整数", "Short");
-        dataTypeMap2Java_Default.put("数值", "Double");
-        dataTypeMap2Java_Default.put("浮点数值", "Float");
-        dataTypeMap2Java_Default.put("日期", "java.sql.Date");
-        dataTypeMap2Java_Default.put("时间", "java.sql.Time");
-        dataTypeMap2Java_Default.put("时间戳", "java.sql.Timestamp");
-        dataTypeMap2Java_Default.put("日期时间", "java.sql.Timestamp");
-        dataTypeMap2Java_Default.put("大整数", "java.math.BigInteger");
-        dataTypeMap2Java_Default.put("大数值", "java.math.BigDecimal");
-        dataTypeMap2Java_Default.put("二进制对象", "java.sql.Blob");
-        dataTypeMap2Java_Default.put("字符大对象", "java.sql.Clob");
-        dataTypeMap2Java_Default.put("自增序列", "Long");
-        dataTypeMap2Java_Default.put("图片", "java.sql.Blob");
+        dataTypeMap2Java.put("文本", "String");
+        dataTypeMap2Java.put("定长文本", "String");
+        dataTypeMap2Java.put("字符", "Character");
+        dataTypeMap2Java.put("长文本", "String");
+        dataTypeMap2Java.put("整数", "Integer");
+        dataTypeMap2Java.put("长整数", "Long");
+        dataTypeMap2Java.put("短整数", "Short");
+        dataTypeMap2Java.put("数值", "Double");
+        dataTypeMap2Java.put("浮点数值", "Float");
+        dataTypeMap2Java.put("日期", "java.sql.Date");
+        dataTypeMap2Java.put("时间", "java.sql.Time");
+        dataTypeMap2Java.put("时间戳", "java.sql.Timestamp");
+        dataTypeMap2Java.put("日期时间", "java.sql.Timestamp");
+        dataTypeMap2Java.put("大整数", "java.math.BigInteger");
+        dataTypeMap2Java.put("大数值", "java.math.BigDecimal");
+        dataTypeMap2Java.put("二进制对象", "java.sql.Blob");
+        dataTypeMap2Java.put("字符大对象", "java.sql.Clob");
+        dataTypeMap2Java.put("自增序列", "Long");
+        dataTypeMap2Java.put("图片", "java.sql.Blob");
 
         // REST
-        dataTypeMap2Java_Default.put("TEXT", "String");
-        dataTypeMap2Java_Default.put("LONG TEXT", "String");
-        dataTypeMap2Java_Default.put("LONGTEXT", "String");
-        dataTypeMap2Java_Default.put("NVARCHAR2", "String");
-        dataTypeMap2Java_Default.put("FIT LENGTH TEXT", "String");
-        dataTypeMap2Java_Default.put("INT", "Integer");
-        dataTypeMap2Java_Default.put("LONG", "Long");
-        dataTypeMap2Java_Default.put("SHORT", "Short");
-        dataTypeMap2Java_Default.put("DOUBLE", "Double");
-        dataTypeMap2Java_Default.put("FLOAT", "Float");
-        dataTypeMap2Java_Default.put("DATE", "java.sql.Date");
-        dataTypeMap2Java_Default.put("TIME", "java.sql.Time");
-        dataTypeMap2Java_Default.put("TIMESTAMP", "java.sql.Timestamp");
-        dataTypeMap2Java_Default.put("TIMESTAMP(6)", "java.sql.Timestamp");
-        dataTypeMap2Java_Default.put("SEQUENCE", "Long");
-        dataTypeMap2Java_Default.put("BIG INT", "java.math.BigInteger");
-        dataTypeMap2Java_Default.put("BIG DECIMAL", "java.math.BigDecimal");
-        dataTypeMap2Java_Default.put("PHOTO", "java.sql.Blob");
-        dataTypeMap2Java_Default.put("PICTURE", "java.sql.Blob");
-        dataTypeMap2Java_Default.put("BLOB", "java.sql.Blob");
-        dataTypeMap2Java_Default.put("CLOB", "java.sql.Clob");
+        dataTypeMap2Java.put("TEXT", "String");
+        dataTypeMap2Java.put("LONG TEXT", "String");
+        dataTypeMap2Java.put("LONGTEXT", "String");
+        dataTypeMap2Java.put("NVARCHAR2", "String");
+        dataTypeMap2Java.put("FIT LENGTH TEXT", "String");
+        dataTypeMap2Java.put("INT", "Integer");
+        dataTypeMap2Java.put("LONG", "Long");
+        dataTypeMap2Java.put("SHORT", "Short");
+        dataTypeMap2Java.put("DOUBLE", "Double");
+        dataTypeMap2Java.put("FLOAT", "Float");
+        dataTypeMap2Java.put("DATE", "java.sql.Date");
+        dataTypeMap2Java.put("TIME", "java.sql.Time");
+        dataTypeMap2Java.put("TIMESTAMP", "java.sql.Timestamp");
+        dataTypeMap2Java.put("TIMESTAMP(6)", "java.sql.Timestamp");
+        dataTypeMap2Java.put("SEQUENCE", "Long");
+        dataTypeMap2Java.put("BIG INT", "java.math.BigInteger");
+        dataTypeMap2Java.put("BIG DECIMAL", "java.math.BigDecimal");
+        dataTypeMap2Java.put("PHOTO", "java.sql.Blob");
+        dataTypeMap2Java.put("PICTURE", "java.sql.Blob");
+        dataTypeMap2Java.put("BLOB", "java.sql.Blob");
+        dataTypeMap2Java.put("CLOB", "java.sql.Clob");
         // Oracle
         // dataTypeMap2Java.put("二进制对象", "byte[]");
         // dataTypeMap2Java.put("字符大对象", "char[]");
@@ -160,7 +162,7 @@ public class DataTypeUtil {
         dataTypeMap2DB_Oracle.put("BLOB", "BLOB");
         dataTypeMap2DB_Oracle.put("CLOB", "CLOB");
     }
-    
+
     /**
      * Database type mapping to text description
      */
@@ -194,9 +196,9 @@ public class DataTypeUtil {
      * @param type
      * @return
      */
-    public static boolean checkDataType(String type) {
+    public boolean checkDataType(String type) {
         type = type.trim();
-        if (dataTypeMap2Java_Default.containsKey(type)) {
+        if (dataTypeMap2Java.containsKey(type)) {
             return true;
         }
         return false;
@@ -209,10 +211,10 @@ public class DataTypeUtil {
      * @param refField
      * @return
      */
-    public static String getJavaType(String type, FieldDescBean refField, String databaseCategory) {
+    public String getJavaType(String type, FieldDescBean refField, String databaseCategory) {
         type = type.trim();
-        if (dataTypeMap2Java_Default.containsKey(type)) {
-            return dataTypeMap2Java_Default.get(type);
+        if (dataTypeMap2Java.containsKey(type)) {
+            return dataTypeMap2Java.get(type);
         }
         throw new RuntimeException("Found Unknow Data Type: [" + type + "] ," + refField.getColId() + ", " + refField.getColName());
     }
@@ -224,7 +226,7 @@ public class DataTypeUtil {
      * @param refField
      * @return
      */
-    public static String getDBDataType(String type, FieldDescBean refField, String databaseCategory) {
+    public String getDBDataType(String type, FieldDescBean refField, String databaseCategory) {
         type = type.trim();
         String result = null;
         if (databaseCategory.toLowerCase().equals("oracle")) {
@@ -245,7 +247,7 @@ public class DataTypeUtil {
      * @param refField
      * @return
      */
-    public static String getJdbcType(String type, FieldDescBean refField, String databaseCategory) {
+    public String getJdbcType(String type, FieldDescBean refField, String databaseCategory) {
         type = type.trim();
         String result = null;
         if (databaseCategory.toLowerCase().equals("oracle")) {
@@ -255,7 +257,7 @@ public class DataTypeUtil {
         }
         return result;
     }
-    
+
     /**
      * getTextDescFromType
      * 
@@ -263,7 +265,7 @@ public class DataTypeUtil {
      * @param refField
      * @return
      */
-    public static String getTextDescFromType(String type) {
+    public String getTextDescFromType(String type) {
         type = type.toUpperCase().trim();
         if (dbTypeMap2Text.containsKey(type)) {
             return dbTypeMap2Text.get(type);
@@ -277,7 +279,7 @@ public class DataTypeUtil {
      * @param str
      * @return
      */
-    public static boolean isNotEmpty(String str) {
+    public boolean isNotEmpty(String str) {
         if (str != null && !str.trim().equals("") && !str.trim().toLowerCase().equals("null")) {
             return true;
         }
@@ -290,7 +292,7 @@ public class DataTypeUtil {
      * @param colType
      * @return
      */
-    public static boolean isStrType(String colType) {
+    public boolean isStrType(String colType) {
         colType = colType.trim().toUpperCase();
         if (colType.startsWith("CHAR") || colType.startsWith("VARCHAR")) {
             return true;
@@ -304,7 +306,7 @@ public class DataTypeUtil {
      * @param field
      * @return
      */
-    public static boolean isPK(FieldDescBean field) {
+    public boolean isPK(FieldDescBean field) {
         if (field.getColPK() == null) {
             return false;
         }
@@ -320,7 +322,7 @@ public class DataTypeUtil {
      * @param name
      * @return
      */
-    public static String dbName2JavaName(String name) {
+    public String dbName2JavaName(String name) {
         if (!name.contains("_")) {
             return name.toLowerCase();
         }
@@ -346,7 +348,7 @@ public class DataTypeUtil {
      * @param name
      * @return
      */
-    public static String dbName2JavaGetterSetterName(String name) {
+    public String dbName2JavaGetterSetterName(String name) {
         if (!name.contains("_")) {
             return upperCaseFirstChar(name.toLowerCase());
         }
@@ -372,7 +374,7 @@ public class DataTypeUtil {
      * @param name
      * @return
      */
-    public static String upperCaseFirstChar(String name) {
+    public String upperCaseFirstChar(String name) {
         return name.length() > 1 ? String.valueOf(name.charAt(0)).toUpperCase() + name.substring(1) : String.valueOf(name.charAt(0)).toUpperCase();
     }
 
@@ -382,7 +384,7 @@ public class DataTypeUtil {
      * @param name
      * @return
      */
-    public static String lowFirstChar(String name) {
+    public String lowFirstChar(String name) {
         return String.valueOf(name.charAt(0)).toLowerCase() + name.substring(1);
     }
 }

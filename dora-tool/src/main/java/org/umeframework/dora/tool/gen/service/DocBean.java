@@ -13,7 +13,7 @@ import java.util.List;
  *
  */
 public class DocBean {
-	// document name
+    // document name
     private String docName;
     // component define bean
     private DocCmpBean cmpBean;
@@ -33,8 +33,7 @@ public class DocBean {
      * @param dtoBeanList
      *            the dtoBeanList to set
      */
-    public void setDtoBeanList(
-            List<DocDtoBean> dtoBeanList) {
+    public void setDtoBeanList(List<DocDtoBean> dtoBeanList) {
         this.dtoBeanList = dtoBeanList;
     }
 
@@ -49,8 +48,7 @@ public class DocBean {
      * @param funcBeanList
      *            the funcBeanList to set
      */
-    public void setFuncBeanList(
-            List<DocFuncBean> funcBeanList) {
+    public void setFuncBeanList(List<DocFuncBean> funcBeanList) {
         this.funcBeanList = funcBeanList;
     }
 
@@ -65,8 +63,7 @@ public class DocBean {
      * @param cmpBean
      *            the cmpBean to set
      */
-    public void setCmpBean(
-            DocCmpBean cmpBean) {
+    public void setCmpBean(DocCmpBean cmpBean) {
         this.cmpBean = cmpBean;
     }
 
@@ -81,8 +78,7 @@ public class DocBean {
      * @param docName
      *            the docName to set
      */
-    public void setDocName(
-            String docName) {
+    public void setDocName(String docName) {
         this.docName = docName;
     }
 

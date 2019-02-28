@@ -11,6 +11,7 @@
     </parent>
 
 	<properties>
+        <version.dora>2.0.0.RELEASE</version.dora>
 		<version.jpa-api>2.0-cr-1</version.jpa-api>
 		<version.validation-api>1.1.0.Final</version.validation-api>
 		<version.springframework>4.3.7.RELEASE</version.springframework>
@@ -36,14 +37,12 @@
             <artifactId>dora-core</artifactId>
             <version>${version.dora}</version>
             <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.umeframework.dora</groupId>
             <artifactId>dora-orm</artifactId>
             <version>${version.dora}</version>
             <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -115,7 +114,41 @@
 			<scope>compile</scope>
 			<optional>false</optional>
 		</dependency>
-
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${version.commons-codec}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>${version.commons-dbcp2}</version>
+            <scope>compile</scope>
+            <optional>false</optional>
+        </dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${version.commons-io}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${version.commons-lang}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${version.commons-logging}</version>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>

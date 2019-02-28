@@ -6,7 +6,7 @@ package org.umeframework.dora.tool.gen.service;
 import java.util.List;
 import java.util.Set;
 
-import org.umeframework.dora.tool.gen.db.DataTypeUtil;
+import org.umeframework.dora.tool.poi.TypeMapper;
 
 /**
  * DefaultServiceBuilder
@@ -21,9 +21,7 @@ public class ServiceBuilder {
      * @param declareDtoList
      * @param docBean
      */
-    public void build(
-            DocBean docBean,
-            Set<String> declareDtoList) {
+    public void build(DocBean docBean, Set<String> declareDtoList) {
 
         // Append information for Dto
         List<DocDtoBean> dtoBeanList = docBean.getDtoBeanList();
@@ -51,7 +49,7 @@ public class ServiceBuilder {
         for (DocFuncBean funcBean : funcBeanList) {
             // Process input parameter
             for (DocItemBean item : funcBean.getInParamList()) {
-                String javaType =    getJavaType(docBean.getDocName(), cmpBean.getPkg(), funcBean.getSheetName(), item.getType(), item.getTypeFlag(), declareDtoList);
+                String javaType = getJavaType(docBean.getDocName(), cmpBean.getPkg(), funcBean.getSheetName(), item.getType(), item.getTypeFlag(), declareDtoList);
                 String javaOriType = getJavaOriType(docBean.getDocName(), cmpBean.getPkg(), funcBean.getSheetName(), item.getType(), item.getTypeFlag(), declareDtoList);
                 item.setJavaOriType(javaOriType);
                 if (javaType.contains(".")) {
@@ -69,7 +67,7 @@ public class ServiceBuilder {
             }
             // Process output parameter
             for (DocItemBean item : funcBean.getOutParamList()) {
-                String javaType =    getJavaType(docBean.getDocName(), cmpBean.getPkg(), funcBean.getSheetName(), item.getType(), item.getTypeFlag(), declareDtoList);
+                String javaType = getJavaType(docBean.getDocName(), cmpBean.getPkg(), funcBean.getSheetName(), item.getType(), item.getTypeFlag(), declareDtoList);
                 String javaOriType = getJavaOriType(docBean.getDocName(), cmpBean.getPkg(), funcBean.getSheetName(), item.getType(), item.getTypeFlag(), declareDtoList);
                 item.setJavaOriType(javaOriType);
                 if (javaType.contains(".")) {
@@ -96,14 +94,8 @@ public class ServiceBuilder {
      * @param typeFlag
      * @return
      */
-    protected String getJavaType(
-            String fileName,
-            String pkg,
-            String sheetName,
-            String type,
-            String typeFlag,
-            Set<String> declareDtoList) {
-        return appendArrayFlag(getJavaOriType(fileName,pkg,sheetName,type,typeFlag,declareDtoList), typeFlag);
+    protected String getJavaType(String fileName, String pkg, String sheetName, String type, String typeFlag, Set<String> declareDtoList) {
+        return appendArrayFlag(getJavaOriType(fileName, pkg, sheetName, type, typeFlag, declareDtoList), typeFlag);
     }
 
     /**
@@ -117,19 +109,13 @@ public class ServiceBuilder {
      * @param declareDtoList
      * @return
      */
-    protected String getJavaOriType(
-            String fileName,
-            String pkg,
-            String sheetName,
-            String type,
-            String typeFlag,
-            Set<String> declareDtoList) {
+    protected String getJavaOriType(String fileName, String pkg, String sheetName, String type, String typeFlag, Set<String> declareDtoList) {
         typeFlag = typeFlag.trim();
 
-        if (DataTypeUtil.dataTypeMap2Java_Default.containsKey(type)) {
-            String javaType = DataTypeUtil.dataTypeMap2Java_Default.get(type);
+        if (TypeMapper.dataTypeMap2Java.containsKey(type)) {
+            String javaType = TypeMapper.dataTypeMap2Java.get(type);
             return javaType;
-            //return appendArrayFlag(javaType, typeFlag);
+            // return appendArrayFlag(javaType, typeFlag);
         }
 
         String typeFullName = pkg.endsWith(".dto") ? (pkg + "." + type) : (pkg + ".dto." + type);
@@ -145,7 +131,6 @@ public class ServiceBuilder {
         throw new RuntimeException("Found unsupport data type in " + fileName + ",<" + sheetName + ">,<" + type + ">");
     }
 
-
     /**
      * appendArrayFlag
      *
@@ -153,9 +138,7 @@ public class ServiceBuilder {
      * @param typeFlag
      * @return
      */
-    protected String appendArrayFlag(
-            String type,
-            String typeFlag) {
+    protected String appendArrayFlag(String type, String typeFlag) {
         if (typeFlag.equals("数组")) {
             return type + "[]";
         } else if (typeFlag.equals("列表")) {
@@ -170,8 +153,7 @@ public class ServiceBuilder {
      *
      * @return
      */
-    protected String removeJavaTypePkg(
-            String javaType) {
+    protected String removeJavaTypePkg(String javaType) {
         if (javaType.contains("<")) {
             String nestPart = javaType.substring(javaType.indexOf("<"));
             String typePart = javaType.substring(0, javaType.indexOf("<"));
@@ -189,8 +171,7 @@ public class ServiceBuilder {
      * @param javaType
      * @return
      */
-    protected String formatJavaType4Import(
-            String javaType) {
+    protected String formatJavaType4Import(String javaType) {
         if (javaType.contains("[")) {
             return javaType.substring(0, javaType.indexOf("["));
         }
@@ -207,9 +188,7 @@ public class ServiceBuilder {
      * @param oriDefaultValue
      * @return
      */
-    protected String getJavaDefaultValueType(
-            String javaType,
-            String oriDefaultValue) {
+    protected String getJavaDefaultValueType(String javaType, String oriDefaultValue) {
         if (oriDefaultValue == null || "".equals(oriDefaultValue) || "null".equalsIgnoreCase(oriDefaultValue)) {
             return "";
         }
@@ -248,22 +227,22 @@ public class ServiceBuilder {
         return oriDefaultValue;
     }
 
-//    /**
-//     * JavaTypeMapping
-//     */
-//    public static Map<String, String> JavaTypeMapping = new HashMap<String, String>();
-//    static {
-//        JavaTypeMapping.put("文本", "String");
-//        JavaTypeMapping.put("文字", "String");
-//        JavaTypeMapping.put("整数", "Integer");
-//        JavaTypeMapping.put("实数", "Double");
-//        JavaTypeMapping.put("日期", "java.sql.Date");
-//        JavaTypeMapping.put("时刻", "java.sql.Time");
-//        JavaTypeMapping.put("时间戳", "java.sql.Timestamp");
-//        JavaTypeMapping.put("布尔", "Boolean");
-//        JavaTypeMapping.put("长整数", "Long");
-//        JavaTypeMapping.put("大整数", "Long");
-//        JavaTypeMapping.put("大实数", "java.math.BigDecimal");
-//        JavaTypeMapping.put("字节", "byte");
-//    }
+    // /**
+    // * JavaTypeMapping
+    // */
+    // public static Map<String, String> JavaTypeMapping = new HashMap<String, String>();
+    // static {
+    // JavaTypeMapping.put("文本", "String");
+    // JavaTypeMapping.put("文字", "String");
+    // JavaTypeMapping.put("整数", "Integer");
+    // JavaTypeMapping.put("实数", "Double");
+    // JavaTypeMapping.put("日期", "java.sql.Date");
+    // JavaTypeMapping.put("时刻", "java.sql.Time");
+    // JavaTypeMapping.put("时间戳", "java.sql.Timestamp");
+    // JavaTypeMapping.put("布尔", "Boolean");
+    // JavaTypeMapping.put("长整数", "Long");
+    // JavaTypeMapping.put("大整数", "Long");
+    // JavaTypeMapping.put("大实数", "java.math.BigDecimal");
+    // JavaTypeMapping.put("字节", "byte");
+    // }
 }
