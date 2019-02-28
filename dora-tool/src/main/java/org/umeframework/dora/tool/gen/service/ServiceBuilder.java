@@ -9,12 +9,24 @@ import java.util.Set;
 import org.umeframework.dora.tool.poi.TypeMapper;
 
 /**
- * DefaultServiceBuilder
+ * ServiceBuilder
  *
  * @author Yue MA
  *
  */
 public class ServiceBuilder {
+    /**
+     * TypeMapper instance
+     */
+    private TypeMapper typeMapper;
+    
+    /**
+     * ServiceBuilder
+     */
+    public ServiceBuilder(TypeMapper typeMapper) {
+        this.typeMapper = typeMapper;
+    }
+    
     /**
      * build
      *
@@ -112,20 +124,17 @@ public class ServiceBuilder {
     protected String getJavaOriType(String fileName, String pkg, String sheetName, String type, String typeFlag, Set<String> declareDtoList) {
         typeFlag = typeFlag.trim();
 
-        if (TypeMapper.dataTypeMap2Java.containsKey(type)) {
-            String javaType = TypeMapper.dataTypeMap2Java.get(type);
+        String javaType = typeMapper.getJavaType(type, null, null);
+        if (javaType != null) {
             return javaType;
-            // return appendArrayFlag(javaType, typeFlag);
         }
 
         String typeFullName = pkg.endsWith(".dto") ? (pkg + "." + type) : (pkg + ".dto." + type);
 
         if (!type.contains(".") && declareDtoList.contains(typeFullName)) {
-            String javaType = typeFullName;
-            return javaType;
+            return typeFullName;
         } else if (type.contains(".")) {
-            String javaType = type;
-            return javaType;
+            return type;
         }
 
         throw new RuntimeException("Found unsupport data type in " + fileName + ",<" + sheetName + ">,<" + type + ">");

@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.umeframework.dora.tool.gen.EntityGenerator;
 import org.umeframework.dora.tool.poi.ExcelAccessor;
+import org.umeframework.dora.tool.poi.TypeMapper;
 import org.umeframework.dora.util.StringKanaUtil;
 import org.umeframework.dora.util.ValidatorUtil;
 
@@ -35,91 +36,29 @@ public class TableExcelGenerator extends ExcelAccessor {
     private Set<String> ignoreSheetNames = new HashSet<String>();
     // Generator instance
     private EntityGenerator entityGenerator;
+    // TypeMapper instance
+    private TypeMapper typeMapper;
 
     /**
      * TableExcelParser
-     * 
-     * @param dbType
-     * @throws IOException
      */
-    public TableExcelGenerator(String... databaseCategory) throws IOException {
+    public TableExcelGenerator(TypeMapper typeMapper, String... databaseCategory) throws IOException {
         ignoreSheetNames.add("R");
         ignoreSheetNames.add("备注");
-        this.entityGenerator = new EntityGenerator(databaseCategory);
+        this.entityGenerator = new EntityGenerator(typeMapper, databaseCategory);
+        this.typeMapper = typeMapper;
     }
-
+    /**
+     * TableExcelParser
+     */
+    public TableExcelGenerator(String... databaseCategory) throws IOException {
+        this(new TypeMapper(), databaseCategory);
+    }
+    /**
+     * TableExcelParser
+     */
     public TableExcelGenerator() throws IOException {
         this("mysql");
-    }
-
-    /** Add the skip sheet name during paring excel file */
-    public void addIgnoreSheetName(String name) {
-        ignoreSheetNames.add(name);
-    }
-
-    /** PROXY setter: set EntityGenerator properties */
-    public void setGenDtoPackage(String genDtoPackage) {
-        entityGenerator.setGenDtoPackage(genDtoPackage);
-    }
-
-    /** PROXY setter: set EntityGenerator properties */
-    public void setGenDirJava(String genDirJava) {
-        entityGenerator.setGenDirJava(genDirJava);
-    }
-
-    /** PROXY setter: set EntityGenerator properties */
-    public void setGenDirResource(String genDirResource) {
-        entityGenerator.setGenDirResource(genDirResource);
-    }
-
-    /** PROXY setter: set EntityGenerator properties */
-    public void setGenDirSql(String genDirSql) {
-        entityGenerator.setGenDirSql(genDirSql);
-    }
-
-    /** PROXY setter: set EntityGenerator properties */
-    public void setGenDirSqlMap(String genDirSqlMap) {
-        entityGenerator.setGenDirSqlMap(genDirSqlMap);
-    }
-
-    /** PROXY setter: set EntityGenerator properties */
-    public void setDatabaseCategory(String... databaseCategory) {
-        entityGenerator.setDatabaseCategory(databaseCategory);
-    }
-
-    /** PROXY setter: get EntityGenerator properties */
-    public String getGenDtoPackage() {
-        return entityGenerator.getGenDtoPackage();
-    }
-
-    /** PROXY setter: get EntityGenerator properties */
-    public String getGenDirJava() {
-        return entityGenerator.getGenDirJava();
-    }
-
-    /** PROXY setter: get EntityGenerator properties */
-    public String getGenDirResource() {
-        return entityGenerator.getGenDirResource();
-    }
-
-    /** PROXY setter: get EntityGenerator properties */
-    public String getGenDirSql() {
-        return entityGenerator.getGenDirSql();
-    }
-
-    /** PROXY setter: get EntityGenerator properties */
-    public String getGenDirSqlMap() {
-        return entityGenerator.getGenDirSqlMap();
-    }
-
-    /** PROXY setter: get EntityGenerator properties */
-    public String[] getDatabaseCategory() {
-        return entityGenerator.getDatabaseCategory();
-    }
-
-    /** PROXY setter: get EntityGenerator properties */
-    public void setGenerateDefaultTableField(boolean generateDefaultTableField) {
-        entityGenerator.setGenerateDefaultTableField(generateDefaultTableField);
     }
 
     /**
@@ -149,7 +88,7 @@ public class TableExcelGenerator extends ExcelAccessor {
                 Collection<TableDescBean> infoList = infoMap.values();
 
                 String packageName = pathname.getName().toLowerCase();
-                entityGenerator.setGenDtoPackage(packageName);
+                entityGenerator.setGenBasePackage(packageName);
                 entityGenerator.execute("-" + (i++), infoList);
             }
         } catch (Exception e) {
@@ -358,7 +297,7 @@ public class TableExcelGenerator extends ExcelAccessor {
             field.setColId(itemId);
             field.setColName(itemName);
 
-            if (!this.checkDataType(dataType)) {
+            if (!typeMapper.checkDataType(dataType)) {
                 throw new Exception("Unsupport Data Type define in cell[" + itemId + " , " + dataType + "] of sheet[" + sheetName + "]");
             }
 
@@ -374,8 +313,8 @@ public class TableExcelGenerator extends ExcelAccessor {
             field.setColComment(comment);
 
             // process for Java Naming Rules
-            field.setFieldId(this.dbName2JavaName(field.getColId()));
-            field.setFieldIdCap(this.dbName2JavaGetterSetterName(field.getColId()));
+            field.setFieldId(typeMapper.dbName2JavaName(field.getColId()));
+            field.setFieldIdCap(typeMapper.dbName2JavaGetterSetterName(field.getColId()));
             field.setFieldName(field.getColName());
 
             dto.getFieldList().add(field);

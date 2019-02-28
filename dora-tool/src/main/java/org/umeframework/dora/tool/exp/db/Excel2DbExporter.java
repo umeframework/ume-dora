@@ -34,6 +34,7 @@ import org.umeframework.dora.log.impl.Log4j2Impl;
 import org.umeframework.dora.tool.poi.CellWriter;
 import org.umeframework.dora.tool.poi.ExcelAccessor;
 import org.umeframework.dora.tool.poi.SimpleCellWriter;
+import org.umeframework.dora.tool.poi.TypeMapper;
 import org.umeframework.dora.util.StringUtil;
 
 /**
@@ -62,6 +63,22 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
      * 数据字典查询SQL语句
      */
     private String tableDescQueryStr;
+    /**
+     * TypeMapper instance
+     */
+    private TypeMapper typeMapper;
+    
+    /**
+     * Excel2DbExporter
+     */
+    public Excel2DbExporter() {}
+    /**
+     * Excel2DbExporter
+     */
+    public Excel2DbExporter(TypeMapper typeMapper) {
+        this.typeMapper = typeMapper;
+    }
+    
 
     // private String tableDescQueryStr = "select" + " COLUMN_NAME as 'colId'," + " COLUMN_COMMENT as 'colName'," + " DATA_TYPE as 'dataType'," + " case" + " when DATA_TYPE='bigint' or DATA_TYPE='tinyint' or DATA_TYPE='smallint' or DATA_TYPE='mediumint' or DATA_TYPE='int' then NUMERIC_PRECISION+1" +
     // " when DATA_TYPE='decimal' or DATA_TYPE='double' or DATA_TYPE='float' then NUMERIC_PRECISION" + " when DATA_TYPE='varchar' or DATA_TYPE='char' then CHARACTER_MAXIMUM_LENGTH" + " else CHARACTER_OCTET_LENGTH" + " end as 'dataLength'," + " NUMERIC_PRECISION as 'dataPrecision'," + " NUMERIC_SCALE
@@ -508,19 +525,19 @@ public class Excel2DbExporter extends ExcelAccessor implements DbDescQueryStr {
             colName = colId;
         }
         String remark = String.valueOf(e.get("dataType"));
-        String type = this.getTextDescFromType(remark);
+        String type = typeMapper.getTextDescFromType(remark);
         String length = "";
         if (databaseType.equalsIgnoreCase("ORACLE")) {
             if (e.get("dataPrecision") != null && e.get("dataScale") != null) {
                 if (e.get("dataScale").toString().equals("0")) {
                     length = e.get("dataPrecision").toString();
-                    type = this.getTextDescFromType("INTEGER");
+                    type = typeMapper.getTextDescFromType("INTEGER");
                 } else {
                     length = e.get("dataPrecision") + "," + e.get("dataScale");
                 }
             } else if (e.get("dataPrecision") != null && e.get("dataScale") == null) {
                 length = e.get("dataPrecision").toString();
-                type = this.getTextDescFromType("INTEGER");
+                type = typeMapper.getTextDescFromType("INTEGER");
             } else if (e.get("dataLength") != null) {
                 length = e.get("dataLength").toString();
             }

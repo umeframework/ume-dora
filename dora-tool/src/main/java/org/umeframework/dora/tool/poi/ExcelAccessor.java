@@ -32,7 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 /**
  * ExcelUtil
  */
-public class ExcelAccessor extends TypeMapper {
+public class ExcelAccessor {
     /**
      * position coordinate of cell
      */

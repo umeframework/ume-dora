@@ -16,7 +16,7 @@ public class TypeMapper {
     /**
      * Default type mapping for Java
      */
-    public static final Map<String, String> dataTypeMap2Java = new HashMap<String, String>();
+    private static final Map<String, String> dataTypeMap2Java = new HashMap<String, String>();
     static {
         dataTypeMap2Java.put("文本", "String");
         dataTypeMap2Java.put("定长文本", "String");

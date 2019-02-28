@@ -20,11 +20,11 @@ import org.umeframework.dora.tool.poi.TypeMapper;
 /**
  * DtoBuilder
  */
-public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
+public class DtoBuilder {
     /**
-     * tableGenerator
+     * entityGenerator
      */
-    private EntityGenerator tableGenerator;
+    private EntityGenerator entityGenerator;
     /**
      * configuration properties
      */
@@ -33,7 +33,19 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
     /**
      * generate Dto extension name
      */
-    private String genDtoExtension = "Dto";
+    private String genDtoExtension = "";
+    /**
+     * generate Dto Condition extension name
+     */
+    private String genDtoConditionExtension = "Condition";
+    /**
+     * generate Dto Criteria extension name
+     */
+    private String genDtoCriteriaExtension = "Criteria";
+    /**
+     * generate Dto Mapper extension name
+     */
+    private String genDtoMapperExtension = "Mapper";
     /**
      * generate Crud interface extension name
      */
@@ -55,6 +67,15 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
      */
     private String genCrudApiPackageExtension = "api";
     /**
+     * generate Mapper package extension name
+     */
+    private String genMapperPackageExtension = "";
+    /**
+     * generate DTO package extension name
+     */
+    private String genDtoPackageExtension = "entity";
+
+    /**
      * dtoBuildProperties
      */
     private String dtoBuildProperties = "template/dto-builder.properties";
@@ -65,12 +86,18 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
     private Properties buildProperties = new Properties();
 
     /**
+     * TypeMapper instance
+     */
+    private TypeMapper typeMapper;
+
+    /**
      * DefaultDtoBuilder
      * 
      * @throws IOException
      */
-    public DtoBuilder(EntityGenerator tableGenerator) throws IOException {
-        this.tableGenerator = tableGenerator;
+    public DtoBuilder(TypeMapper typeMapper, EntityGenerator entityGenerator) throws IOException {
+        this.entityGenerator = entityGenerator;
+        this.typeMapper = typeMapper;
         buildProperties.load(new FileInputStream(new File(dtoBuildProperties)));
     }
 
@@ -82,7 +109,7 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
     public EntityDescBean build(TableDescBean dto, String databaseCategory) {
         EntityDescBean ex = this.copyFrom(dto);
         ex.setClassName(ex.getTblName());
-        String javaStyleName = this.upperCaseFirstChar(this.dbName2JavaName(ex.getTblAlias()));
+        String javaStyleName = typeMapper.upperCaseFirstChar(typeMapper.dbName2JavaName(ex.getTblAlias()));
         ex.setClassId(javaStyleName + this.getGenDtoExtension());
         ex.setClassOriId(javaStyleName);
         ex.setClassOriIdInLowCase(javaStyleName.toLowerCase());
@@ -90,12 +117,18 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
         ex.setTableCrudServiceInterface(javaStyleName + this.getGenCrudInterfaceExtension());
         ex.setTableCrudServiceClass(javaStyleName + this.getGenCrudClassExtension());
         ex.setTableCrudApiClass(javaStyleName + this.getGenCrudApiExtension());
+        ex.setTableMapperClass(javaStyleName + this.getGenDtoMapperExtension());
+        ex.setTableDtoClass(javaStyleName + this.getGenDtoExtension());
+        ex.setTableDtoConditionClass(javaStyleName + this.getGenDtoConditionExtension());
+        ex.setTableDtoCriteriaClass(javaStyleName + this.getGenDtoCriteriaExtension());
 
         ex.setCurrentDate(new SimpleDateFormat("yyyy/MM/dd").format(new java.util.Date()));
-        ex.setClassPackage(tableGenerator.getGenDtoPackage());
-        ex.setTableCrudServiceInterfacePackage(tableGenerator.getGenDtoPackage() + "." + genCrudPackageExtension);
-        ex.setTableCrudServicePackage(tableGenerator.getGenDtoPackage() + "." + genCrudPackageExtension + ".impl");
-        ex.setTableCrudApiPackage(tableGenerator.getGenDtoPackage() + "." + genCrudApiPackageExtension);
+        ex.setBasePackage(entityGenerator.getGenBasePackage());
+        ex.setTableCrudServiceInterfacePackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudPackageExtension());
+        ex.setTableCrudServicePackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudPackageExtension() + ".impl");
+        ex.setTableCrudApiPackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudApiPackageExtension());
+        ex.setTableMapperPackage(entityGenerator.getGenBasePackage() + "." + this.getGenMapperPackageExtension());
+        ex.setTableDtoPackage(entityGenerator.getGenBasePackage() + "." + this.getGenDtoPackageExtension());
 
         for (FieldDescBean field : ex.getFieldList()) {
             this.buildDtoField(field, databaseCategory);
@@ -106,7 +139,7 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
             } else {
                 ex.getNonPrimaryKeyFieldList().add(field);
             }
-            if (this.isNotEmpty(field.getColDataType()) && field.getColDataType().equalsIgnoreCase("AUTO_INCREMENT")) {
+            if (typeMapper.isNotEmpty(field.getColDataType()) && field.getColDataType().equalsIgnoreCase("AUTO_INCREMENT")) {
                 field.setColDataTypeWithLength("INT AUTO_INCREMENT PRIMARY KEY");
                 field.setColPK(null);
                 ex.getAutoIncrementColumnList().add(field.getColId());
@@ -150,12 +183,12 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
      * @param field
      */
     void buildDtoField(FieldDescBean field, String databaseCategory) {
-        String dbDataType = this.getDBDataType(field.getColDataType(), field, databaseCategory);
-        String javaDataType = this.getJavaType(field.getColDataType(), field, databaseCategory);
+        String dbDataType = typeMapper.getDBDataType(field.getColDataType(), field, databaseCategory);
+        String javaDataType = typeMapper.getJavaType(field.getColDataType(), field, databaseCategory);
         field.setColDataType(dbDataType);
         field.setFieldType(javaDataType);
         String length = field.getColLength();
-        if (isNotEmpty(length)) {
+        if (typeMapper.isNotEmpty(length)) {
             length = length.trim();
             length = length.contains("(") ? length.replace("(", "") : length;
             length = length.contains(")") ? length.replace(")", "") : length;
@@ -189,11 +222,11 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
         }
 
         String defValStr = "";
-        if (this.isNotEmpty(field.getColDefaultValue())) {
+        if (typeMapper.isNotEmpty(field.getColDefaultValue())) {
             String val = field.getColDefaultValue().trim();
-            if (this.isStrType(field.getColDataType())) {
+            if (typeMapper.isStrType(field.getColDataType())) {
                 val = val.charAt(0) == '\"' && val.charAt(val.length() - 1) == '\"' ? val.substring(1, val.length() - 1) : val;
-                val = this.isStrType(field.getColDataType()) && !val.startsWith("\"") && !val.startsWith("'") ? val = "'" + val + "'" : val;
+                val = typeMapper.isStrType(field.getColDataType()) && !val.startsWith("\"") && !val.startsWith("'") ? val = "'" + val + "'" : val;
                 defValStr = "DEFAULT " + val;
             } else {
                 defValStr = "DEFAULT " + val;
@@ -211,8 +244,8 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
         field.setColDefaultValue(defValStr);
 
         // process for Java Naming Rules
-        field.setFieldId(this.dbName2JavaName(field.getColId()));
-        field.setFieldIdCap(this.dbName2JavaGetterSetterName(field.getColId()));
+        field.setFieldId(typeMapper.dbName2JavaName(field.getColId()));
+        field.setFieldIdCap(typeMapper.dbName2JavaGetterSetterName(field.getColId()));
         field.setFieldName(field.getColName());
     }
 
@@ -236,7 +269,7 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
             field.getFieldAnnotationList().add(createAnnotation("ColumnSequence", index));
 
             // process for NotNull
-            if (isNotEmpty(field.getColNotNull())) {
+            if (typeMapper.isNotEmpty(field.getColNotNull())) {
                 field.getFieldAnnotationList().add(createAnnotation("ColumnNotEmpty"));
                 jpaColumnBuilder.append(", nullable=false");
             } else {
@@ -245,7 +278,7 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
             // process for Length
             String colMaxLength = field.getColMaxLength();
             String colMinLength = field.getColMinLength();
-            if (isNotEmpty(colMinLength) && isNotEmpty(colMaxLength)) {
+            if (typeMapper.isNotEmpty(colMinLength) && typeMapper.isNotEmpty(colMaxLength)) {
                 Long colMaxLengthIntValue = Long.valueOf(colMaxLength);
                 String size = "max=" + colMaxLength;
                 if (String.valueOf(field.getColDataType()).equals("CHAR")) {
@@ -274,24 +307,24 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
 
             // process for PK
             String isPrimaryKey = "false";
-            if (isNotEmpty(field.getColPK())) {
+            if (typeMapper.isNotEmpty(field.getColPK())) {
                 isPrimaryKey = "true";
                 field.getFieldAnnotationList().add(createAnnotation("JPA-Id"));
             }
             // process for ConstValue
-            if (isNotEmpty(field.getColConstValue())) {
+            if (typeMapper.isNotEmpty(field.getColConstValue())) {
                 String str = field.getColConstValue();
                 str = str.startsWith("\"") ? str : "\"" + str + "\"";
                 field.getFieldAnnotationList().add(createAnnotation("ColumnConst", str));
             }
             // process for Range
             String range = null;
-            if (isNotEmpty(field.getColMinValue())) {
+            if (typeMapper.isNotEmpty(field.getColMinValue())) {
                 String str = field.getColMinValue();
                 str = str.startsWith("\"") ? str : "\"" + str + "\"";
                 range = "min=" + str;
             }
-            if (isNotEmpty(field.getColMaxValue())) {
+            if (typeMapper.isNotEmpty(field.getColMaxValue())) {
                 String str = field.getColMaxValue();
                 str = str.startsWith("\"") ? str : "\"" + str + "\"";
                 if (range != null) {
@@ -304,7 +337,7 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
             }
             // process for TextFormat
             String textFormat = null;
-            if (isNotEmpty(field.getColTextFormat())) {
+            if (typeMapper.isNotEmpty(field.getColTextFormat())) {
                 String tf = field.getColTextFormat();
                 switch (tf) {
                 // 日时,日期,时间,英字,数字,英数,货币,电话,手机,邮编,EMAIL,ASCII,ASCII-NS
@@ -556,6 +589,76 @@ public class DtoBuilder extends TypeMapper { // implements DtoBuilder {
      */
     public void setGenCrudPackageExtension(String genCrudPackageExtension) {
         this.genCrudPackageExtension = genCrudPackageExtension;
+    }
+
+    /**
+     * @return the genDtoConditionExtension
+     */
+    public String getGenDtoConditionExtension() {
+        return genDtoConditionExtension;
+    }
+
+    /**
+     * @param genDtoConditionExtension the genDtoConditionExtension to set
+     */
+    public void setGenDtoConditionExtension(String genDtoConditionExtension) {
+        this.genDtoConditionExtension = genDtoConditionExtension;
+    }
+
+    /**
+     * @return the genDtoCriteriaExtension
+     */
+    public String getGenDtoCriteriaExtension() {
+        return genDtoCriteriaExtension;
+    }
+
+    /**
+     * @param genDtoCriteriaExtension the genDtoCriteriaExtension to set
+     */
+    public void setGenDtoCriteriaExtension(String genDtoCriteriaExtension) {
+        this.genDtoCriteriaExtension = genDtoCriteriaExtension;
+    }
+
+    /**
+     * @return the genDtoMapperExtension
+     */
+    public String getGenDtoMapperExtension() {
+        return genDtoMapperExtension;
+    }
+
+    /**
+     * @param genDtoMapperExtension the genDtoMapperExtension to set
+     */
+    public void setGenDtoMapperExtension(String genDtoMapperExtension) {
+        this.genDtoMapperExtension = genDtoMapperExtension;
+    }
+
+    /**
+     * @return the genMapperPackageExtension
+     */
+    public String getGenMapperPackageExtension() {
+        return genMapperPackageExtension;
+    }
+
+    /**
+     * @param genMapperPackageExtension the genMapperPackageExtension to set
+     */
+    public void setGenMapperPackageExtension(String genMapperPackageExtension) {
+        this.genMapperPackageExtension = genMapperPackageExtension;
+    }
+
+    /**
+     * @return the genDtoPackageExtension
+     */
+    public String getGenDtoPackageExtension() {
+        return genDtoPackageExtension;
+    }
+
+    /**
+     * @param genDtoPackageExtension the genDtoPackageExtension to set
+     */
+    public void setGenDtoPackageExtension(String genDtoPackageExtension) {
+        this.genDtoPackageExtension = genDtoPackageExtension;
     }
 
 }

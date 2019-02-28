@@ -12,6 +12,7 @@ import java.util.Collection;
 import org.umeframework.dora.tool.gen.db.DtoBuilder;
 import org.umeframework.dora.tool.gen.db.EntityDescBean;
 import org.umeframework.dora.tool.gen.db.TableDescBean;
+import org.umeframework.dora.tool.poi.TypeMapper;
 
 /**
  * TableGenerator
@@ -21,8 +22,8 @@ public class EntityGenerator {
     // private String[] databaseCategory = { "mysql", "oracle", "h2" };
     private String[] databaseCategory = { "mysql", "h2" };
 
-    // generate Dto package setting
-    private String genDtoPackage;
+    // generate base package setting
+    private String genBasePackage;
 
     // generate file DIR setting
     private String genDirJava = "src/main/gen/";
@@ -38,6 +39,9 @@ public class EntityGenerator {
     private String templateGoLang = "template/table-golang-{PROVIDER}.vm";
     // VM template setting
     private String templateDto = "template/entity-dto.vm";
+    private String templateDtoCondition = "template/entity-dto-condition.vm";
+    private String templateDtoCriteria = "template/entity-dto-criteria.vm";
+    private String templateDtoMapper = "template/entity-dto-mapper.vm";
     private String templateCrudInterface = "template/entity-crud-interface.vm";
     private String templateCrudImpl = "template/entity-crud-impl.vm";
     private String templateCrudApi = "template/entity-crud-api.vm";
@@ -54,9 +58,9 @@ public class EntityGenerator {
      * 
      * @throws IOException
      */
-    public EntityGenerator(String... databaseCategory) throws IOException {
+    public EntityGenerator(TypeMapper typeMapper, String... databaseCategory) throws IOException {
         this.databaseCategory = databaseCategory;
-        dtoBuilder = new DtoBuilder(this);
+        dtoBuilder = new DtoBuilder(typeMapper, this);
     }
 
     /**
@@ -121,8 +125,10 @@ public class EntityGenerator {
             String allddlfileName = genDirSql + category + "/" + "create-table" + group + ".sql";
             String vm = templateSqlBat.replace("{PROVIDER}", category.toString().toLowerCase());
 
-            new CodeGenerator(vm).execute("dtos", dtoExList, allddlfileName);
-            System.out.println("[" + allddlfileName + "] created.");
+            if (new File(vm).exists()) {
+                new CodeGenerator(vm).execute("dtos", dtoExList, allddlfileName);
+                System.out.println("[" + allddlfileName + "] created.");
+            }
 
             // Generate Each DDL File
             for (EntityDescBean dto : dtoExList) {
@@ -159,47 +165,79 @@ public class EntityGenerator {
         }
 
         // Generate Dto class
-        CodeGenerator cgDto = new CodeGenerator(templateDto);
-        for (EntityDescBean dto : dtoExList) {
-            String packageName = dto.getClassPackage();
-            String fileName = cgDto.createPackageDir(genDirJava, packageName) + dto.getClassId() + ".java";
-            cgDto.execute("dto", dto, fileName);
-            System.out.println("[" + fileName + "] created.");
+        if (new File(templateDto).exists()) {
+            CodeGenerator cgDto = new CodeGenerator(templateDto);
+            for (EntityDescBean dto : dtoExList) {
+                String fileName = cgDto.createPackageDir(genDirJava, dto.getTableDtoPackage()) + dto.getTableDtoClass() + ".java";
+                cgDto.execute("dto", dto, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
+        }
+        // Generate Dto Condition class
+        if (new File(templateDtoCondition).exists()) {
+            CodeGenerator cgDto = new CodeGenerator(templateDtoCondition);
+            for (EntityDescBean dto : dtoExList) {
+                String fileName = cgDto.createPackageDir(genDirJava, dto.getTableDtoPackage()) + dto.getTableDtoConditionClass() + ".java";
+                cgDto.execute("dto", dto, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
+        }
+        // Generate Dto Criteria class
+        if (new File(templateDtoCriteria).exists()) {
+            CodeGenerator cgDto = new CodeGenerator(templateDtoCriteria);
+            for (EntityDescBean dto : dtoExList) {
+                String fileName = cgDto.createPackageDir(genDirJava, dto.getTableDtoPackage()) + dto.getTableDtoCriteriaClass() + ".java";
+                cgDto.execute("dto", dto, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
+        }
+        // Generate Mapper class
+        if (new File(templateDtoMapper).exists()) {
+            CodeGenerator cgDto = new CodeGenerator(templateDtoMapper);
+            for (EntityDescBean dto : dtoExList) {
+                String fileName = cgDto.createPackageDir(genDirJava, dto.getTableMapperPackage()) + dto.getTableMapperClass() + ".java";
+                cgDto.execute("dto", dto, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
         }
 
         // Generate Crud Service interface
-        CodeGenerator cgCrudInterface = new CodeGenerator(templateCrudInterface);
-        for (EntityDescBean dto : dtoExList) {
-            String packageName = dto.getTableCrudServiceInterfacePackage();
-            String fileName = cgCrudInterface.createPackageDir(genDirJava, packageName) + dto.getTableCrudServiceInterface() + ".java";
-            cgCrudInterface.execute("dto", dto, fileName);
-            System.out.println("[" + fileName + "] created.");
+        if (new File(templateCrudInterface).exists()) {
+            CodeGenerator cgCrudInterface = new CodeGenerator(templateCrudInterface);
+            for (EntityDescBean dto : dtoExList) {
+                String packageName = dto.getTableCrudServiceInterfacePackage();
+                String fileName = cgCrudInterface.createPackageDir(genDirJava, packageName) + dto.getTableCrudServiceInterface() + ".java";
+                cgCrudInterface.execute("dto", dto, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
         }
-
         // Generate Crud Service implement class
-        CodeGenerator cgCrudClass = new CodeGenerator(templateCrudImpl);
-        for (EntityDescBean dto : dtoExList) {
-            String packageName = dto.getTableCrudServicePackage();
-            String fileName = cgCrudClass.createPackageDir(genDirJava, packageName) + dto.getTableCrudServiceClass() + ".java";
-            cgCrudClass.execute("dto", dto, fileName);
-            System.out.println("[" + fileName + "] created.");
+        if (new File(templateCrudImpl).exists()) {
+            CodeGenerator cgCrudClass = new CodeGenerator(templateCrudImpl);
+            for (EntityDescBean dto : dtoExList) {
+                String packageName = dto.getTableCrudServicePackage();
+                String fileName = cgCrudClass.createPackageDir(genDirJava, packageName) + dto.getTableCrudServiceClass() + ".java";
+                cgCrudClass.execute("dto", dto, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
         }
-
         // Generate Crud Api class
-        CodeGenerator cgCrudApi = new CodeGenerator(templateCrudApi);
-        for (EntityDescBean dto : dtoExList) {
-            String packageName = dto.getTableCrudApiPackage();
-            String fileName = cgCrudClass.createPackageDir(genDirJava, packageName) + dto.getTableCrudApiClass() + ".java";
-            cgCrudApi.execute("dto", dto, fileName);
-            System.out.println("[" + fileName + "] created.");
+        if (new File(templateCrudApi).exists()) {
+            CodeGenerator cgCrudApi = new CodeGenerator(templateCrudApi);
+            for (EntityDescBean dto : dtoExList) {
+                String packageName = dto.getTableCrudApiPackage();
+                String fileName = cgCrudApi.createPackageDir(genDirJava, packageName) + dto.getTableCrudApiClass() + ".java";
+                cgCrudApi.execute("dto", dto, fileName);
+                System.out.println("[" + fileName + "] created.");
+            }
         }
-
         // Generate Crud Service Mapping File
-        CodeGenerator cgCrudMapping = new CodeGenerator(templateCrudWsid);
-        String mappingFileName = genDirResource + "entityServiceMapping" + group + ".properties";
-        cgCrudMapping.execute("dtos", dtoExList, mappingFileName);
-        System.out.println("[" + mappingFileName + "] created.");
-
+        if (new File(templateCrudWsid).exists()) {
+            CodeGenerator cgCrudMapping = new CodeGenerator(templateCrudWsid);
+            String mappingFileName = genDirResource + "entityServiceMapping" + group + ".properties";
+            cgCrudMapping.execute("dtos", dtoExList, mappingFileName);
+            System.out.println("[" + mappingFileName + "] created.");
+        }
         System.out.println("DDL,SqlMap,Dto,CrudService have been generated.");
     }
 
@@ -249,18 +287,18 @@ public class EntityGenerator {
     }
 
     /**
-     * @return the genDtoPackage
+     * @return the genBasePackage
      */
-    public String getGenDtoPackage() {
-        return genDtoPackage;
+    public String getGenBasePackage() {
+        return genBasePackage;
     }
 
     /**
-     * @param genDtoPackage
-     *            the genDtoPackage to set
+     * @param genBasePackage
+     *            the genBasePackage to set
      */
-    public void setGenDtoPackage(String genDtoPackage) {
-        this.genDtoPackage = genDtoPackage;
+    public void setGenBasePackage(String genBasePackage) {
+        this.genBasePackage = genBasePackage;
     }
 
     /**

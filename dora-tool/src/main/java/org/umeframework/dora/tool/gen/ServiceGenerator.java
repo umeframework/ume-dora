@@ -17,6 +17,7 @@ import org.umeframework.dora.tool.gen.service.DocFuncBean;
 import org.umeframework.dora.tool.gen.service.DocItemBean;
 import org.umeframework.dora.tool.gen.service.ServiceBuilder;
 import org.umeframework.dora.tool.gen.service.ServiceExcelParser;
+import org.umeframework.dora.tool.poi.TypeMapper;
 
 /**
  * ServiceGenerator
@@ -28,6 +29,17 @@ public class ServiceGenerator {
     private String genDirJava = "src/main/gen/";
     private String templateServiceDto = "template/service-dto.vm";
     private String templateServiceInterface = "template/service-interface.vm";
+    /**
+     * TypeMapper instance
+     */
+    private TypeMapper typeMapper;
+    
+    /**
+     * ServiceGenerator
+     */
+    public ServiceGenerator(TypeMapper typeMapper) {
+        this.typeMapper = typeMapper;
+    }
 
     /**
      * execute
@@ -72,7 +84,7 @@ public class ServiceGenerator {
             // Parse excel and create DocBean
             DocBean docBean = new ServiceExcelParser().parseWorkBook(file);
             // create appendix information for DocBean
-            new ServiceBuilder().build(docBean, declareDtoList);
+            new ServiceBuilder(typeMapper).build(docBean, declareDtoList);
 
             // Generate regular service Dto
             for (DocDtoBean dtoBean : docBean.getDtoBeanList()) {

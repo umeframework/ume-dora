@@ -17,9 +17,9 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      */
     private static final long serialVersionUID = 8595565147534114190L;
     /**
-     * Dto class package
+     * Base package
      */
-    private String classPackage;
+    private String basePackage;
     /**
      * Dto class identify name (ID)
      */
@@ -44,6 +44,7 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      * Dto class comment
      */
     private String classComment;
+    
     /**
      * Dto Crud interface class package
      */
@@ -57,6 +58,15 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      */
     private String tableCrudApiPackage;
     /**
+     * Dto class package
+     */
+    private String tableDtoPackage;
+    /**
+     * Mapper class package
+     */
+    private String tableMapperPackage;
+    
+    /**
      * Dto Crud implementation class ID
      */
     private String tableCrudServiceClass;
@@ -68,6 +78,23 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      * Dto Crud Api class ID
      */
     private String tableCrudApiClass;
+    /**
+     * Dto Mapper class ID
+     */
+    private String tableMapperClass;
+    /**
+     * Dto class ID
+     */
+    private String tableDtoClass;
+    /**
+     * Dto Condition class ID
+     */
+    private String tableDtoConditionClass;
+    /**
+     * Dto Criteria class ID
+     */
+    private String tableDtoCriteriaClass;
+    
     /**
      * auto increment columns
      */
@@ -92,16 +119,16 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
     /**
      * @return the classPackage
      */
-    public String getClassPackage() {
-        return classPackage;
+    public String getBasePackage() {
+        return basePackage;
     }
 
     /**
      * @param classPackage
      *            the classPackage to set
      */
-    public void setClassPackage(String classPackage) {
-        this.classPackage = classPackage;
+    public void setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
     }
 
     /**
@@ -357,5 +384,89 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      */
     public void setTableCrudApiClass(String tableCrudServiceApi) {
         this.tableCrudApiClass = tableCrudServiceApi;
+    }
+
+    /**
+     * @return the tableMapperClass
+     */
+    public String getTableMapperClass() {
+        return tableMapperClass;
+    }
+
+    /**
+     * @param tableMapperClass the tableMapperClass to set
+     */
+    public void setTableMapperClass(String tableMapperClass) {
+        this.tableMapperClass = tableMapperClass;
+    }
+
+    /**
+     * @return the tableDtoPackage
+     */
+    public String getTableDtoPackage() {
+        return tableDtoPackage;
+    }
+
+    /**
+     * @param tableDtoPackage the tableDtoPackage to set
+     */
+    public void setTableDtoPackage(String tableDtoPackage) {
+        this.tableDtoPackage = tableDtoPackage;
+    }
+
+    /**
+     * @return the tableMapperPackage
+     */
+    public String getTableMapperPackage() {
+        return tableMapperPackage;
+    }
+
+    /**
+     * @param tableMapperPackage the tableMapperPackage to set
+     */
+    public void setTableMapperPackage(String tableMapperPackage) {
+        this.tableMapperPackage = tableMapperPackage;
+    }
+
+    /**
+     * @return the tableDtoClass
+     */
+    public String getTableDtoClass() {
+        return tableDtoClass;
+    }
+
+    /**
+     * @param tableDtoClass the tableDtoClass to set
+     */
+    public void setTableDtoClass(String tableDtoClass) {
+        this.tableDtoClass = tableDtoClass;
+    }
+
+    /**
+     * @return the tableDtoConditionClass
+     */
+    public String getTableDtoConditionClass() {
+        return tableDtoConditionClass;
+    }
+
+    /**
+     * @param tableDtoConditionClass the tableDtoConditionClass to set
+     */
+    public void setTableDtoConditionClass(String tableDtoConditionClass) {
+        this.tableDtoConditionClass = tableDtoConditionClass;
+    }
+
+    /**
+     * @return the tableDtoCriteriaClass
+     */
+    public String getTableDtoCriteriaClass() {
+        return tableDtoCriteriaClass;
+    }
+
+    /**
+     * @param tableDtoCriteriaClass the tableDtoCriteriaClass to set
+     */
+    public void setTableDtoCriteriaClass(String tableDtoCriteriaClass) {
+        this.tableDtoCriteriaClass = tableDtoCriteriaClass;
     }
 }
