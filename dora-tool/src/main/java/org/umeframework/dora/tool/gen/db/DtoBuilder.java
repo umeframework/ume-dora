@@ -124,11 +124,30 @@ public class DtoBuilder {
 
         ex.setCurrentDate(new SimpleDateFormat("yyyy/MM/dd").format(new java.util.Date()));
         ex.setBasePackage(entityGenerator.getGenBasePackage());
-        ex.setTableCrudServiceInterfacePackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudPackageExtension());
-        ex.setTableCrudServicePackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudPackageExtension() + ".impl");
-        ex.setTableCrudApiPackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudApiPackageExtension());
-        ex.setTableMapperPackage(entityGenerator.getGenBasePackage() + "." + this.getGenMapperPackageExtension());
-        ex.setTableDtoPackage(entityGenerator.getGenBasePackage() + "." + this.getGenDtoPackageExtension());
+        if (!this.getGenCrudPackageExtension().equals("")) {
+            ex.setTableCrudServiceInterfacePackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudPackageExtension());
+        } else {
+            ex.setTableCrudServiceInterfacePackage(entityGenerator.getGenBasePackage());
+        }
+
+        if (!this.getGenCrudApiPackageExtension().equals("")) {
+            ex.setTableCrudApiPackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudApiPackageExtension());
+            ex.setTableCrudServicePackage(entityGenerator.getGenBasePackage() + "." + this.getGenCrudPackageExtension() + ".impl");
+        } else {
+            ex.setTableCrudApiPackage(entityGenerator.getGenBasePackage());
+            ex.setTableCrudServicePackage(entityGenerator.getGenBasePackage() + ".impl");
+        }
+
+        if (!this.getGenMapperPackageExtension().equals("")) {
+            ex.setTableMapperPackage(entityGenerator.getGenBasePackage() + "." + this.getGenMapperPackageExtension());
+        } else {
+            ex.setTableMapperPackage(entityGenerator.getGenBasePackage());
+        }
+        if (!this.getGenDtoPackageExtension().equals("")) {
+            ex.setTableDtoPackage(entityGenerator.getGenBasePackage() + "." + this.getGenDtoPackageExtension());
+        } else {
+            ex.setTableDtoPackage(entityGenerator.getGenBasePackage());
+        }
 
         for (FieldDescBean field : ex.getFieldList()) {
             this.buildDtoField(field, databaseCategory);

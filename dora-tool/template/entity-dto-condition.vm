@@ -1,0 +1,137 @@
+#set($var_LeftBrackets="(")
+#set($var_and="and")
+#set($var_or="or")
+package ${dto.tableDtoPackage};
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.List;
+import lombok.Data;
+
+/**
+ * 数据表"$dto.className"检索条件DTO类<br>
+ *
+ * @author Generator
+ */
+@Data
+@ApiModel(value="${dto.tableDtoConditionClass}", description="${dto.className}检索条件DTO对象")
+public class ${dto.tableDtoConditionClass} implements Serializable {
+    protected static final long serialVersionUID = 1L;
+
+#foreach ( $field in $dto.fieldList )
+#set($var_OptrList="IsNull,IsNotNull")
+#foreach ($var_Optr in $var_OptrList.split(","))
+    @ApiModelProperty(value="And [${field.colName}] ${var_Optr}", name="${var_and}${field.fieldIdCap}${var_Optr}")
+    protected boolean ${var_and}${field.fieldIdCap}${var_Optr};
+    @ApiModelProperty(value="Or [${field.colName}] ${var_Optr}", name="${var_or}${field.fieldIdCap}${var_Optr}")
+    protected boolean ${var_or}${field.fieldIdCap}${var_Optr};
+#end
+
+#set($var_OptrList="EqualTo,NotEqualTo,GreaterThan,GreaterThanOrEqualTo,LessThan,LessThanOrEqualTo")
+#foreach ($var_Optr in $var_OptrList.split(","))
+    @ApiModelProperty(value="And [${field.colName}] ${var_Optr}", name="${var_and}${field.fieldIdCap}${var_Optr}")
+    protected ${field.fieldType} ${var_and}${field.fieldIdCap}${var_Optr};
+    @ApiModelProperty(value="Or [${field.colName}] ${var_Optr}", name="${var_or}${field.fieldIdCap}${var_Optr}")
+    protected ${field.fieldType} ${var_or}${field.fieldIdCap}${var_Optr};
+#end
+
+#set($var_OptrList="In,NotIn,Between,NotBetween")
+#foreach ($var_Optr in $var_OptrList.split(","))
+    @ApiModelProperty(value="And [${field.colName}] ${var_Optr}", name="${var_and}${field.fieldIdCap}${var_Optr}")
+    protected List<${field.fieldType}> ${var_and}${field.fieldIdCap}${var_Optr};
+    @ApiModelProperty(value="Or [${field.colName}] ${var_Optr}", name="${var_or}${field.fieldIdCap}${var_Optr}")
+    protected List<${field.fieldType}> ${var_or}${field.fieldIdCap}${var_Optr};
+#end
+
+#if (${field.fieldType} == "String")
+#set($var_OptrList="Like,NotLike")
+#foreach ($var_Optr in $var_OptrList.split(","))
+    @ApiModelProperty(value="And [${field.colName}] ${var_Optr}", name="${var_and}${field.fieldIdCap}${var_Optr}")
+    protected ${field.fieldType} ${var_and}${field.fieldIdCap}${var_Optr};
+    @ApiModelProperty(value="Or [${field.colName}] ${var_Optr}", name="${var_or}${field.fieldIdCap}${var_Optr}")
+    protected ${field.fieldType} ${var_or}${field.fieldIdCap}${var_Optr};
+#end
+#end
+#end
+
+    /**
+     * toCriteria<br>
+     * 
+     * @return ${dto.tableDtoCriteriaClass} Instance
+     */
+    public ${dto.tableDtoCriteriaClass} toCriteria() {
+        ${dto.tableDtoCriteriaClass} criteria = new ${dto.tableDtoCriteriaClass}();
+        ${dto.tableDtoCriteriaClass}.Criteria ac = criteria.createCriteria();
+
+#foreach ( $field in $dto.fieldList )
+#set($var_OptrList="IsNull,IsNotNull")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_and}${field.fieldIdCap}${var_Optr}) {
+            ac.${var_and}${field.fieldIdCap}${var_Optr}();
+        }
+#end
+#set($var_OptrList="EqualTo,NotEqualTo,GreaterThan,GreaterThanOrEqualTo,LessThan,LessThanOrEqualTo,In,NotIn")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_and}${field.fieldIdCap}${var_Optr} != null) {
+            ac.${var_and}${field.fieldIdCap}${var_Optr}(${var_and}${field.fieldIdCap}${var_Optr});
+        }
+#end
+#if (${field.fieldType} == "String")
+#set($var_OptrList="Like,NotLike")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_and}${field.fieldIdCap}${var_Optr} != null) {
+            ac.${var_and}${field.fieldIdCap}${var_Optr}(${var_and}${field.fieldIdCap}${var_Optr});
+        }
+#end
+#end
+
+#set($var_OptrList="Between,NotBetween")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_and}${field.fieldIdCap}${var_Optr} != null && ${var_and}${field.fieldIdCap}${var_Optr}.size() == 2) {
+            ac.${var_and}${field.fieldIdCap}${var_Optr}(${var_and}${field.fieldIdCap}${var_Optr}.get(0), ${var_and}${field.fieldIdCap}${var_Optr}.get(1));
+        }
+#end
+
+#set($var_OptrList="IsNull,IsNotNull")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_or}${field.fieldIdCap}${var_Optr}) {
+            ${dto.tableDtoCriteriaClass}.Criteria oc = criteria.createCriteria();
+            oc.${var_and}${field.fieldIdCap}${var_Optr}();
+            criteria.or(oc);
+        }
+#end
+#set($var_OptrList="EqualTo,NotEqualTo,GreaterThan,GreaterThanOrEqualTo,LessThan,LessThanOrEqualTo,In,NotIn")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_or}${field.fieldIdCap}${var_Optr} != null) {
+            ${dto.tableDtoCriteriaClass}.Criteria oc = criteria.createCriteria();
+            oc.${var_and}${field.fieldIdCap}${var_Optr}(${var_or}${field.fieldIdCap}${var_Optr});
+            criteria.or(oc);
+        }
+#end
+#if (${field.fieldType} == "String")
+#set($var_OptrList="Like,NotLike")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_or}${field.fieldIdCap}${var_Optr} != null) {
+            ${dto.tableDtoCriteriaClass}.Criteria oc = criteria.createCriteria();
+            oc.${var_and}${field.fieldIdCap}${var_Optr}(${var_or}${field.fieldIdCap}${var_Optr});
+            criteria.or(oc);
+        }
+#end
+#end
+
+#set($var_OptrList="Between,NotBetween")
+#foreach ($var_Optr in $var_OptrList.split(","))
+        if (${var_or}${field.fieldIdCap}${var_Optr} != null && ${var_or}${field.fieldIdCap}${var_Optr}.size() == 2) {
+            ${dto.tableDtoCriteriaClass}.Criteria oc = criteria.createCriteria();
+            oc.${var_and}${field.fieldIdCap}${var_Optr}(${var_or}${field.fieldIdCap}${var_Optr}.get(0), ${var_or}${field.fieldIdCap}${var_Optr}.get(1));
+            criteria.or(oc);
+        }
+#end
+#end
+
+        return criteria;
+    }
+
+
+}

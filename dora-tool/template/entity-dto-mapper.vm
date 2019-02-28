@@ -1,0 +1,31 @@
+#set($var_LeftBrackets="(")
+package ${dto.tableMapperPackage};
+
+import java.util.List;
+import ${dto.tableDtoPackage}.${dto.tableDtoCriteriaClass};
+import ${dto.tableDtoPackage}.${dto.tableDtoClass};
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
+
+/**
+ * 数据表"$dto.className" Mapper类<br>
+ *
+ * @author Generator
+ */
+public interface ${dto.tableMapperClass} {
+    int insert(${dto.tableDtoClass} record);
+    int insertSelective(${dto.tableDtoClass} record);
+    int updateByPrimaryKeySelective(${dto.tableDtoClass} record);
+    int updateByPrimaryKey(${dto.tableDtoClass} record);
+    int deleteByPrimaryKey(${dto.tableDtoClass} record);
+    
+    ${dto.tableDtoClass} selectByPrimaryKey(${dto.tableDtoClass} record);
+    List<${dto.tableDtoClass}> selectByExampleWithRowbounds(${dto.tableDtoCriteriaClass} example, RowBounds rowBounds);
+    List<${dto.tableDtoClass}> selectByExample(${dto.tableDtoCriteriaClass} example);
+    int countByExample(${dto.tableDtoCriteriaClass} example);
+    
+    int updateByExampleSelective(@Param("record") ${dto.tableDtoClass} record, @Param("example") ${dto.tableDtoCriteriaClass} example);
+    int updateByExample(@Param("record") ${dto.tableDtoClass} record, @Param("example") ${dto.tableDtoCriteriaClass} example);
+    int deleteByExample(${dto.tableDtoCriteriaClass} example);
+
+}

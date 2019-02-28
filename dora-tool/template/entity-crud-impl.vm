@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.umeframework.dora.context.RequestContext;
 import org.umeframework.dora.dao.RdbDao;
-import ${dto.classPackage}.${dto.classId};
+import ${dto.tableDtoPackage}.${dto.classId};
 import ${dto.tableCrudServiceInterfacePackage}.${dto.tableCrudServiceInterface};
 
 /**

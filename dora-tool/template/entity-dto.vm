@@ -17,7 +17,7 @@
 #set($var_theFetchSize="_theFetchSize")
 #set($var_theFetchStart="_theFetchStart")
 
-package $dto.classPackage;
+package ${dto.tableDtoPackage};
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,15 +29,15 @@ $classImport
 #end
 
 /**
- * 数据表"$dto.className"映射的实体类<br>
+ * 数据表"$dto.className"实体类<br>
  *
  * @author Generator
  */
 #foreach ( $classAnnotation in $dto.classAnnotationList )
 $classAnnotation
 #end
-@ApiModel(value="$dto.classId", description="$dto.className")
-public class $dto.classId implements Serializable {
+@ApiModel(value="${dto.tableDtoClass}", description="$dto.className")
+public class ${dto.tableDtoClass} implements Serializable {
    /**
     * Default serial version number<br>
     */
@@ -270,7 +270,7 @@ public class $dto.classId implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        $dto.classId other = ($dto.classId) that;
+        ${dto.tableDtoClass} other = (${dto.tableDtoClass}) that;
         return
 #foreach ( $field in $dto.fieldList )
            #if(${velocityCount} > 1) && #end (this.get$field.fieldIdCap${var_LeftBrackets}) == null ? other.get$field.fieldIdCap${var_LeftBrackets}) == null : this.get$field.fieldIdCap${var_LeftBrackets}).equals(other.get$field.fieldIdCap${var_LeftBrackets})))
@@ -308,23 +308,23 @@ public class $dto.classId implements Serializable {
      * Constant declare: SQL ID in config file
      */
     public static class SQLID {
-        public static final String FIND_LIST = "${dto.classPackage}.${dto.tblAlias}_FIND_LIST";
-        public static final String FIND_LIST_LIKE = "${dto.classPackage}.${dto.tblAlias}_FIND_LIST_LIKE";
-        public static final String COUNT = "${dto.classPackage}.${dto.tblAlias}_COUNT";
+        public static final String FIND_LIST = "${dto.tableDtoPackage}.${dto.tblAlias}_FIND_LIST";
+        public static final String FIND_LIST_LIKE = "${dto.tableDtoPackage}.${dto.tblAlias}_FIND_LIST_LIKE";
+        public static final String COUNT = "${dto.tableDtoPackage}.${dto.tblAlias}_COUNT";
 #if(${dto.primaryKeyFieldList.size()} > 0)
-        public static final String FIND = "${dto.classPackage}.${dto.tblAlias}_FIND";
-        public static final String FIND_FOR_UPDATE = "${dto.classPackage}.${dto.tblAlias}_FIND_FOR_UPDATE";
-        public static final String INSERT = "${dto.classPackage}.${dto.tblAlias}_INSERT";
-        public static final String UPDATE = "${dto.classPackage}.${dto.tblAlias}_UPDATE";
-        public static final String UPDATE_FULLY = "${dto.classPackage}.${dto.tblAlias}_UPDATE_FULLY";
-        public static final String UPDATE_ANY = "${dto.classPackage}.${dto.tblAlias}_UPDATE_ANY";
-        public static final String DELETE = "${dto.classPackage}.${dto.tblAlias}_DELETE";
-        public static final String DELETE_ANY = "${dto.classPackage}.${dto.tblAlias}_DELETE_ANY";
+        public static final String FIND = "${dto.tableDtoPackage}.${dto.tblAlias}_FIND";
+        public static final String FIND_FOR_UPDATE = "${dto.tableDtoPackage}.${dto.tblAlias}_FIND_FOR_UPDATE";
+        public static final String INSERT = "${dto.tableDtoPackage}.${dto.tblAlias}_INSERT";
+        public static final String UPDATE = "${dto.tableDtoPackage}.${dto.tblAlias}_UPDATE";
+        public static final String UPDATE_FULLY = "${dto.tableDtoPackage}.${dto.tblAlias}_UPDATE_FULLY";
+        public static final String UPDATE_ANY = "${dto.tableDtoPackage}.${dto.tblAlias}_UPDATE_ANY";
+        public static final String DELETE = "${dto.tableDtoPackage}.${dto.tblAlias}_DELETE";
+        public static final String DELETE_ANY = "${dto.tableDtoPackage}.${dto.tblAlias}_DELETE_ANY";
 #end
 #if(${dto.tblHistory} != '')
-        public static final String INSERT_HISTORY_C = "${dto.classPackage}.${dto.tblAlias}_${dto.tblHistory}_INSERT_C"; 
-        public static final String INSERT_HISTORY_U = "${dto.classPackage}.${dto.tblAlias}_${dto.tblHistory}_INSERT_U"; 
-        public static final String INSERT_HISTORY_D = "${dto.classPackage}.${dto.tblAlias}_${dto.tblHistory}_INSERT_D"; 
+        public static final String INSERT_HISTORY_C = "${dto.tableDtoPackage}.${dto.tblAlias}_${dto.tblHistory}_INSERT_C"; 
+        public static final String INSERT_HISTORY_U = "${dto.tableDtoPackage}.${dto.tblAlias}_${dto.tblHistory}_INSERT_U"; 
+        public static final String INSERT_HISTORY_D = "${dto.tableDtoPackage}.${dto.tblAlias}_${dto.tblHistory}_INSERT_D"; 
 #end
     } 
 
