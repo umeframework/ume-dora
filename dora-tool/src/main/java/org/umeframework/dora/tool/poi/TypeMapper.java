@@ -137,30 +137,30 @@ public class TypeMapper {
     /**
      * Default type mapping for DB
      */
-    private static final Map<String, String> dataTypeMap2JDBC_Oracle = new HashMap<String, String>();
+    private static final Map<String, String> dataTypeMap2JDBC = new HashMap<String, String>();
     static {
-        dataTypeMap2DB_Oracle.put("文本", "VARCHAR");
-        dataTypeMap2DB_Oracle.put("长文本", "LONGVARCHAR");
-        dataTypeMap2DB_Oracle.put("整数", "INTEGER");
-        dataTypeMap2DB_Oracle.put("长整数", "BIGINT");
-        dataTypeMap2DB_Oracle.put("短整数", "SMALLINT");
-        dataTypeMap2DB_Oracle.put("大整数", "BIGINT");
-        dataTypeMap2DB_Oracle.put("数值", "DECIMAL");
-        dataTypeMap2DB_Oracle.put("字符大对象", "CLOB");
-        dataTypeMap2DB_Oracle.put("二进制对象", "BLOB");
-        dataTypeMap2DB_Oracle.put("图片", "BLOB");
-        dataTypeMap2DB_Oracle.put("定长文本", "CHAR");
-        dataTypeMap2DB_Oracle.put("日期", "DATE");
-        dataTypeMap2DB_Oracle.put("时间", "TIME");
-        dataTypeMap2DB_Oracle.put("时间戳", "TIMESTAMP");
-        dataTypeMap2DB_Oracle.put("NVARCHAR2", "VARCHAR");
-        dataTypeMap2DB_Oracle.put("VARCHAR2", "VARCHAR");
-        dataTypeMap2DB_Oracle.put("VARCHAR", "VARCHAR");
-        dataTypeMap2DB_Oracle.put("CHAR", "CHAR");
-        dataTypeMap2DB_Oracle.put("NUMBER", "DECIMAL");
-        dataTypeMap2DB_Oracle.put("TIMESTAMP(6)", "TIMESTAMP");
-        dataTypeMap2DB_Oracle.put("BLOB", "BLOB");
-        dataTypeMap2DB_Oracle.put("CLOB", "CLOB");
+        dataTypeMap2JDBC.put("文本", "VARCHAR");
+        dataTypeMap2JDBC.put("长文本", "LONGVARCHAR");
+        dataTypeMap2JDBC.put("整数", "INTEGER");
+        dataTypeMap2JDBC.put("长整数", "BIGINT");
+        dataTypeMap2JDBC.put("短整数", "SMALLINT");
+        dataTypeMap2JDBC.put("大整数", "BIGINT");
+        dataTypeMap2JDBC.put("数值", "DECIMAL");
+        dataTypeMap2JDBC.put("字符大对象", "CLOB");
+        dataTypeMap2JDBC.put("二进制对象", "BLOB");
+        dataTypeMap2JDBC.put("图片", "BLOB");
+        dataTypeMap2JDBC.put("定长文本", "CHAR");
+        dataTypeMap2JDBC.put("日期", "DATE");
+        dataTypeMap2JDBC.put("时间", "TIME");
+        dataTypeMap2JDBC.put("时间戳", "TIMESTAMP");
+        dataTypeMap2JDBC.put("NVARCHAR2", "VARCHAR");
+        dataTypeMap2JDBC.put("VARCHAR2", "VARCHAR");
+        dataTypeMap2JDBC.put("VARCHAR", "VARCHAR");
+        dataTypeMap2JDBC.put("CHAR", "CHAR");
+        dataTypeMap2JDBC.put("NUMBER", "DECIMAL");
+        dataTypeMap2JDBC.put("TIMESTAMP(6)", "TIMESTAMP");
+        dataTypeMap2JDBC.put("BLOB", "BLOB");
+        dataTypeMap2JDBC.put("CLOB", "CLOB");
     }
 
     /**
@@ -249,10 +249,8 @@ public class TypeMapper {
      */
     public String getJdbcType(String type, FieldDescBean refField, String databaseCategory) {
         type = type.trim();
-        String result = null;
-        if (databaseCategory.toLowerCase().equals("oracle")) {
-            result = dataTypeMap2JDBC_Oracle.get(type);
-        } else {
+        String result = dataTypeMap2JDBC.get(type);
+        if (result == null) {
             throw new RuntimeException("Found matched JDBC Data Type: [" + type + "] ," + refField.getColId() + ", " + refField.getColName());
         }
         return result;

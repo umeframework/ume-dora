@@ -117,6 +117,10 @@ public class FieldDescBean implements java.io.Serializable {
      */
     private String fieldType;
     /**
+     * java field JDBC type
+     */
+    private String fieldJdbcType;
+    /**
      * java annotation string container
      */
     private List<String> fieldAnnotationList = new ArrayList<String>();
@@ -509,6 +513,20 @@ public class FieldDescBean implements java.io.Serializable {
      */
     public void setFieldAnnotationList(List<String> fieldAnnotationList) {
         this.fieldAnnotationList = fieldAnnotationList;
+    }
+
+    /**
+     * @return the fieldJdbcType
+     */
+    public String getFieldJdbcType() {
+        return fieldJdbcType;
+    }
+
+    /**
+     * @param fieldJdbcType the fieldJdbcType to set
+     */
+    public void setFieldJdbcType(String fieldJdbcType) {
+        this.fieldJdbcType = fieldJdbcType;
     }
 
 }

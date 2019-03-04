@@ -204,8 +204,10 @@ public class DtoBuilder {
     void buildDtoField(FieldDescBean field, String databaseCategory) {
         String dbDataType = typeMapper.getDBDataType(field.getColDataType(), field, databaseCategory);
         String javaDataType = typeMapper.getJavaType(field.getColDataType(), field, databaseCategory);
+        String fieldJdbcType = typeMapper.getJdbcType(field.getColDataType(), field, databaseCategory);
         field.setColDataType(dbDataType);
         field.setFieldType(javaDataType);
+        field.setFieldJdbcType(fieldJdbcType);
         String length = field.getColLength();
         if (typeMapper.isNotEmpty(length)) {
             length = length.trim();
