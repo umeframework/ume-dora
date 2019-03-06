@@ -65,7 +65,6 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      * Mapper class package
      */
     private String tableMapperPackage;
-    
     /**
      * Dto Crud implementation class ID
      */
@@ -94,6 +93,10 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      * Dto Criteria class ID
      */
     private String tableDtoCriteriaClass;
+    /**
+     * Sql Map XML file name
+     */
+    private String sqlMapXmlFile;
     
     /**
      * auto increment columns
@@ -468,5 +471,19 @@ public class EntityDescBean extends TableDescBean implements java.io.Serializabl
      */
     public void setTableDtoCriteriaClass(String tableDtoCriteriaClass) {
         this.tableDtoCriteriaClass = tableDtoCriteriaClass;
+    }
+
+    /**
+     * @return the sqlMapXmlFile
+     */
+    public String getSqlMapXmlFile() {
+        return sqlMapXmlFile;
+    }
+
+    /**
+     * @param sqlMapXmlFile the sqlMapXmlFile to set
+     */
+    public void setSqlMapXmlFile(String sqlMapXmlFile) {
+        this.sqlMapXmlFile = sqlMapXmlFile;
     }
 }

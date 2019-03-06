@@ -139,6 +139,7 @@ public class TypeMapper {
      */
     private static final Map<String, String> dataTypeMap2JDBC = new HashMap<String, String>();
     static {
+        dataTypeMap2JDBC.put("自增序列", "BIGINT");
         dataTypeMap2JDBC.put("文本", "VARCHAR");
         dataTypeMap2JDBC.put("长文本", "LONGVARCHAR");
         dataTypeMap2JDBC.put("整数", "INTEGER");

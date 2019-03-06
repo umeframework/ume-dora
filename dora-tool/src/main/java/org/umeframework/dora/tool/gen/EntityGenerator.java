@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 //import org.umeframework.dora.tool.gen.db.DataTypeUtil.DatabaseType;
 import org.umeframework.dora.tool.gen.db.DtoBuilder;
@@ -113,7 +114,7 @@ public class EntityGenerator {
         group = group == null ? "" : group.trim();
         prepare();
 
-        Collection<EntityDescBean> dtoExList = new ArrayList<EntityDescBean>(dtoList.size());
+        List<EntityDescBean> dtoExList = new ArrayList<EntityDescBean>(dtoList.size());
 
         for (String category : databaseCategory) {
             for (TableDescBean tableDto : dtoList) {
@@ -143,7 +144,7 @@ public class EntityGenerator {
 
             // Generate SqlMap File
             for (EntityDescBean dto : dtoExList) {
-                String sqlMapfileName = genDirSqlMap + category + "/" + dto.getTblAlias() + ".xml";
+                String sqlMapfileName = genDirSqlMap + category + "/" + dto.getSqlMapXmlFile() + ".xml";
                 vm = templateSqlMap.replace("{PROVIDER}", category.toString().toLowerCase());
                 if (!new File(vm).exists()) {
                     continue;
@@ -238,6 +239,7 @@ public class EntityGenerator {
             cgCrudMapping.execute("dtos", dtoExList, mappingFileName);
             System.out.println("[" + mappingFileName + "] created.");
         }
+        
         System.out.println("DDL,SqlMap,Dto,CrudService have been generated.");
     }
 

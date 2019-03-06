@@ -47,6 +47,10 @@ public class DtoBuilder {
      */
     private String genDtoMapperExtension = "Mapper";
     /**
+     * generate Dto Mapper extension name
+     */
+    private String genSqlMapXmlExtension = "Mapper";
+    /**
      * generate Crud interface extension name
      */
     private String genCrudInterfaceExtension = "CrudService";
@@ -121,6 +125,7 @@ public class DtoBuilder {
         ex.setTableDtoClass(javaStyleName + this.getGenDtoExtension());
         ex.setTableDtoConditionClass(javaStyleName + this.getGenDtoConditionExtension());
         ex.setTableDtoCriteriaClass(javaStyleName + this.getGenDtoCriteriaExtension());
+        ex.setSqlMapXmlFile(javaStyleName + this.getGenSqlMapXmlExtension());
 
         ex.setCurrentDate(new SimpleDateFormat("yyyy/MM/dd").format(new java.util.Date()));
         ex.setBasePackage(entityGenerator.getGenBasePackage());
@@ -680,6 +685,20 @@ public class DtoBuilder {
      */
     public void setGenDtoPackageExtension(String genDtoPackageExtension) {
         this.genDtoPackageExtension = genDtoPackageExtension;
+    }
+
+    /**
+     * @return the genSqlMapXmlExtension
+     */
+    public String getGenSqlMapXmlExtension() {
+        return genSqlMapXmlExtension;
+    }
+
+    /**
+     * @param genSqlMapXmlExtension the genSqlMapXmlExtension to set
+     */
+    public void setGenSqlMapXmlExtension(String genSqlMapXmlExtension) {
+        this.genSqlMapXmlExtension = genSqlMapXmlExtension;
     }
 
 }
