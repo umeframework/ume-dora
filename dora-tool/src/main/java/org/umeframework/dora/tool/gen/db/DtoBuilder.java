@@ -65,15 +65,15 @@ public class DtoBuilder {
     /**
      * generate Crud package extension name
      */
-    private String genCrudPackageExtension = "service";
+    private String genCrudPackageExtension = "entity.service";
     /**
      * generate Crud Api package extension name
      */
-    private String genCrudApiPackageExtension = "api";
+    private String genCrudApiPackageExtension = "entity.api";
     /**
      * generate Mapper package extension name
      */
-    private String genMapperPackageExtension = "";
+    private String genMapperPackageExtension = "entity.mapper";
     /**
      * generate DTO package extension name
      */
