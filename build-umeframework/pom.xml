@@ -22,11 +22,10 @@
         <module>../dora-kvs</module>
         <module>../dora-web</module>
         <module>../dora-config</module>
-        <module>../dora-tool</module>
+
         
         <module>../umeframework</module>
         <module>../umeframework-boot</module>
-        <module>../umeframework-tool</module>
         
         <module>../umeframework-cloud</module>
         
