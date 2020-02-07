@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author Yue MA
  */
-public class TypeMapping {
+public class JdbcTypeMapping {
     /**
      * Type mapping from database to JDBC
      */

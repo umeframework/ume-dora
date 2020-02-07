@@ -1,5 +1,5 @@
-/* 
- * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0 
+/*
+ * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
 package org.umeframework.dora.util;
 
@@ -12,13 +12,15 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * String common process tool 
  *
- * @author Yue MA
+ * @author MAYUE
  */
 abstract public class StringUtil {
 	/**
@@ -28,23 +30,19 @@ abstract public class StringUtil {
 	/**
 	 * Text "1"
 	 */
-	private static final String STR_ONE = "1";
-	/**
-	 * Text "2"
-	 */
-	private static final String STR_TWO = "2";
-	/**
-	 * Text "0"
-	 */
-	private static final String ZERO = "0";
+	private static final String BOOLEAN_TRUE_INT_VALUE = "1";
 	/**
 	 * Text "true"
 	 */
-	private static final String TRUE = "true";
+	private static final String BOOLEAN_TRUE_STR_VALUE = "true";
+    /**
+     * Text "0"
+     */
+    private static final String STR_ZERO = "0";
 	/**
 	 * Empty text
 	 */
-	public static final String EMPTY = "";
+    private static final String STR_EMPTY = "";
 	/**
 	 * Text "+"
 	 */
@@ -52,11 +50,11 @@ abstract public class StringUtil {
 	/**
 	 * Text "-"
 	 */
-	private static final String MINUS_STR = "-";
+	private static final String STR_MINUS = "-";
 	/**
 	 * Space char
 	 */
-	private static final char SPACE_CHR = ' ';
+	private static final char CHR_SPACE = ' ';
 	/**
 	 * UTF-8 string constant
 	 */
@@ -68,11 +66,7 @@ abstract public class StringUtil {
 	/**
 	 * Windows LF char sequence
 	 */
-	private static final String LF = "\n";
-	/**
-	 * Space string
-	 */
-	public static final String SPACE = " ";
+	private static final String STR_LF = "\n";
 
 	/**
 	 * isEmpty
@@ -81,7 +75,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static boolean isEmpty(String value) {
-		if (value == null || value.trim().equals(EMPTY)) {
+		if (value == null || value.trim().equals(STR_EMPTY)) {
 			return true;
 		}
 		return false;
@@ -94,7 +88,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static boolean isNotEmpty(String value) {
-		if (value != null && !value.trim().equals(EMPTY)) {
+		if (value != null && !value.trim().equals(STR_EMPTY)) {
 			return true;
 		}
 		return false;
@@ -108,7 +102,7 @@ abstract public class StringUtil {
 	 */
 	public static boolean isAllEmpty(String... values) {
 		for (String value : values) {
-			if (value != null && !value.trim().equals(EMPTY)) {
+			if (value != null && !value.trim().equals(STR_EMPTY)) {
 				return false;
 			}
 		}
@@ -123,7 +117,7 @@ abstract public class StringUtil {
 	 */
 	public static boolean isAnyEmpty(String... values) {
 		for (String value : values) {
-			if (value == null || value.trim().equals(EMPTY)) {
+			if (value == null || value.trim().equals(STR_EMPTY)) {
 				return true;
 			}
 		}
@@ -137,7 +131,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static boolean isSpace(char value) {
-		return value == SPACE_CHR;
+		return value == CHR_SPACE;
 	}
 
 	/**
@@ -147,7 +141,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static boolean isNumeric(String value) {
-		if (value == null || EMPTY.equals(value)) {
+		if (value == null || STR_EMPTY.equals(value)) {
 			return false;
 		}
 		for (int i = value.length(); --i >= 0;) {
@@ -219,7 +213,7 @@ abstract public class StringUtil {
 	public static String removeAllSpace(String value) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < value.length(); i++) {
-			if (value.charAt(i) != SPACE_CHR) {
+			if (value.charAt(i) != CHR_SPACE) {
 				builder.append(value.charAt(i));
 			}
 		}
@@ -235,7 +229,7 @@ abstract public class StringUtil {
 	 */
 	public static String toHexStr(byte[] byteArray, String delim) {
 		if (delim == null) {
-			delim = EMPTY;
+			delim = STR_EMPTY;
 		}
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < byteArray.length; i++) {
@@ -244,7 +238,7 @@ abstract public class StringUtil {
 			}
 			String hex = Integer.toHexString(byteArray[i] & 0x00ff).toUpperCase();
 			if (hex.length() < 2) {
-				builder.append(ZERO);
+				builder.append(STR_ZERO);
 			}
 			builder.append(hex);
 		}
@@ -258,7 +252,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static String capitalizeInitial(String value) {
-		if (value == null || EMPTY.equals(value)) {
+		if (value == null || STR_EMPTY.equals(value)) {
 			return value;
 		}
 		char[] chars = value.toCharArray();
@@ -354,12 +348,12 @@ abstract public class StringUtil {
 	 * @throws UnsupportedEncodingException
 	 */
 	public static int getByteLength(String value, String charSet) throws UnsupportedEncodingException {
-		if (value == null || EMPTY.equals(value)) {
+		if (value == null || STR_EMPTY.equals(value)) {
 			return 0;
 		}
 
 		byte[] bytes = null;
-		if (charSet == null || EMPTY.equals(charSet)) {
+		if (charSet == null || STR_EMPTY.equals(charSet)) {
 			bytes = value.getBytes();
 		} else {
 			try {
@@ -382,7 +376,11 @@ abstract public class StringUtil {
 			return null;
 		}
 		value = StringUtil.removeAllSpace(value);
-		value = value.startsWith(PLUS_STR) ? value = value.substring(1) : value;
+		value = value.startsWith(PLUS_STR) ? value.substring(1) : value;
+		if(value.contains(".")){
+			Double d=Double.valueOf(value);
+			return d.intValue();
+		}
 		return Integer.valueOf(value);
 	}
 
@@ -397,7 +395,7 @@ abstract public class StringUtil {
 			return null;
 		}
 		value = StringUtil.removeAllSpace(value);
-		value = value.startsWith(PLUS_STR) ? value = value.substring(1) : value;
+		value = value.startsWith(PLUS_STR) ? value.substring(1) : value;
 		return Long.valueOf(value);
 	}
 
@@ -412,7 +410,7 @@ abstract public class StringUtil {
 			return null;
 		}
 		value = StringUtil.removeAllSpace(value);
-		value = value.startsWith(PLUS_STR) ? value = value.substring(1) : value;
+		value = value.startsWith(PLUS_STR) ? value.substring(1) : value;
 		return Short.valueOf(value);
 	}
 
@@ -427,7 +425,7 @@ abstract public class StringUtil {
 			return null;
 		}
 		value = StringUtil.removeAllSpace(value);
-		value = value.startsWith(PLUS_STR) ? value = value.substring(1) : value;
+		value = value.startsWith(PLUS_STR) ? value.substring(1) : value;
 		return Double.valueOf(value);
 	}
 
@@ -442,7 +440,7 @@ abstract public class StringUtil {
 			return null;
 		}
 		value = StringUtil.removeAllSpace(value);
-		value = value.startsWith(PLUS_STR) ? value = value.substring(1) : value;
+		value = value.startsWith(PLUS_STR) ? value.substring(1) : value;
 		return Float.valueOf(value);
 	}
 
@@ -457,7 +455,7 @@ abstract public class StringUtil {
 			return null;
 		}
 		value = StringUtil.removeAllSpace(value);
-		value = value.startsWith(PLUS_STR) ? value = value.substring(1) : value;
+		value = value.startsWith(PLUS_STR) ? value.substring(1) : value;
 		return new BigInteger(value);
 	}
 
@@ -472,9 +470,16 @@ abstract public class StringUtil {
 			return null;
 		}
 		value = StringUtil.removeAllSpace(value);
-		value = value.startsWith(PLUS_STR) ? value = value.substring(1) : value;
+		value=value.replace("\n", "");
+		value = value.startsWith(PLUS_STR) ? value.substring(1) : value;
 
-		if (isEmpty(value) || value.endsWith(MINUS_STR)) {
+		value=value.replace(",", "");
+		if(value.contains("%")){
+			value=value.replace("%", "");
+			BigDecimal temp=new BigDecimal(value);
+			return temp.divide(new BigDecimal(100));
+		}
+		if (isEmpty(value) || value.endsWith(STR_MINUS)) {
 			return new BigDecimal(0);
 		}
 		return new BigDecimal(value);
@@ -491,12 +496,30 @@ abstract public class StringUtil {
 			return false;
 		}
 		value = value.trim();
-		if (STR_ONE.equals(value) || TRUE.equalsIgnoreCase(value)) {
+		if (BOOLEAN_TRUE_INT_VALUE.equals(value) || BOOLEAN_TRUE_STR_VALUE.equalsIgnoreCase(value)) {
 			return true;
 		}
 		return false;
 	}
 
+    /**
+     * parseDate
+     * 
+     * @param value
+     * @param formats
+     * @return
+     */
+	public static java.util.Date parseDate(String value, String[] formats) {
+        for (String format : formats) {
+            java.util.Date udate;
+            try {
+                udate = new SimpleDateFormat(format).parse(value);
+                return new Date(udate.getTime());
+            } catch (ParseException e) {
+            }
+        }
+        return null;
+    }
     /**
      * toDate
      * 
@@ -508,7 +531,15 @@ abstract public class StringUtil {
             return null;
         }
         value = value.trim();
-        return Date.valueOf(value);
+        java.util.Date udate = null;
+        if (isNumeric(String.valueOf(value.charAt(0)))) {
+            String[] formats = new String[] {"yyyy-MM-dd", "yyyy/MM/dd", "dd-MM-yyyy", "dd/MM/yyyy", "MM-dd-yyyy", "yyyyMMdd", "ddMMyyyy", "yyyy-MM", "yyyy/MM", "yyyyMM", "yyyyMM","dd-MMM-yy","dd-MMM-yyyy"};
+            udate = parseDate(value, formats);
+        } else {
+            String[] formats = new String[] {"MMMddyyyy"};
+            udate = parseDate(value, formats);
+        }
+        return udate == null ? null : new Date(udate.getTime());
     }
     
     /**
@@ -522,7 +553,10 @@ abstract public class StringUtil {
             return null;
         }
         value = value.trim();
-        return Time.valueOf(value);
+        java.util.Date udate = null;
+        String[] formats = new String[] {"HH:mm:ss", "HHmmss", "hh:mm:ss", "hhmmss"};
+        udate = parseDate(value, formats);
+        return udate == null ? null : new Time(udate.getTime());
     }
 
     /**
@@ -536,7 +570,15 @@ abstract public class StringUtil {
             return null;
         }
         value = value.trim();
-        return Timestamp.valueOf(value);
+        java.util.Date udate = null;
+        if (isNumeric(String.valueOf(value.charAt(0)))) {
+            String[] formats = new String[] {"yyyy-MM-dd HH:mm:ss.SSS", "yyyy/MM/dd HH:mm:ss.SSS", "yyyyMMdd HHmmss.SSS", "yyyyMMdd HHmmssSSS","yyyy-MM-dd","yyyy/MM/dd","yyyyMMdd","dd/MM/yyyy","dd-MMM-yyyy","dd-MMM-yy"};
+            udate = parseDate(value, formats);
+        } else {
+            String[] formats = new String[] {"MMMddyyyy HHmmssSSS"};
+            udate = parseDate(value, formats);
+        }
+        return udate == null ? null : new Timestamp(udate.getTime());
     }
     
     /**
@@ -607,7 +649,7 @@ abstract public class StringUtil {
 	 */
 	public static String objectToStr(Object value) {
 		if (value == null) {
-			return EMPTY;
+			return STR_EMPTY;
 		}
 		if (value instanceof BigDecimal) {
 			return ((BigDecimal) value).toPlainString();
@@ -717,7 +759,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static String paddingR(String value, int size) {
-		return paddingR(value, size, SPACE_CHR);
+		return paddingR(value, size, CHR_SPACE);
 	}
 
 	/**
@@ -748,7 +790,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static String paddingL(String value, int size) {
-		return paddingL(value, size, SPACE_CHR);
+		return paddingL(value, size, CHR_SPACE);
 	}
 
 	/**
@@ -759,7 +801,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static String paddingZR(String value, int num) {
-		return paddingZR(value, num, SPACE_CHR);
+		return paddingZR(value, num, CHR_SPACE);
 	}
 
 	/**
@@ -795,7 +837,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static String paddingZL(String value, int num) {
-		return paddingZL(value, num, SPACE_CHR);
+		return paddingZL(value, num, CHR_SPACE);
 	}
 
 	/**
@@ -926,7 +968,7 @@ abstract public class StringUtil {
 	 * @return
 	 */
 	public static String removeLinefeedCode(String input) {
-		return input == null ? null : input.replace(LF, EMPTY);
+		return input == null ? null : input.replace(STR_LF, STR_EMPTY);
 	}
 
 	/**
@@ -992,78 +1034,70 @@ abstract public class StringUtil {
 			return value;
 		}
 		if (value.indexOf(str) == 0 && mode == 0) {
-			value = value.replaceFirst(str, EMPTY);
+			value = value.replaceFirst(str, STR_EMPTY);
 		} else if (value.lastIndexOf(str) == value.length() - str.length() && mode == 1) {
 			value = value.substring(0, value.length() - str.length());
 		} else if (mode == 2) {
-			value = value.replace(str, EMPTY);
+			value = value.replace(str, STR_EMPTY);
 		}
 
 		return value;
 	}
 
-	/**
-	 * mergeString
-	 *
-	 * @param template
-	 * @param keys
-	 * @return
-	 */
-	public static String mergeStr(String template, final String... keys) {
-		if (keys == null) {
-			return null;
-		}
-		StringBuilder resultString = new StringBuilder();
-		List<Integer> tempList = new ArrayList<Integer>();
-		for (int i = 0; i < keys.length; i++) {
-			if (template == null) {
-				resultString.append(keys[i]);
-			} else {
-				for (int j = 0; j < keys[i].length(); j++) {
-					char c = keys[i].charAt(j);
-					tempList.add(template.indexOf(c));
-				}
-			}
-		}
-		if (CollectionUtil.isNotEmpty(tempList)) {
-			List<Integer> sortedList = CollectionUtil.sortAsc(tempList);
-			for (int k = 0; k < sortedList.size(); k++) {
-				int index = sortedList.get(k);
-				if (index != -1) {
-					resultString.append(template.charAt(index));
-				}
-			}
-		}
-		return resultString.toString();
-	}
+    /**
+     * underline2Camel
+     * 
+     * @param line
+     * @param smallCamel
+     * @return
+     */
+    public static String underline2Camel(String line, boolean ... smallCamel) {
+        if (line == null || "".equals(line)) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        Pattern pattern = Pattern.compile("([A-Za-z\\d]+)(_)?");
+        Matcher matcher = pattern.matcher(line);
+        //匹配正则表达式
+        while (matcher.find()) {
+            String word = matcher.group();
+            //当是true 或则是空的情况
+            if((smallCamel.length ==0 || smallCamel[0] ) && matcher.start()==0){
+                sb.append(Character.toLowerCase(word.charAt(0)));
+            }else{
+                sb.append(Character.toUpperCase(word.charAt(0)));
+            }
 
-	/**
-	 * mergeStrToList
-	 *
-	 * @param mode
-	 * @param inputArrays
-	 * @return
-	 */
-	public static List<String> mergeStrToList(String mode, String[]... inputArrays) {
-		List<String> outList = null;
-		if (inputArrays != null) {
-			outList = new ArrayList<String>();
-			for (String[] input : inputArrays) {
-				if (input != null) {
-					for (String value : input) {
-						if (isNotEmpty(value) && !outList.contains(trimR(value))) {
-							outList.add(trimR(value));
-						}
-					}
-				}
-			}
-		}
-		if (STR_ONE.equals(mode)) {
-			outList = CollectionUtil.sortAsc(outList);
-		} else if (STR_TWO.equals(mode)) {
-			outList = CollectionUtil.sortDesc(outList);
-		}
-
-		return outList;
-	}
+            int index = word.lastIndexOf('_');
+            if (index > 0) {
+                sb.append(word.substring(1, index).toLowerCase());
+            } else {
+                sb.append(word.substring(1).toLowerCase());
+            }
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * camel2Underline
+     * 
+     * @param line
+     * @return
+     */
+    public static String camel2Underline(String line) {
+        if (line == null || "".equals(line)) {
+            return "";
+        }
+        line = String.valueOf(line.charAt(0)).toUpperCase()
+                .concat(line.substring(1));
+        StringBuffer sb = new StringBuffer();
+        Pattern pattern = Pattern.compile("[A-Z]([a-z\\d]+)?");
+        Matcher matcher = pattern.matcher(line);
+        while (matcher.find()) {
+            String word = matcher.group();
+            sb.append(word.toUpperCase());
+            sb.append(matcher.end() == line.length() ? "" : "_");
+        }
+        return sb.toString();
+    }
 }

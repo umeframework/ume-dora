@@ -1,7 +1,7 @@
 /*
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
-package org.umeframework.dora.dao.jdbc;
+package org.umeframework.dora.util;
 
 
 import java.beans.BeanInfo;
@@ -491,7 +491,7 @@ public class BeanHelper {
             if (setter != null && value != null) {
                     Class<?> setterParamType = setter.getParameterTypes()[0];
                     if (!value.getClass().equals(setterParamType)) {
-                        value=JavaValueConvertor.convert(value,setterParamType);
+                        value=StringConvertor.convert(value,setterParamType);
                     }
                     if (setterParamType.isInstance(value)) {
                         try {

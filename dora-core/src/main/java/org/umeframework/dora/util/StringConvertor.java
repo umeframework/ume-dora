@@ -1,9 +1,9 @@
 /*
  * Copyright 2014-2017 UME Framework Group, Apache License Version 2.0
  */
-package org.umeframework.dora.dao.jdbc;
+package org.umeframework.dora.util;
 
-public class JavaValueConvertor {
+public class StringConvertor {
 
     public static Object convert(Object value,Class<?> toType){
         if(value==null) return null;

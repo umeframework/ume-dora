@@ -24,7 +24,7 @@ import org.umeframework.dora.dao.RdbDao;
 import org.umeframework.dora.dao.impl.BatisDaoImpl;
 import org.umeframework.dora.dao.mybatis.ex.StatementHandlerInterceptor;
 import org.umeframework.dora.log.Logger;
-import org.umeframework.dora.util.StringKanaUtil;
+import org.umeframework.dora.util.StringUtil;
 
 /**
  * Dao configuration.<br>
@@ -91,7 +91,7 @@ public class DefaultDaoConfiguration {
 		String mybatisMapperLocations = systemPropertyConfiguration.getMybatisMapperLocations();
 		ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 		List<org.springframework.core.io.Resource> resources = new ArrayList<org.springframework.core.io.Resource>();
-		if (StringKanaUtil.isNotEmpty(mybatisMapperLocations)) {
+		if (StringUtil.isNotEmpty(mybatisMapperLocations)) {
 			String[] values = null;
 			if (mybatisMapperLocations.contains(MULTI_LOCATIONS_SPLIT_CHAR)) {
 				values = mybatisMapperLocations.split(MULTI_LOCATIONS_SPLIT_CHAR);

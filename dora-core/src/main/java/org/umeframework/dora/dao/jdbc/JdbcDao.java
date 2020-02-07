@@ -26,6 +26,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.umeframework.dora.log.LogUtil;
 import org.umeframework.dora.service.BaseComponent;
+import org.umeframework.dora.util.BeanHelper;
 
 /**
  * JDBC DB access implementation class.<br>
@@ -400,7 +401,7 @@ public class JdbcDao extends BaseComponent {
         List<String> sqlParamList = jdbcParam.getSqlParams();
         Map<String, Object> valueMap = new HashMap<>();
         if (param != null) {
-            if (TypeMapping.isBasicType(param)) {
+            if (JdbcTypeMapping.isBasicType(param)) {
                 valueMap.put(sqlParamList.get(0), param);
             } else {
                 getPropertiesAndValues(param, valueMap);
