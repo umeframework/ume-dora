@@ -23,14 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.stereotype.Component;
 
 /**
  * BeanHelper<br>
  * 
  * @author Yue MA
  */
-@Component
 public class BeanHelper {
     /**
      * Bean descriptor cacher
